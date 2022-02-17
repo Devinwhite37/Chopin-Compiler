@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Alan and Rebecca's Bitchin Compiler Template</title>
+    <title>White's Compiler</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="dist/styles/compiler.css" />
     <link rel="stylesheet" href="dist/styles/bootstrap.min.css">
 </head>
 <body onload="init();">
-    <h1>Project Zero Compiler</h1>
+    <h1>White's Filer Compiler</h1>
     <hr>
     <p>. . . <em>a simple parser for a simple grammar</em>:</p>
 
@@ -56,7 +56,8 @@ O ::== + | -
 	        // "compile" button between the two text areas, above.  
 	        // Note the <input> element's event handler: onclick="btnCompile_click();
 	        init();
-	        putMessage("Compilation Started");
+			putMessage("Compilation Started");
+			console.log();
 	        // Grab the tokens from the lexer . . .
 	        tokens = _Lexer.lex();
 	        putMessage("Lex returned [" + tokens + "]");
@@ -111,7 +112,8 @@ O ::== + | -
 	                                currentToken=="6" || currentToken=="7" || currentToken=="8" || 
 	                                currentToken=="9")
 	                            {
-	                                putMessage("Got a digit!");
+									putMessage("Got a digit!");
+									console.log("digit");
 	                            }
 	                            else
 	                            {
