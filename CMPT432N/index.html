@@ -11,13 +11,6 @@
     <hr>
     <p>. . . <em>a simple parser for a simple grammar</em>:</p>
 
-	 <pre>
-G ::== E
-E ::== D O E | D
-D ::== 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 
-O ::== + | -
-	 </pre>
-
     <div style="text-align:center;">
         <input type="button" id="btnCompile" value="Compile" onclick="btnCompile_click();"/>
     </div>
@@ -29,17 +22,19 @@ O ::== + | -
         </div>        
     </div>
 
-    <div>
+    <!--<div>
         <img style="display:block; margin-left:auto; margin-right:auto;"
 		       src="dist/images/CompilerPhases.png" 
 				 alt="Compiler Phases" />
-    </div>   
+    </div>  --> 
 
     <!-- Client-side code down here, per the YSlow advice. -->
-    <script type="text/javascript" src="dist/scripts/utils.js"></script>	
-    <script type="text/javascript" src="dist/scripts/lexer.js"></script>	
-	 <script type="text/javascript" src="dist/scripts/globals.js"></script>	
-	 
+    <script type="text/javascript" src="source/scripts/utils.js"></script>	
+    <script type="text/javascript" src="source/scripts/lexer.js"></script>	
+	<script type="text/javascript" src="source/scripts/globals.js"></script>	
+	<script type="text/javascript" src="source/scripts/tokenizer.js"></script>	
+
+
     <script type="text/javascript">
 		 function init() {
 	        // Clear the message box.
@@ -55,24 +50,61 @@ O ::== + | -
 	        // This is executed as a result of the user pressing the 
 	        // "compile" button between the two text areas, above.  
 	        // Note the <input> element's event handler: onclick="btnCompile_click();
-	        init();
-			putMessage("Compilation Started");
-			console.log();
+			init();
+
+			//console.log(tokens);
+
+			let lexer = new TSC.Lexer();
 	        // Grab the tokens from the lexer . . .
-	        tokens = _Lexer.lex();
-	        putMessage("Lex returned [" + tokens + "]");
+			//tokens = _Lexer.lex();
+			tokens = lexer.lex();
+			console.log("HTML tokens: " + tokens[0]);
+			//console.log(tokens + " tokens");
+			//console.log(tokenIndex);
+			//putMessage("Lexer - ");
 	        // . . . and parse!
-	        parse();
+	        lexOutput();
 	    }
     
 	    function putMessage(msg) {
 	        document.getElementById("taOutput").value += msg + "\n";
-	    }
+		}
+		
+		function lexOutput(){
+
+			//lexAnalysis = lexer.lex();
+			//var lexAnalysis;
+			if (tokens == ''){
+				putMessage("Well that's random. Try compiling some code next time.");
+			}
+			else{
+				//console.log(tokens);
+				putMessage("Compilation Started");
+				//console.log("Lexanalysis" + lexAnalysis);
+				putMessage("LEXICAL ANALYSIS:");
+				putMessage("Lexing Program 1");
+				/*for(var i=0; i<tokens.length; i++){
+					putMessage("LEXER -> | [" + tokens["token"] + "] on line " + tokens["lineNum"] + "and column " + tokens["columnNum"]);
+				}*/
+				putMessage("LEXER -> | " + tokens["token"] + "  [ " + tokens["tokenRegEx"] + " ]  on line " + tokens["lineNum"] + " and column " + tokens["columnNum"]);
+
+
+
+				//putMessage("LEXER - " + lineNum);
+
+				//console.log(lineNum)
+				putMessage("Lexical analysis comlete with ");
+			}
+		}
+
+		function lexlog(){
+
+		}
     
     
 	 	 // TODO: These parse routines really should be in TypeScript.
 		 //       This exercise is left to the student. Consider it project 0.5 .
-	    function parse() {
+	    /*function parse() {
 	        putMessage("Parsing [" + tokens + "]");
 	        // Grab the next token.
 	        currentToken = getNextToken();
@@ -101,7 +133,7 @@ O ::== + | -
 	            // and that's cool since E ::== digit is valid.
 	            putMessage("EOF reached");
 	        }
-	    }
+	    }*/
 
 	    function checkToken(expectedKind) {
 	        // Validate that we have the expected token kind and et the next token.

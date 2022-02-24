@@ -3,21 +3,19 @@
 module TSC
 	{
 	export class Lexer {
-		tokens = [];
+		tokens = "";
+		tokenRegEx = "";
 		lineNum = 1;
 		columnNum = 0;
-		
+		lexOutput ={};
 		
 		constructor(){}
 
         public lex(){
 		{
-			var currentToken = 5;
-			var variableTest= 'test';
-
 		        // Grab the "raw" source code.
 				var sourceCode = (<HTMLInputElement>document.getElementById("taSourceCode")).value;
-				console.log(sourceCode+" sourcecode");
+				//console.log(sourceCode+" sourcecode");
 		        // Trim the leading and trailing spaces.
 				sourceCode = TSC.Utils.trim(sourceCode);
 
@@ -51,11 +49,29 @@ module TSC
 				const BEGIN_COMMENT = new RegExp('\\/*$');
 				const END_COMMENT = new RegExp('\\*/$');
 
+				//this.tokens = ["please work"];
+				console.log("tokens out if:" + tokens)
 				if(L_BRACE.test(sourceCode)){
-					var token: Tokenizer = new Tokenizer(TSC.TokenType.TLbrace);
-					this.tokens.push(token);
+					//var token: Tokenizer = new Tokenizer(TSC.TokenType.TLbrace);
+					let curToken = new String;
+					this.tokens = "L_BRACE";
+					this.tokenRegEx = "{";
+					//this.tokens.push(curToken);
+					console.log("tokens: " + tokens);
+					console.log("curToken: " + curToken);
+					console.log("LineNum: " + this.lineNum);
+					this.lexOutput = {
+						"token": this.tokens,
+						"tokenRegEx": this.tokenRegEx,
+						"lineNum": this.lineNum,
+						"columnNum": this.columnNum
+
+					};
+					console.log("lexOutput: " + this.lexOutput);
+					return this.lexOutput;
+
 				}
-				return sourceCode;
+
 			}
 		}
 	}

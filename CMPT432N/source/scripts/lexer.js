@@ -3,17 +3,17 @@ var TSC;
 (function (TSC) {
     var Lexer = /** @class */ (function () {
         function Lexer() {
-            this.tokens = [];
+            this.tokens = "";
+            this.tokenRegEx = "";
             this.lineNum = 1;
             this.columnNum = 0;
+            this.lexOutput = {};
         }
         Lexer.prototype.lex = function () {
             {
-                var currentToken = 5;
-                var variableTest = 'test';
                 // Grab the "raw" source code.
                 var sourceCode = document.getElementById("taSourceCode").value;
-                console.log(sourceCode + " sourcecode");
+                //console.log(sourceCode+" sourcecode");
                 // Trim the leading and trailing spaces.
                 sourceCode = TSC.Utils.trim(sourceCode);
                 //var lineNum = sourceCode.split("\n");
@@ -44,11 +44,26 @@ var TSC;
                 var BOOL_NOTEQUAL = new RegExp('!=$');
                 var BEGIN_COMMENT = new RegExp('\\/*$');
                 var END_COMMENT = new RegExp('\\*/$');
+                //this.tokens = ["please work"];
+                console.log("tokens out if:" + tokens);
                 if (L_BRACE.test(sourceCode)) {
-                    var token = new Tokenizer(TSC.TokenType.TLbrace);
-                    this.tokens.push(token);
+                    //var token: Tokenizer = new Tokenizer(TSC.TokenType.TLbrace);
+                    var curToken = new String;
+                    this.tokens = "L_BRACE";
+                    this.tokenRegEx = "{";
+                    //this.tokens.push(curToken);
+                    console.log("tokens: " + tokens);
+                    console.log("curToken: " + curToken);
+                    console.log("LineNum: " + this.lineNum);
+                    this.lexOutput = {
+                        "token": this.tokens,
+                        "tokenRegEx": this.tokenRegEx,
+                        "lineNum": this.lineNum,
+                        "columnNum": this.columnNum
+                    };
+                    console.log("lexOutput: " + this.lexOutput);
+                    return this.lexOutput;
                 }
-                return sourceCode;
             }
         };
         return Lexer;
