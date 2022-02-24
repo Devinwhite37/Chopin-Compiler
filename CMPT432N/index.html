@@ -58,10 +58,7 @@
 	        // Grab the tokens from the lexer . . .
 			//tokens = _Lexer.lex();
 			tokens = lexer.lex();
-			console.log("HTML tokens: " + tokens[0]);
-			//console.log(tokens + " tokens");
-			//console.log(tokenIndex);
-			//putMessage("Lexer - ");
+			console.log("HTML tokens: " + tokens);
 	        // . . . and parse!
 	        lexOutput();
 	    }
@@ -72,15 +69,11 @@
 		
 		function lexOutput(){
 
-			//lexAnalysis = lexer.lex();
-			//var lexAnalysis;
-			if (tokens == ''){
+			if (tokens== undefined){
 				putMessage("Well that's random. Try compiling some code next time.");
 			}
 			else{
-				//console.log(tokens);
 				putMessage("Compilation Started");
-				//console.log("Lexanalysis" + lexAnalysis);
 				putMessage("LEXICAL ANALYSIS:");
 				putMessage("Lexing Program 1");
 				/*for(var i=0; i<tokens.length; i++){
@@ -88,12 +81,7 @@
 				}*/
 				putMessage("LEXER -> | " + tokens["token"] + "  [ " + tokens["tokenRegEx"] + " ]  on line " + tokens["lineNum"] + " and column " + tokens["columnNum"]);
 
-
-
-				//putMessage("LEXER - " + lineNum);
-
-				//console.log(lineNum)
-				putMessage("Lexical analysis comlete with ");
+				putMessage("Lexical analysis comlete with errors and warnings.");
 			}
 		}
 
