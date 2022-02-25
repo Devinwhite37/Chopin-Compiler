@@ -69,26 +69,22 @@
 		
 		function lexOutput(){
 
-			if (tokens== undefined){
+			if (tokens == undefined){
 				putMessage("Well that's random. Try compiling some code next time.");
 			}
 			else{
 				putMessage("Compilation Started");
 				putMessage("LEXICAL ANALYSIS:");
 				putMessage("Lexing Program 1");
+				//console.log(tokens[1].token);
 				/*for(var i=0; i<tokens.length; i++){
-					putMessage("LEXER -> | [" + tokens["token"] + "] on line " + tokens["lineNum"] + "and column " + tokens["columnNum"]);
+					putMessage("LEXER -> | [" + tokens.token + "] on line " + tokens["lineNum"] + "and column " + tokens["columnNum"]);
 				}*/
-				putMessage("LEXER -> | " + tokens["token"] + "  [ " + tokens["tokenRegEx"] + " ]  on line " + tokens["lineNum"] + " and column " + tokens["columnNum"]);
+				putMessage("LEXER -> | " + tokens.token + "  [ " + tokens.tokenRegEx + " ]  on line " + tokens.lineNum + ":" + tokens.columnNum);
 
 				putMessage("Lexical analysis comlete with errors and warnings.");
 			}
-		}
-
-		function lexlog(){
-
-		}
-    
+		}    
     
 	 	 // TODO: These parse routines really should be in TypeScript.
 		 //       This exercise is left to the student. Consider it project 0.5 .
