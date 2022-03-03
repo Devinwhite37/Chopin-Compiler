@@ -5,13 +5,17 @@ module TSC
 	export class Lexer {
 		tokens = "";
 		tokenRegEx = "";
-		lineNum = 1;
+		lineNum = 0;
 		columnNum = 1;
-		lexOutput ={};
+		//lexOutput = {};
 		currentIndex = 2;
+		lexOutput: any[][] = [];
+		subStringStartIndex = 0;
+		subStringEndIndex = 1;
 		constructor(){}
 
         public lex(){
+
 		
 		        // Grab the "raw" source code.
 				var sourceCode = (<HTMLInputElement>document.getElementById("taSourceCode")).value;
@@ -47,9 +51,41 @@ module TSC
 				const BEGIN_COMMENT = new RegExp('\\/*$');
 				const END_COMMENT = new RegExp('\\*/$');
 
+				//for(let i = 0; i < 2; i++){
+					/*if(L_BRACE.test(sourceCode.substring(0,1))){
+						console.log("L ran");
+						this.tokens = "L_BRACE";
+						this.tokenRegEx = "{";
+						this.lexOutput.push(
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						);
+						console.log(sourceCode.length);
+						return this.lexOutput;
 
-				//while(this.currentIndex > sourceCode.length){
-				if(L_BRACE.test(sourceCode)){
+						
+					}
+					else if(R_BRACE.test(sourceCode.substring(0,2))){
+						console.log("R ran");
+						this.tokens = "R_BRACE";
+						this.tokenRegEx = "}";
+						this.lexOutput.push(
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						);
+						console.log(sourceCode.length);
+						return this.lexOutput;
+
+					}
+
+				}*/
+
+
+				/********if(L_BRACE.test(sourceCode)){
 					this.tokens = "L_BRACE";
 					this.tokenRegEx = "{";
 					this.lexOutput = {
@@ -58,7 +94,11 @@ module TSC
 						"lineNum": this.lineNum,
 						"columnNum": this.columnNum
 					};
+
+					console.log(sourceCode.length);
+					console.log("lineNum before increment: "+this.lineNum);
 					this.lineNum ++;
+					console.log("lineNUme after increment: " +this.lineNum);
 					this.columnNum ++;
 					return this.lexOutput;
 				}
@@ -71,31 +111,64 @@ module TSC
 						"lineNum": this.lineNum,
 						"columnNum": this.columnNum
 					};
-					return this.lexOutput;
 				}
+				return this.lexOutput;**/
+
+			
 				
-				else if(L_PAREN.test(sourceCode)){
-					this.tokens = "L_PAREN";
-					this.tokenRegEx = "(";
-					this.lexOutput = {
-						"token": this.tokens,
-						"tokenRegEx": this.tokenRegEx,
-						"lineNum": this.lineNum,
-						"columnNum": this.columnNum
-					};
-					return this.lexOutput;
+				for(let i = 0; i < sourceCode.length; i++){
+					if(L_BRACE.test(sourceCode.substring(0,4))){
+						this.tokens = "L_BRACE";
+						this.tokenRegEx = "{";
+						this.lexOutput.push([
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						]);
+						this.lineNum++;
+					}
+
+					if(R_BRACE.test(sourceCode.substring(0,4))){
+						this.tokens = "R_BRACE";
+						this.tokenRegEx = "}";
+						this.lexOutput.push([
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						]);
+						this.lineNum++;
+					}
+
+					if(L_PAREN.test(sourceCode.substring(0,3))){
+						console.log("Lparen");
+						this.tokens = "L_PAREN";
+						this.tokenRegEx = "(";
+						this.lexOutput.push([
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						]);
+						this.lineNum++;
+					}
+
+					if(R_PAREN.test(sourceCode.substring(1,4))){
+						console.log("Rparen");
+						this.tokens = "R_PAREN";
+						this.tokenRegEx = ")";
+						this.lexOutput.push([
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						]);
+						this.lineNum++;
 				}
-				else if(R_PAREN.test(sourceCode)){
-					this.tokens = "R_PAREN";
-					this.tokenRegEx = ")";
-					this.lexOutput = {
-						"token": this.tokens,
-						"tokenRegEx": this.tokenRegEx,
-						"lineNum": this.lineNum,
-						"columnNum": this.columnNum
-					};
-					return this.lexOutput;
-				}
+				return this.lexOutput;
+			}
+				/*
 				else if(PRINT.test(sourceCode)){
 					this.tokens = "PRINT";
 					this.tokenRegEx = "print";
@@ -196,7 +269,7 @@ module TSC
 						"columnNum": this.columnNum
 					};
 					return this.lexOutput;
-				}*/
+				}
 				else if(DIGIT.test(sourceCode)){
 					this.tokens = "DIGIT";
 					this.tokenRegEx = sourceCode;
@@ -262,29 +335,7 @@ module TSC
 						"columnNum": this.columnNum
 					};
 					return this.lexOutput;
-				}
-				/*else if(EOP.test(sourceCode)){
-					this.tokens = "EOP";
-					this.tokenRegEx = "$";
-					this.lexOutput = {
-						"token": this.tokens,
-						"tokenRegEx": this.tokenRegEx,
-						"lineNum": this.lineNum,
-						"columnNum": this.columnNum
-					};
-					return this.lexOutput;
-				}
-				else if(EOP.test(sourceCode)){
-					this.tokens = "EOP";
-					this.tokenRegEx = "$";
-					this.lexOutput = {
-						"token": this.tokens,
-						"tokenRegEx": this.tokenRegEx,
-						"lineNum": this.lineNum,
-						"columnNum": this.columnNum
-					};
-					return this.lexOutput;
-				}*/
+				}				
 				else if(ASSIGN.test(sourceCode)){
 					this.tokens = "ASSIGN";
 					this.tokenRegEx = "=";
@@ -317,7 +368,7 @@ module TSC
 						"columnNum": this.columnNum
 					};
 					return this.lexOutput;
-				}
+				}*/
 			//}
 		}
 	}

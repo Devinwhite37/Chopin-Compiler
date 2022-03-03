@@ -5,10 +5,11 @@ var TSC;
         function Lexer() {
             this.tokens = "";
             this.tokenRegEx = "";
-            this.lineNum = 1;
+            this.lineNum = 0;
             this.columnNum = 1;
-            this.lexOutput = {};
+            //lexOutput = {};
             this.currentIndex = 2;
+            this.lexOutput = [];
         }
         Lexer.prototype.lex = function () {
             // Grab the "raw" source code.
@@ -42,8 +43,39 @@ var TSC;
             var BOOL_NOTEQUAL = new RegExp('!=$');
             var BEGIN_COMMENT = new RegExp('\\/*$');
             var END_COMMENT = new RegExp('\\*/$');
-            //while(this.currentIndex > sourceCode.length){
-            if (L_BRACE.test(sourceCode)) {
+            //for(let i = 0; i < 2; i++){
+            /*if(L_BRACE.test(sourceCode.substring(0,1))){
+                console.log("L ran");
+                this.tokens = "L_BRACE";
+                this.tokenRegEx = "{";
+                this.lexOutput.push(
+                    [this.tokens],
+                    [this.tokenRegEx],
+                    [this.lineNum],
+                    [this.columnNum]
+                );
+                console.log(sourceCode.length);
+                return this.lexOutput;
+
+                
+            }
+            else if(R_BRACE.test(sourceCode.substring(0,2))){
+                console.log("R ran");
+                this.tokens = "R_BRACE";
+                this.tokenRegEx = "}";
+                this.lexOutput.push(
+                    [this.tokens],
+                    [this.tokenRegEx],
+                    [this.lineNum],
+                    [this.columnNum]
+                );
+                console.log(sourceCode.length);
+                return this.lexOutput;
+
+            }
+
+        }*/
+            /********if(L_BRACE.test(sourceCode)){
                 this.tokens = "L_BRACE";
                 this.tokenRegEx = "{";
                 this.lexOutput = {
@@ -52,11 +84,15 @@ var TSC;
                     "lineNum": this.lineNum,
                     "columnNum": this.columnNum
                 };
-                this.lineNum++;
-                this.columnNum++;
+
+                console.log(sourceCode.length);
+                console.log("lineNum before increment: "+this.lineNum);
+                this.lineNum ++;
+                console.log("lineNUme after increment: " +this.lineNum);
+                this.columnNum ++;
                 return this.lexOutput;
             }
-            else if (R_BRACE.test(sourceCode)) {
+            else if(R_BRACE.test(sourceCode)){
                 this.tokens = "R_BRACE";
                 this.tokenRegEx = "}";
                 this.lexOutput = {
@@ -65,31 +101,59 @@ var TSC;
                     "lineNum": this.lineNum,
                     "columnNum": this.columnNum
                 };
+            }
+            return this.lexOutput;**/
+            for (var i = 0; i < sourceCode.length; i++) {
+                if (L_BRACE.test(sourceCode.substring(0, 4))) {
+                    this.tokens = "L_BRACE";
+                    this.tokenRegEx = "{";
+                    this.lexOutput.push([
+                        [this.tokens],
+                        [this.tokenRegEx],
+                        [this.lineNum],
+                        [this.columnNum]
+                    ]);
+                    this.lineNum++;
+                }
+                if (R_BRACE.test(sourceCode.substring(0, 4))) {
+                    this.tokens = "R_BRACE";
+                    this.tokenRegEx = "}";
+                    this.lexOutput.push([
+                        [this.tokens],
+                        [this.tokenRegEx],
+                        [this.lineNum],
+                        [this.columnNum]
+                    ]);
+                    this.lineNum++;
+                }
+                if (L_PAREN.test(sourceCode.substring(0, 3))) {
+                    console.log("Lparen");
+                    this.tokens = "L_PAREN";
+                    this.tokenRegEx = "(";
+                    this.lexOutput.push([
+                        [this.tokens],
+                        [this.tokenRegEx],
+                        [this.lineNum],
+                        [this.columnNum]
+                    ]);
+                    this.lineNum++;
+                }
+                if (R_PAREN.test(sourceCode.substring(1, 4))) {
+                    console.log("Rparen");
+                    this.tokens = "R_PAREN";
+                    this.tokenRegEx = ")";
+                    this.lexOutput.push([
+                        [this.tokens],
+                        [this.tokenRegEx],
+                        [this.lineNum],
+                        [this.columnNum]
+                    ]);
+                    this.lineNum++;
+                }
                 return this.lexOutput;
             }
-            else if (L_PAREN.test(sourceCode)) {
-                this.tokens = "L_PAREN";
-                this.tokenRegEx = "(";
-                this.lexOutput = {
-                    "token": this.tokens,
-                    "tokenRegEx": this.tokenRegEx,
-                    "lineNum": this.lineNum,
-                    "columnNum": this.columnNum
-                };
-                return this.lexOutput;
-            }
-            else if (R_PAREN.test(sourceCode)) {
-                this.tokens = "R_PAREN";
-                this.tokenRegEx = ")";
-                this.lexOutput = {
-                    "token": this.tokens,
-                    "tokenRegEx": this.tokenRegEx,
-                    "lineNum": this.lineNum,
-                    "columnNum": this.columnNum
-                };
-                return this.lexOutput;
-            }
-            else if (PRINT.test(sourceCode)) {
+            /*
+            else if(PRINT.test(sourceCode)){
                 this.tokens = "PRINT";
                 this.tokenRegEx = "print";
                 this.lexOutput = {
@@ -100,7 +164,7 @@ var TSC;
                 };
                 return this.lexOutput;
             }
-            else if (WHILE.test(sourceCode)) {
+            else if(WHILE.test(sourceCode)){
                 this.tokens = "WHILE";
                 this.tokenRegEx = "while";
                 this.lexOutput = {
@@ -111,7 +175,7 @@ var TSC;
                 };
                 return this.lexOutput;
             }
-            else if (IF.test(sourceCode)) {
+            else if(IF.test(sourceCode)){
                 this.tokens = "IF";
                 this.tokenRegEx = "if";
                 this.lexOutput = {
@@ -122,7 +186,7 @@ var TSC;
                 };
                 return this.lexOutput;
             }
-            else if (INT_TYPE.test(sourceCode)) {
+            else if(INT_TYPE.test(sourceCode)){
                 this.tokens = "INT_TYPE";
                 this.tokenRegEx = "int";
                 this.lexOutput = {
@@ -133,7 +197,7 @@ var TSC;
                 };
                 return this.lexOutput;
             }
-            else if (BOOL_TYPE.test(sourceCode)) {
+            else if(BOOL_TYPE.test(sourceCode)){
                 this.tokens = "BOOL_TYPE";
                 this.tokenRegEx = "boolean";
                 this.lexOutput = {
@@ -144,7 +208,7 @@ var TSC;
                 };
                 return this.lexOutput;
             }
-            else if (STRING_TYPE.test(sourceCode)) {
+            else if(STRING_TYPE.test(sourceCode)){
                 this.tokens = "STRING_TYPE";
                 this.tokenRegEx = "string";
                 this.lexOutput = {
@@ -155,7 +219,7 @@ var TSC;
                 };
                 return this.lexOutput;
             }
-            else if (DOULBE_QUOTE.test(sourceCode)) {
+            else if(DOULBE_QUOTE.test(sourceCode)){
                 this.tokens = "DOULBE_QUOTE";
                 this.tokenRegEx = '"';
                 this.lexOutput = {
@@ -166,7 +230,9 @@ var TSC;
                 };
                 return this.lexOutput;
             }
-            else if (SPACE.test(sourceCode)) {
+            
+            
+            else if(SPACE.test(sourceCode)){
                 this.tokens = "SPACE";
                 this.tokenRegEx = " ";
                 this.lexOutput = {
@@ -187,8 +253,8 @@ var TSC;
                     "columnNum": this.columnNum
                 };
                 return this.lexOutput;
-            }*/
-            else if (DIGIT.test(sourceCode)) {
+            }
+            else if(DIGIT.test(sourceCode)){
                 this.tokens = "DIGIT";
                 this.tokenRegEx = sourceCode;
                 this.lexOutput = {
@@ -199,7 +265,7 @@ var TSC;
                 };
                 return this.lexOutput;
             }
-            else if (ADDITION_OP.test(sourceCode)) {
+            else if(ADDITION_OP.test(sourceCode)){
                 this.tokens = "ADDITION_OP";
                 this.tokenRegEx = "+";
                 this.lexOutput = {
@@ -210,7 +276,7 @@ var TSC;
                 };
                 return this.lexOutput;
             }
-            else if (BOOL_TRUE.test(sourceCode)) {
+            else if(BOOL_TRUE.test(sourceCode)){
                 this.tokens = "BOOL_TRUE";
                 this.tokenRegEx = "true";
                 this.lexOutput = {
@@ -221,7 +287,7 @@ var TSC;
                 };
                 return this.lexOutput;
             }
-            else if (BOOL_FALSE.test(sourceCode)) {
+            else if(BOOL_FALSE.test(sourceCode)){
                 this.tokens = "BOOL_FALSE";
                 this.tokenRegEx = "false";
                 this.lexOutput = {
@@ -232,7 +298,7 @@ var TSC;
                 };
                 return this.lexOutput;
             }
-            else if (BOOL_EQUAL.test(sourceCode)) {
+            else if(BOOL_EQUAL.test(sourceCode)){
                 this.tokens = "BOOL_EQUAL";
                 this.tokenRegEx = "==";
                 this.lexOutput = {
@@ -243,7 +309,7 @@ var TSC;
                 };
                 return this.lexOutput;
             }
-            else if (BOOL_NOTEQUAL.test(sourceCode)) {
+            else if(BOOL_NOTEQUAL.test(sourceCode)){
                 this.tokens = "BOOL_NOTEQUAL";
                 this.tokenRegEx = "!=";
                 this.lexOutput = {
@@ -254,9 +320,20 @@ var TSC;
                 };
                 return this.lexOutput;
             }
-            /*else if(EOP.test(sourceCode)){
-                this.tokens = "EOP";
-                this.tokenRegEx = "$";
+            else if(ASSIGN.test(sourceCode)){
+                this.tokens = "ASSIGN";
+                this.tokenRegEx = "=";
+                this.lexOutput = {
+                    "token": this.tokens,
+                    "tokenRegEx": this.tokenRegEx,
+                    "lineNum": this.lineNum,
+                    "columnNum": this.columnNum
+                };
+                return this.lexOutput;
+            }
+            else if(VARIABLE.test(sourceCode)){
+                this.tokens = "VARIABLE";
+                this.tokenRegEx = sourceCode;
                 this.lexOutput = {
                     "token": this.tokens,
                     "tokenRegEx": this.tokenRegEx,
@@ -276,39 +353,6 @@ var TSC;
                 };
                 return this.lexOutput;
             }*/
-            else if (ASSIGN.test(sourceCode)) {
-                this.tokens = "ASSIGN";
-                this.tokenRegEx = "=";
-                this.lexOutput = {
-                    "token": this.tokens,
-                    "tokenRegEx": this.tokenRegEx,
-                    "lineNum": this.lineNum,
-                    "columnNum": this.columnNum
-                };
-                return this.lexOutput;
-            }
-            else if (VARIABLE.test(sourceCode)) {
-                this.tokens = "VARIABLE";
-                this.tokenRegEx = sourceCode;
-                this.lexOutput = {
-                    "token": this.tokens,
-                    "tokenRegEx": this.tokenRegEx,
-                    "lineNum": this.lineNum,
-                    "columnNum": this.columnNum
-                };
-                return this.lexOutput;
-            }
-            else if (EOP.test(sourceCode)) {
-                this.tokens = "EOP";
-                this.tokenRegEx = "$";
-                this.lexOutput = {
-                    "token": this.tokens,
-                    "tokenRegEx": this.tokenRegEx,
-                    "lineNum": this.lineNum,
-                    "columnNum": this.columnNum
-                };
-                return this.lexOutput;
-            }
             //}
         };
         return Lexer;

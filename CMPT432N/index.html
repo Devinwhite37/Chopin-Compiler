@@ -76,12 +76,18 @@
 				putMessage("Compilation Started");
 				putMessage("LEXICAL ANALYSIS:");
 				putMessage("Lexing Program 1");
-				//console.log(tokens[1].token);
-				/*for(var i=0; i<tokens.length; i++){
-					putMessage("LEXER -> | [" + tokens.token + "] on line " + tokens["lineNum"] + "and column " + tokens["columnNum"]);
-				}*/
-				putMessage("LEXER -> | " + tokens.token + "  [ " + tokens.tokenRegEx + " ]  on line " + tokens.lineNum + ":" + tokens.columnNum);
+				//console.log("tokens.token[0]: " + tokens[0][1]);
+				console.log("tokens.token[1]: " + tokens[0][1]);
+				console.log("Tokens.length:" + tokens.length);
+				//console.log("tokens.length: " + tokens.tokenRegEx.length);
 
+				for(var i=0; i < tokens.length; i++){
+				putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + ":" + tokens[i][3]);
+			}
+
+				//putMessage("LEXER -> | " + tokens.token + "  [ " + tokens.tokenRegEx + " ]  on line " + tokens.lineNum + ":" + tokens.columnNum);
+
+				//console.log(tokens.token[0]);
 				putMessage("Lexical analysis comlete with errors and warnings.");
 			}
 		}    
