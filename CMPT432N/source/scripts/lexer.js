@@ -25,14 +25,14 @@ var TSC;
             var R_BRACE = new RegExp('}');
             var L_PAREN = new RegExp('\\(');
             var R_PAREN = new RegExp('\\)');
-            var PRINT = new RegExp('print');
+            var PRINT = new RegExp('print$');
             var WHILE = new RegExp('while');
             var IF = new RegExp('if');
             var INT_TYPE = new RegExp('int');
             var BOOL_TYPE = new RegExp('boolean');
             var STRING_TYPE = new RegExp('string');
             var DOUBLE_QUOTE = new RegExp('"');
-            var BOOL_EQUAL = new RegExp('==');
+            var BOOL_EQUAL = new RegExp('\=\=');
             var VARIABLE = new RegExp('[a-z]');
             var ASSIGN = new RegExp('=');
             var SPACE = new RegExp(' ');
@@ -41,13 +41,13 @@ var TSC;
             var ADDITION_OP = new RegExp('\\+');
             var BOOL_TRUE = new RegExp('true');
             var BOOL_FALSE = new RegExp('false');
-            var BOOL_NOTEQUAL = new RegExp('!=');
+            var BOOL_NOTEQUAL = new RegExp('\\!\=');
             var BEGIN_COMMENT = new RegExp('\\/*');
             var END_COMMENT = new RegExp('\\*/');
             //const PROGRAM_END = new RegExp(";");
-            var EOP = new RegExp('$');
+            var EOP = new RegExp('\\$');
             while (1 == 1) {
-                while (this.subStringEndIndex <= sourceCode.length) {
+                while (sourceCode.length >= this.subStringEndIndex) {
                     //for(let i = 0; i < sourceCode.length; i++){
                     console.log("WHILE RAN");
                     console.log("sourceCode.length: " + sourceCode.length);
@@ -75,7 +75,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
@@ -88,7 +87,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
@@ -101,7 +99,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
@@ -114,7 +111,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
@@ -129,7 +125,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 2;
                         this.lineNum += 2;
                         console.log("Start Index: " + this.subStringStartIndex);
@@ -146,7 +141,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 5;
                         this.lineNum += 5;
                         console.log("Start Index: " + this.subStringStartIndex);
@@ -163,7 +157,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 5;
                         this.lineNum += 5;
                         console.log("Start Index: " + this.subStringStartIndex);
@@ -178,7 +171,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 3;
                         this.lineNum += 3;
                     }
@@ -191,7 +183,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 7;
                         this.lineNum += 7;
                     }
@@ -204,7 +195,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 6;
                         this.lineNum += 6;
                     }
@@ -217,7 +207,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        //this.subStringEndIndex++;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
@@ -230,7 +219,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 2;
                         this.lineNum += 2;
                     }
@@ -243,7 +231,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        //this.subStringEndIndex++;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
@@ -256,7 +243,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        //this.subStringEndIndex++;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
@@ -269,7 +255,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 4;
                         this.lineNum += 4;
                     }
@@ -282,7 +267,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 5;
                         this.lineNum += 5;
                     }
@@ -295,7 +279,6 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        ///this.subStringEndIndex++;
                         this.subStringStartIndex += 2;
                         this.lineNum += 2;
                     }
@@ -308,8 +291,10 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.lineNum = 0;
-                        this.columnNum = 0;
+                        this.subStringStartIndex++;
+                        this.lineNum++;
+                        //this.lineNum = 0;
+                        //this.columnNum = 0;
                     }
                     this.subStringEndIndex++;
                 }

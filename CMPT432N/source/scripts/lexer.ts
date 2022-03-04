@@ -30,14 +30,14 @@ module TSC
 				const R_BRACE = new RegExp('}');
 				const L_PAREN = new RegExp('\\(');
 				const R_PAREN = new RegExp('\\)');
-				const PRINT = new RegExp('print');
+				const PRINT = new RegExp('print$');
 				const WHILE = new RegExp('while');
 				const IF = new RegExp('if');
 				const INT_TYPE = new RegExp('int');
 				const BOOL_TYPE = new RegExp('boolean');
 				const STRING_TYPE = new RegExp('string');
 				const DOUBLE_QUOTE = new RegExp('"');
-				const BOOL_EQUAL = new RegExp('==');
+				const BOOL_EQUAL = new RegExp('\=\=');
 				const VARIABLE = new RegExp('[a-z]');
 				const ASSIGN = new RegExp('=');
                 const SPACE = new RegExp(' ');
@@ -46,20 +46,20 @@ module TSC
 				const ADDITION_OP = new RegExp('\\+');
 				const BOOL_TRUE = new RegExp('true');
 				const BOOL_FALSE = new RegExp('false');
-				const BOOL_NOTEQUAL = new RegExp('!=');
+				const BOOL_NOTEQUAL = new RegExp('\\!\=');
 				const BEGIN_COMMENT = new RegExp('\\/*');
 				const END_COMMENT = new RegExp('\\*/');
 				//const PROGRAM_END = new RegExp(";");
-				const EOP = new RegExp('$');
+				const EOP = new RegExp('\\$');
 			
 				while(1==1){
-					while(this.subStringEndIndex <= sourceCode.length){
+					while(sourceCode.length >=this.subStringEndIndex){
 				//for(let i = 0; i < sourceCode.length; i++){
 					console.log("WHILE RAN");
 					console.log("sourceCode.length: "+ sourceCode.length);
 					console.log("this.subStringEndIndex: "+ this.subStringEndIndex);
 					console.log(sourceCode.length >= this.subStringEndIndex);
-
+					
 					if(NEW_LINE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						console.log("Start Index: "+ this.subStringStartIndex);
 						console.log("End Index: "+this.subStringEndIndex);
@@ -67,6 +67,9 @@ module TSC
 						this.subStringStartIndex++;
 						this.columnNum++;
 						this.lineNum = 0;
+					}
+					else if(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex)){
+						if()
 					}
 					else if(SPACE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.subStringEndIndex++;
@@ -82,7 +85,6 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						this.subStringEndIndex++;
 						this.subStringStartIndex++;
 						this.lineNum++;
 						}
@@ -95,7 +97,6 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						this.subStringEndIndex++;
 						this.subStringStartIndex++;
 						this.lineNum++;
 						}
@@ -109,7 +110,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						this.subStringEndIndex++;
+			
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
@@ -123,7 +124,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						this.subStringEndIndex++;
+			
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
@@ -138,7 +139,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						//this.subStringEndIndex++;
+					
 						this.subStringStartIndex+=2;
 						this.lineNum+=2;
 						console.log("Start Index: "+ this.subStringStartIndex);
@@ -155,7 +156,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						//this.subStringEndIndex++;
+					
 						this.subStringStartIndex+=5;
 						this.lineNum+=5;
 						console.log("Start Index: "+ this.subStringStartIndex);
@@ -172,7 +173,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						//this.subStringEndIndex++;
+					
 						this.subStringStartIndex+=5;
 						this.lineNum+=5;
 						console.log("Start Index: "+ this.subStringStartIndex);
@@ -189,7 +190,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						//this.subStringEndIndex++;
+					
 						this.subStringStartIndex+=3;
 						this.lineNum+=3;
 					}
@@ -202,7 +203,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						//this.subStringEndIndex++;
+					
 						this.subStringStartIndex+=7;
 						this.lineNum+=7;
 					}
@@ -215,7 +216,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						//this.subStringEndIndex++;
+					
 						this.subStringStartIndex+=6;
 						this.lineNum+=6;
 					}
@@ -228,7 +229,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						//this.subStringEndIndex++;
+					
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
@@ -241,7 +242,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						//this.subStringEndIndex++;
+					
 						this.subStringStartIndex+=2;
 						this.lineNum+=2;
 					}
@@ -254,7 +255,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						//this.subStringEndIndex++;
+					
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
@@ -267,7 +268,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						//this.subStringEndIndex++;
+					
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
@@ -280,7 +281,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						//this.subStringEndIndex++;
+					
 						this.subStringStartIndex+=4;
 						this.lineNum+=4;
 					}
@@ -293,7 +294,7 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						//this.subStringEndIndex++;
+					
 						this.subStringStartIndex+=5;
 						this.lineNum+=5;
 					}
@@ -306,7 +307,6 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						///this.subStringEndIndex++;
 						this.subStringStartIndex+=2;
 						this.lineNum+=2;
 					}
@@ -319,9 +319,12 @@ module TSC
 							[this.lineNum],
 							[this.columnNum]
 						]);
-						this.lineNum = 0;
-						this.columnNum = 0;
+						this.subStringStartIndex++;
+						this.lineNum++;
+						//this.lineNum = 0;
+						//this.columnNum = 0;
 					}
+					
 					
 				this.subStringEndIndex++;
 				}
