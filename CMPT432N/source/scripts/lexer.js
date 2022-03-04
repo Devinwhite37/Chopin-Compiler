@@ -44,12 +44,15 @@ var TSC;
             var BOOL_NOTEQUAL = new RegExp('!=');
             var BEGIN_COMMENT = new RegExp('\\/*');
             var END_COMMENT = new RegExp('\\*/');
+            //const PROGRAM_END = new RegExp(";");
             var EOP = new RegExp('$');
-            /*for(let j = 0; j < 2; j++){
-                console.log("j: " + j);
-            }*/
             while (1 == 1) {
-                for (var i = 0; i < sourceCode.length; i++) {
+                while (this.subStringEndIndex <= sourceCode.length) {
+                    //for(let i = 0; i < sourceCode.length; i++){
+                    console.log("WHILE RAN");
+                    console.log("sourceCode.length: " + sourceCode.length);
+                    console.log("this.subStringEndIndex: " + this.subStringEndIndex);
+                    console.log(sourceCode.length >= this.subStringEndIndex);
                     if (NEW_LINE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         console.log("Start Index: " + this.subStringStartIndex);
                         console.log("End Index: " + this.subStringEndIndex);
@@ -115,7 +118,24 @@ var TSC;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
-                    else if (PRINT.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex += 4))) {
+                    else if (IF.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
+                        console.log("Start Index: " + this.subStringStartIndex);
+                        console.log("End Index: " + this.subStringEndIndex);
+                        this.tokens = "IF";
+                        this.tokenRegEx = "if";
+                        this.lexOutput.push([
+                            [this.tokens],
+                            [this.tokenRegEx],
+                            [this.lineNum],
+                            [this.columnNum]
+                        ]);
+                        //this.subStringEndIndex++;
+                        this.subStringStartIndex += 2;
+                        this.lineNum += 2;
+                        console.log("Start Index: " + this.subStringStartIndex);
+                        console.log("End Index: " + this.subStringEndIndex);
+                    }
+                    else if (PRINT.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         console.log("Start Index: " + this.subStringStartIndex);
                         console.log("End Index: " + this.subStringEndIndex);
                         this.tokens = "PRINT";
@@ -126,7 +146,7 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
+                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 5;
                         this.lineNum += 5;
                         console.log("Start Index: " + this.subStringStartIndex);
@@ -143,30 +163,13 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
+                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 5;
                         this.lineNum += 5;
                         console.log("Start Index: " + this.subStringStartIndex);
                         console.log("End Index: " + this.subStringEndIndex);
                     }
-                    else if (IF.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex++))) {
-                        console.log("Start Index: " + this.subStringStartIndex);
-                        console.log("End Index: " + this.subStringEndIndex);
-                        this.tokens = "IF";
-                        this.tokenRegEx = "if";
-                        this.lexOutput.push([
-                            [this.tokens],
-                            [this.tokenRegEx],
-                            [this.lineNum],
-                            [this.columnNum]
-                        ]);
-                        this.subStringEndIndex++;
-                        this.subStringStartIndex += 2;
-                        this.lineNum += 2;
-                        console.log("Start Index: " + this.subStringStartIndex);
-                        console.log("End Index: " + this.subStringEndIndex);
-                    }
-                    else if (INT_TYPE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex += 3))) {
+                    else if (INT_TYPE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "INT_TYPE";
                         this.tokenRegEx = "int";
                         this.lexOutput.push([
@@ -175,11 +178,11 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
+                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 3;
                         this.lineNum += 3;
                     }
-                    else if (BOOL_TYPE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex += 7))) {
+                    else if (BOOL_TYPE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "BOOL_TYPE";
                         this.tokenRegEx = "boolean";
                         this.lexOutput.push([
@@ -188,11 +191,11 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
+                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 7;
                         this.lineNum += 7;
                     }
-                    else if (STRING_TYPE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex += 6))) {
+                    else if (STRING_TYPE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "STRING_TYPE";
                         this.tokenRegEx = "string";
                         this.lexOutput.push([
@@ -201,7 +204,7 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
+                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 6;
                         this.lineNum += 6;
                     }
@@ -214,11 +217,11 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
+                        //this.subStringEndIndex++;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
-                    else if (BOOL_EQUAL.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex += 2))) {
+                    else if (BOOL_EQUAL.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "BOOL_EQUAL";
                         this.tokenRegEx = "==";
                         this.lexOutput.push([
@@ -227,7 +230,7 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
+                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 2;
                         this.lineNum += 2;
                     }
@@ -240,7 +243,7 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
+                        //this.subStringEndIndex++;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
@@ -253,11 +256,11 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
+                        //this.subStringEndIndex++;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
-                    else if (BOOL_TRUE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex += 4))) {
+                    else if (BOOL_TRUE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "BOOL_TRUE";
                         this.tokenRegEx = "true";
                         this.lexOutput.push([
@@ -266,11 +269,11 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
+                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 4;
                         this.lineNum += 4;
                     }
-                    else if (BOOL_FALSE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex += 5))) {
+                    else if (BOOL_FALSE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "BOOL_FALSE";
                         this.tokenRegEx = "false";
                         this.lexOutput.push([
@@ -279,11 +282,11 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
+                        //this.subStringEndIndex++;
                         this.subStringStartIndex += 5;
                         this.lineNum += 5;
                     }
-                    else if (BOOL_NOTEQUAL.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex += 2))) {
+                    else if (BOOL_NOTEQUAL.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "BOOL_NOTEQUAL";
                         this.tokenRegEx = "!=";
                         this.lexOutput.push([
@@ -292,7 +295,7 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
-                        this.subStringEndIndex++;
+                        ///this.subStringEndIndex++;
                         this.subStringStartIndex += 2;
                         this.lineNum += 2;
                     }
@@ -305,7 +308,10 @@ var TSC;
                             [this.lineNum],
                             [this.columnNum]
                         ]);
+                        this.lineNum = 0;
+                        this.columnNum = 0;
                     }
+                    this.subStringEndIndex++;
                 }
                 return this.lexOutput;
             }
