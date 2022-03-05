@@ -17,8 +17,8 @@
 
     <div>
         <div class="source">
-            <textarea id="taSourceCode"></textarea>
-            <textarea id="taOutput"></textarea>
+            <textarea style="font-family:Courier New;" id="taSourceCode"></textarea>
+            <textarea style="font-family:Courier New;" id="taOutput"></textarea>
         </div>        
     </div>
 
@@ -58,6 +58,7 @@
 	        // Grab the tokens from the lexer . . .
 			//tokens = _Lexer.lex();
 			tokens = lexer.lex();
+			programNum = 1;
 			console.log("HTML tokens: ");
 			console.log(tokens);
 	        // . . . and parse!
@@ -69,33 +70,47 @@
 		}
 		
 		function lexOutput(){
-
+			var errors = 0;
+			var warnings = 0;
+			//while(programNum < 2){
 			if (tokens == ""){
 				putMessage("Well that's random. Try compiling some code next time.");
 			}
 			else{
-				console.log(tokens[0][4]);
 				putMessage("Compilation Started");
 				putMessage("LEXICAL ANALYSIS:");
-				putMessage("Lexing Program 1");
-			
-				for(var i=0; i < tokens.length; i++){
+				putMessage("Lexing Program "+ programNum);
+				for(var i = 0; i < tokens.length; i++){
 					if(tokens[i][0] == 'INVALID_CHAR'){
+						errors++;
 						putMessage("LEXER -> | ERROR: Invalid Token [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + " column " + tokens[i][3]);
+						putMessage("Lexical Analysis stopped due to error.")
 						break;
 					}
+					else if(tokens[i][0] == 'missingCommentEnd'){
+						error++;
+						putMessage("LEXER -> | WARNING: Missing Comment End");
+						break;
+					}
+					else if(tokens[i][0] == 'missingEOP'){
+						warnings++;
+						putMessage("LEXER -> | WARNING: Missing EOP");
+					}
+					else if(tokens[i][0] == 'EOP'){
+						programNum++;
+						console.log(programNum)
+						putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + " column " + tokens[i][3]);
+						//lexOutput();
+					}
 					else{
-				putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + " column " + tokens[i][3]);
+						putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + " column " + tokens[i][3]);
 					}
 			}
-
-				//putMessage("LEXER -> | " + tokens.token + "  [ " + tokens.tokenRegEx + " ]  on line " + tokens.lineNum + ":" + tokens.columnNum);
-
-				//console.log(tokens.token[0]);
-				putMessage("Lexical analysis comlete with errors and warnings.");
+				putMessage("---------------------------")
+				putMessage("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).");
 			}
-		}    
-    
+		//}    
+	}
 	 	 // TODO: These parse routines really should be in TypeScript.
 		 //       This exercise is left to the student. Consider it project 0.5 .
 	    /*function parse() {
