@@ -88,8 +88,8 @@
 						break;
 					}
 					else if(tokens[i][0] == 'missingCommentEnd'){
-						error++;
-						putMessage("LEXER -> | WARNING: Missing Comment End");
+						errors++;
+						putMessage("LEXER -> | ERROR: Missing Comment End");
 						break;
 					}
 					else if(tokens[i][0] == 'missingEOP'){

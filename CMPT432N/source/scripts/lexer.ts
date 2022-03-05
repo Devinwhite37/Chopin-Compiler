@@ -1,101 +1,91 @@
 /* lexer.ts  */
 
+/**
+ * lexer.ts
+ * Devin White, CMPT432N
+ * 
+ * Much inspiration taken from KaiCompiler from hall of fame projects.
+ * 
+ * lexer.ts is used to create tokens based on our given grammar, as 
+ * well as to keep track of the line and column location for each token
+ * 
+ */
 module TSC
 	{
 	export class Lexer {
+		//the following are defined and used to push those fields to index.html
 		tokens = "";
 		tokenRegEx = "";
 		lineNum = 0;
 		columnNum = 1;
-		currentIndex = 2;
+		//lexoutput is a matrix to hold all of the tokens
 		lexOutput: any[][] = [];
+		//end and start index are used to search specific locations 
 		subStringStartIndex = 0;
 		subStringEndIndex = 1;
+		//tells wheater or not EOP marker is found
 		eopFound: boolean = false;
 		programNum = 1;
+		//tells wheater on not we are in a comment
 		commented: boolean = false;
 		constructor(){}
 
         public lex(){
 
-		
 		        // Grab the "raw" source code.
 				var sourceCode = (<HTMLInputElement>document.getElementById("taSourceCode")).value;
-				//console.log(sourceCode+" sourcecode");
 		        // Trim the leading and trailing spaces.
 				sourceCode = TSC.Utils.trim(sourceCode);
 
-				//var lineNum = sourceCode.split("\n");
-
-				// Declare Regular Expressions based on our grammar.
+				// Declare Regular Expressions for single characters in our grammar.
+				// Multiple character tokens are taken care of using character matching if statments
 				const L_BRACE = new RegExp('{');
 				const R_BRACE = new RegExp('}');
 				const L_PAREN = new RegExp('\\(');
 				const R_PAREN = new RegExp('\\)');
-				const PRINT = new RegExp('print');
-				const WHILE = new RegExp('while');
-				const IF = new RegExp('if');
-				const INT_TYPE = new RegExp('int');
-				const BOOL_TYPE = new RegExp('boolean');
-				const STRING_TYPE = new RegExp('string');
 				const DOUBLE_QUOTE = new RegExp('"');
-				const BOOL_EQUAL = new RegExp('\=\=');
 				const VARIABLE = new RegExp('[a-z]');
 				const ASSIGN = new RegExp('=');
                 const SPACE = new RegExp(' ');
 				const NEW_LINE = new RegExp('\n');
 				const DIGIT = new RegExp('[0-9]');
 				const ADDITION_OP = new RegExp('\\+');
-				const BOOL_TRUE = new RegExp('true');
-				const BOOL_FALSE = new RegExp('false');
-				const BOOL_NOTEQUAL = new RegExp('\\!\=');
-				const BEGIN_COMMENT = new RegExp('\\/*');
-				const END_COMMENT = new RegExp('\\*/');
 				const EOP = new RegExp('\\$');
+				//includes all possible characters so comment block can increment
+				//line num for anything entered in a comment
 				const ANY_CHAR = new RegExp('.');
-				const INVALID_CHAR = new RegExp('^(?!.*([a-z]|[0-9]|{|}|\\(|\\)|=|\\+| |"|!|\\$|/|\\*|))');
+				//includes all characters except those in our grammar
+				//to return an invalid character
+				const INVALID_CHAR = new RegExp('^(?!.*([a-z]|[0-9]|{|}|\\(|\\)|=|\\+| |"|!|\\$|/|\\*))');
 			
 				while(1==1){
 					while(sourceCode.length >=this.subStringEndIndex){
 						console.log("WHILE RAN")
-				//for(let i = 0; i < sourceCode.length; i++){
-					
-					/*if(BEGIN_COMMENT.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
-						if(ANY_CHAR.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
-							this.subStringStartIndex++;
-							this.lineNum++;
-						}
-						else if(END_COMMENT.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
-							continue;
-						}
-					}*/
+
+					//ignores all text inside a comment
 					if(sourceCode.charAt(this.subStringEndIndex-1) == "/" && sourceCode.charAt(this.subStringEndIndex) == "*"){
 						console.log(this.subStringEndIndex);
 						console.log(this.subStringStartIndex);
-						this.subStringStartIndex+=2;
+						this.subStringStartIndex++;
 						this.lineNum+=2;
 						this.subStringEndIndex+=2;
 						this.commented = true;
 						while(this.commented = true){
-							console.log("while"+this.subStringEndIndex);
-							console.log("while"+ this.subStringStartIndex);
 							if(sourceCode.charAt(this.subStringEndIndex-1) == "*" && sourceCode.charAt(this.subStringEndIndex) == "/"){
-								console.log("ELSE RAN2");
+								console.log("if RAN");
 								this.subStringStartIndex+=2;
 								this.lineNum+=2;
 								this.subStringEndIndex++;
-								//this.subStringEndIndex++;
 								this.commented = false;
 								break;
 							}
 							else if(ANY_CHAR.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 								console.log("ANYCHR RAN");
-								console.log("ANY_CHAR");
 								this.subStringStartIndex++;
 								this.lineNum++;
-								//this.subStringEndIndex++;
 							}
 							else{
+								console.log("else ran")
 								this.lexOutput.push([
 									["missingCommentEnd"]
 								]);
@@ -107,21 +97,9 @@ module TSC
 						console.log(this.subStringEndIndex);
 						console.log(this.subStringStartIndex);
 						
-					}
+					}					
 
-					/*else if(sourceCode.charAt(this.subStringEndIndex-1) == "*" && sourceCode.charAt(this.subStringEndIndex) == "/"){
-						console.log("ELSE RAN1");
-						//this.subStringStartIndex+=2;
-						this.lineNum++;
-						//this.subStringEndIndex++;
-						this.commented = false;
-					}*/
-					
-
-					
-						
-					
-
+					//NEWLINE and SPACE increment linenum and column num if one is found
 					if(NEW_LINE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						console.log("Start Index: "+ this.subStringStartIndex);
 						console.log("End Index: "+this.subStringEndIndex);
@@ -129,19 +107,12 @@ module TSC
 						this.columnNum++;
 						this.lineNum = 0;
 					}
-					//ignore all characters in comment block
-					/*else if(ANY_CHAR.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
-						console.log("ANY_CHAR");
-						this.subStringStartIndex++;
-						this.lineNum++;
-						this.subStringEndIndex++;
-					}*/
-					
 					else if(SPACE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
 					
+					//The following is use to create all tokens in our grammar.
 					else if(L_BRACE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						console.log(this.subStringEndIndex);
 						console.log(this.subStringStartIndex);
@@ -198,6 +169,7 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
+					//create IF token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "i" && sourceCode.charAt(this.subStringEndIndex) == "f"){
 							this.tokens = "IF";
 							this.tokenRegEx = "if";
@@ -211,6 +183,7 @@ module TSC
 						this.lineNum+=2;
 						this.subStringEndIndex++;						
 					}
+					//create INT token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "i" && sourceCode.charAt(this.subStringEndIndex) == "n" && sourceCode.charAt(this.subStringEndIndex+1) == "t" && sourceCode.charAt(this.subStringEndIndex-3) != "p"){
 						this.tokens = "INT_TYPE";
 						this.tokenRegEx = "int";
@@ -224,6 +197,7 @@ module TSC
 						this.lineNum+=3;
 						this.subStringEndIndex+=2;						
 					}
+					//creat PRINT token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "p" && sourceCode.charAt(this.subStringEndIndex) == "r" && sourceCode.charAt(this.subStringEndIndex+1) == "i" && sourceCode.charAt(this.subStringEndIndex+2) == "n" && sourceCode.charAt(this.subStringEndIndex+3) == "t"){
 						this.tokens = "PRINT";
 						this.tokenRegEx = "print";
@@ -237,6 +211,7 @@ module TSC
 						this.lineNum+=5;
 						this.subStringEndIndex+=4;						
 					}
+					//create WHILE token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "w" && sourceCode.charAt(this.subStringEndIndex) == "h" && sourceCode.charAt(this.subStringEndIndex+1) == "i" && sourceCode.charAt(this.subStringEndIndex+2) == "l" && sourceCode.charAt(this.subStringEndIndex+3) == "e"){
 						this.tokens = "WHILE";
 						this.tokenRegEx = "while";
@@ -250,6 +225,7 @@ module TSC
 						this.lineNum+=5;
 						this.subStringEndIndex+=4;						
 					}
+					//create false token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "f" && sourceCode.charAt(this.subStringEndIndex) == "a" && sourceCode.charAt(this.subStringEndIndex+1) == "l" && sourceCode.charAt(this.subStringEndIndex+2) == "s" && sourceCode.charAt(this.subStringEndIndex+3) == "e"){
 						this.tokens = "BOOL_FALSE";
 						this.tokenRegEx = "false";
@@ -263,6 +239,7 @@ module TSC
 						this.lineNum+=5;
 						this.subStringEndIndex+=4;						
 					}
+					//create boolean token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "b" && sourceCode.charAt(this.subStringEndIndex) == "o" && sourceCode.charAt(this.subStringEndIndex+1) == "o" && sourceCode.charAt(this.subStringEndIndex+2) == "l" && sourceCode.charAt(this.subStringEndIndex+3) == "e" && sourceCode.charAt(this.subStringEndIndex+4) == "a" && sourceCode.charAt(this.subStringEndIndex+5) == "n"){
 						this.tokens = "BOOL_TYPE";
 						this.tokenRegEx = "boolean";
@@ -276,6 +253,7 @@ module TSC
 						this.lineNum+=7;
 						this.subStringEndIndex+=6;						
 					}
+					//create true token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "t" && sourceCode.charAt(this.subStringEndIndex) == "r" && sourceCode.charAt(this.subStringEndIndex+1) == "u" && sourceCode.charAt(this.subStringEndIndex+2) == "e"){
 						this.tokens = "BOOL_TRUE";
 						this.tokenRegEx = "true";
@@ -289,6 +267,7 @@ module TSC
 						this.lineNum+=4;
 						this.subStringEndIndex+=3;						
 					}
+					//create string token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "s" && sourceCode.charAt(this.subStringEndIndex) == "t" && sourceCode.charAt(this.subStringEndIndex+1) == "r" && sourceCode.charAt(this.subStringEndIndex+2) == "i" && sourceCode.charAt(this.subStringEndIndex+3) == "n" && sourceCode.charAt(this.subStringEndIndex+4) == "g"){
 						this.tokens = "STRING_TYPE";
 						this.tokenRegEx = "string";
@@ -302,6 +281,7 @@ module TSC
 						this.lineNum+=6;
 						this.subStringEndIndex+=5;						
 					}
+					//create == token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "=" && sourceCode.charAt(this.subStringEndIndex) == "="){
 						this.tokens = "BOOL_EQUAL";
 						this.tokenRegEx = "==";
@@ -354,6 +334,7 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
+					//create != token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "!" && sourceCode.charAt(this.subStringEndIndex) == "="){
 						this.tokens = "BOOL_NOTEQUAL";
 						this.tokenRegEx = "!=";
@@ -367,18 +348,6 @@ module TSC
 						this.lineNum+=2;
 						this.subStringEndIndex++;						
 					}
-					/*else if(BOOL_NOTEQUAL.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
-						this.tokens = "BOOL_NOTEQUAL";
-						this.tokenRegEx = "!=";
-						this.lexOutput.push([
-							[this.tokens],
-							[this.tokenRegEx],
-							[this.lineNum],
-							[this.columnNum]
-						]);
-						this.subStringStartIndex+=2;
-						this.lineNum+=2;
-					}*/
 					else if (DIGIT.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))) {
 						this.tokens = "DIGIT";
 						this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex-1);
@@ -391,12 +360,10 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
-					
 					else if (VARIABLE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))) {
 						console.log(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex));
 						console.log(this.subStringStartIndex);
 						console.log(this.subStringEndIndex);
-						console.log(sourceCode.charAt(this.subStringEndIndex-1));
 						this.tokens = "VARIABLE";
 						this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex-1);
 						this.lexOutput.push([
@@ -408,11 +375,11 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
+					//create a token for any invalid character and return error
 					else if(INVALID_CHAR.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						console.log(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex));
 						console.log(this.subStringStartIndex);
 						console.log(this.subStringEndIndex);
-						console.log(sourceCode.charAt(this.subStringEndIndex-1));
 						this.tokens = "INVALID_CHAR";
 						this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex-1);
 						this.lexOutput.push([
@@ -441,6 +408,7 @@ module TSC
 					}
 				this.subStringEndIndex++;
 				}
+				//if EOP was not found return a missingEOP error
 				if(sourceCode.length > 0){
 					if(this.eopFound == false){
 					this.lexOutput.push([
