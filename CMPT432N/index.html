@@ -74,14 +74,19 @@
 				putMessage("Well that's random. Try compiling some code next time.");
 			}
 			else{
+				console.log(tokens[0][4]);
 				putMessage("Compilation Started");
 				putMessage("LEXICAL ANALYSIS:");
 				putMessage("Lexing Program 1");
-				console.log("tokens.token[1]: " + tokens[0][1]);
-				console.log("Tokens.length:" + tokens.length);
-
+			
 				for(var i=0; i < tokens.length; i++){
+					if(tokens[i][0] == 'INVALID_CHAR'){
+						putMessage("LEXER -> | ERROR: Invalid Token [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + " column " + tokens[i][3]);
+						break;
+					}
+					else{
 				putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + " column " + tokens[i][3]);
+					}
 			}
 
 				//putMessage("LEXER -> | " + tokens.token + "  [ " + tokens.tokenRegEx + " ]  on line " + tokens.lineNum + ":" + tokens.columnNum);

@@ -7,7 +7,6 @@ module TSC
 		tokenRegEx = "";
 		lineNum = 0;
 		columnNum = 1;
-		//lexOutput = {};
 		currentIndex = 2;
 		lexOutput: any[][] = [];
 		subStringStartIndex = 0;
@@ -30,7 +29,7 @@ module TSC
 				const R_BRACE = new RegExp('}');
 				const L_PAREN = new RegExp('\\(');
 				const R_PAREN = new RegExp('\\)');
-				const PRINT = new RegExp('print$');
+				const PRINT = new RegExp('print');
 				const WHILE = new RegExp('while');
 				const IF = new RegExp('if');
 				const INT_TYPE = new RegExp('int');
@@ -49,6 +48,7 @@ module TSC
 				const BOOL_NOTEQUAL = new RegExp('\\!\=');
 				const BEGIN_COMMENT = new RegExp('\\/*');
 				const END_COMMENT = new RegExp('\\*/');
+				const INVALID_CHAR = new RegExp('^(?!.*([a-z]|[0-9]|{|}|\\(|\\)|=|\\+| |"))');
 				//const PROGRAM_END = new RegExp(";");
 				const EOP = new RegExp('\\$');
 			
@@ -63,19 +63,27 @@ module TSC
 					if(NEW_LINE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						console.log("Start Index: "+ this.subStringStartIndex);
 						console.log("End Index: "+this.subStringEndIndex);
-						this.subStringEndIndex++;
 						this.subStringStartIndex++;
 						this.columnNum++;
 						this.lineNum = 0;
 					}
-					else if(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex)){
-						if()
-					}
+					else if(INVALID_CHAR.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
+						this.tokens = "INVALID_CHAR";
+						this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex-1);
+						this.lexOutput.push([
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						]);
+						this.subStringStartIndex++;
+						this.lineNum++;
+						}
 					else if(SPACE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
-						this.subStringEndIndex++;
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
+					
 					else if(L_BRACE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "L_BRACE";
 						this.tokenRegEx = "{";
@@ -128,7 +136,87 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
-					else if(IF.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
+					//console.log(sourceCode.charAt(this.subStringEndIndex-1));
+
+					else if(sourceCode.charAt(this.subStringEndIndex-1) == "i" && sourceCode.charAt(this.subStringEndIndex) == "f"){
+							this.tokens = "IF";
+							this.tokenRegEx = "if";
+							this.lexOutput.push([
+								[this.tokens],
+								[this.tokenRegEx],
+								[this.lineNum],
+								[this.columnNum]
+							]);
+						this.subStringStartIndex+=2;
+						this.lineNum+=2;
+						
+					}
+					else if(sourceCode.charAt(this.subStringEndIndex-1) == "i" && sourceCode.charAt(this.subStringEndIndex) == "n" && sourceCode.charAt(this.subStringEndIndex+1) == "t" && sourceCode.charAt(this.subStringEndIndex-3) != "p"){
+						this.tokens = "INT_TYPE";
+						this.tokenRegEx = "int";
+						this.lexOutput.push([
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						]);
+						this.subStringStartIndex+=3;
+						this.lineNum+=3;
+						this.subStringEndIndex+=2;						
+					}
+					else if(sourceCode.charAt(this.subStringEndIndex-1) == "p" && sourceCode.charAt(this.subStringEndIndex) == "r" && sourceCode.charAt(this.subStringEndIndex+1) == "i" && sourceCode.charAt(this.subStringEndIndex+2) == "n" && sourceCode.charAt(this.subStringEndIndex+3) == "t"){
+						this.tokens = "PRINT";
+						this.tokenRegEx = "print";
+						this.lexOutput.push([
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						]);
+						this.subStringStartIndex+=5;
+						this.lineNum+=5;
+						this.subStringEndIndex+=4;						
+					}
+					else if(sourceCode.charAt(this.subStringEndIndex-1) == "w" && sourceCode.charAt(this.subStringEndIndex) == "h" && sourceCode.charAt(this.subStringEndIndex+1) == "i" && sourceCode.charAt(this.subStringEndIndex+2) == "l" && sourceCode.charAt(this.subStringEndIndex+3) == "e"){
+						this.tokens = "WHILE";
+						this.tokenRegEx = "while";
+						this.lexOutput.push([
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						]);
+						this.subStringStartIndex+=5;
+						this.lineNum+=5;
+						this.subStringEndIndex+=4;						
+					}
+					else if(sourceCode.charAt(this.subStringEndIndex-1) == "f" && sourceCode.charAt(this.subStringEndIndex) == "a" && sourceCode.charAt(this.subStringEndIndex+1) == "l" && sourceCode.charAt(this.subStringEndIndex+2) == "s" && sourceCode.charAt(this.subStringEndIndex+3) == "e"){
+						this.tokens = "FALSE";
+						this.tokenRegEx = "false";
+						this.lexOutput.push([
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						]);
+						this.subStringStartIndex+=5;
+						this.lineNum+=5;
+						this.subStringEndIndex+=4;						
+					}
+					else if(sourceCode.charAt(this.subStringEndIndex-1) == "b" && sourceCode.charAt(this.subStringEndIndex) == "o" && sourceCode.charAt(this.subStringEndIndex+1) == "o" && sourceCode.charAt(this.subStringEndIndex+2) == "l" && sourceCode.charAt(this.subStringEndIndex+3) == "e" && sourceCode.charAt(this.subStringEndIndex+4) == "a" && sourceCode.charAt(this.subStringEndIndex+5) == "n"){
+						this.tokens = "BOOL_TYPE";
+						this.tokenRegEx = "boolean";
+						this.lexOutput.push([
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						]);
+						this.subStringStartIndex+=7;
+						this.lineNum+=7;
+						this.subStringEndIndex+=6;						
+					}
+					/*else if(IF.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						console.log("Start Index: "+ this.subStringStartIndex);
 						console.log("End Index: "+this.subStringEndIndex);
 						this.tokens = "IF";
@@ -144,8 +232,8 @@ module TSC
 						this.lineNum+=2;
 						console.log("Start Index: "+ this.subStringStartIndex);
 						console.log("End Index: "+this.subStringEndIndex);
-					}
-					else if(PRINT.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
+					}*/
+					/*else if(PRINT.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						console.log("Start Index: "+ this.subStringStartIndex);
 						console.log("End Index: "+this.subStringEndIndex);
 						this.tokens = "PRINT";
@@ -161,7 +249,7 @@ module TSC
 						this.lineNum+=5;
 						console.log("Start Index: "+ this.subStringStartIndex);
 						console.log("End Index: "+this.subStringEndIndex);
-					}
+					}*/
 					else if(WHILE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						console.log("Start Index: "+ this.subStringStartIndex);
 						console.log("End Index: "+this.subStringEndIndex);
@@ -181,7 +269,7 @@ module TSC
 					}
 					
 					
-					else if(INT_TYPE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
+					/*else if(INT_TYPE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "INT_TYPE";
 						this.tokenRegEx = "int";
 						this.lexOutput.push([
@@ -193,7 +281,7 @@ module TSC
 					
 						this.subStringStartIndex+=3;
 						this.lineNum+=3;
-					}
+					}*/
 					else if(BOOL_TYPE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "BOOL_TYPE";
 						this.tokenRegEx = "boolean";
@@ -310,6 +398,19 @@ module TSC
 						this.subStringStartIndex+=2;
 						this.lineNum+=2;
 					}
+					else if (DIGIT.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))) {
+						this.tokens = "DIGIT";
+						this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex-1);
+						this.lexOutput.push([
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						]);
+						this.subStringStartIndex++;
+						this.lineNum++;
+					}
+					
 					else if(EOP.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "EOP";
 						this.tokenRegEx = "$";
@@ -324,7 +425,18 @@ module TSC
 						//this.lineNum = 0;
 						//this.columnNum = 0;
 					}
-					
+					else if (VARIABLE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))) {
+						this.tokens = "VARIABLE";
+						this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex-1);
+						this.lexOutput.push([
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						]);
+						this.subStringStartIndex++;
+						this.lineNum++;
+					}
 					
 				this.subStringEndIndex++;
 				}
