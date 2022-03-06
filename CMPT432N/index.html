@@ -90,6 +90,13 @@
 					else if(tokens[i][0] == 'missingCommentEnd'){
 						errors++;
 						putMessage("LEXER -> | ERROR: Missing Comment End");
+						putMessage("Lexical Analysis stopped due to error.")
+						break;
+					}
+					else if(tokens[i][0] == 'missingQuoteEnd'){
+						errors++;
+						putMessage("LEXER -> | ERROR: Missing Quote End");
+						putMessage("Lexical Analysis stopped due to error.")
 						break;
 					}
 					else if(tokens[i][0] == 'missingEOP'){

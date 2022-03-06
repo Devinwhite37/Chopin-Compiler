@@ -28,6 +28,7 @@ module TSC
 		programNum = 1;
 		//tells wheater on not we are in a comment
 		commented: boolean = false;
+		inQuote: boolean = false;
 		constructor(){}
 
         public lex(){
@@ -51,22 +52,25 @@ module TSC
 				const DIGIT = new RegExp('[0-9]');
 				const ADDITION_OP = new RegExp('\\+');
 				const EOP = new RegExp('\\$');
+				const WHITESPACE = new RegExp('\t|\n|\r');
+
 				//includes all possible characters so comment block can increment
 				//line num for anything entered in a comment
 				const ANY_CHAR = new RegExp('.');
 				//includes all characters except those in our grammar
 				//to return an invalid character
 				const INVALID_CHAR = new RegExp('^(?!.*([a-z]|[0-9]|{|}|\\(|\\)|=|\\+| |"|!|\\$|/|\\*))');
+				const CHAR = new RegExp('^(?!.*("))');
 			
 				while(1==1){
 					while(sourceCode.length >=this.subStringEndIndex){
 						console.log("WHILE RAN")
+						console.log(this.subStringStartIndex);
+						console.log(this.subStringEndIndex);
 
 					//ignores all text inside a comment
 					if(sourceCode.charAt(this.subStringEndIndex-1) == "/" && sourceCode.charAt(this.subStringEndIndex) == "*"){
-						console.log(this.subStringEndIndex);
-						console.log(this.subStringStartIndex);
-						this.subStringStartIndex++;
+						this.subStringStartIndex+=2;
 						this.lineNum+=2;
 						this.subStringEndIndex+=2;
 						this.commented = true;
@@ -75,7 +79,7 @@ module TSC
 								console.log("if RAN");
 								this.subStringStartIndex+=2;
 								this.lineNum+=2;
-								this.subStringEndIndex++;
+								this.subStringEndIndex+=2;
 								this.commented = false;
 								break;
 							}
@@ -93,10 +97,8 @@ module TSC
 							}
 							this.subStringEndIndex++;
 						}
-						//this.subStringEndIndex++;
-						console.log(this.subStringEndIndex);
 						console.log(this.subStringStartIndex);
-						
+						console.log(this.subStringEndIndex);
 					}					
 
 					//NEWLINE and SPACE increment linenum and column num if one is found
@@ -111,7 +113,67 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
-					
+					else if(DOUBLE_QUOTE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
+						this.tokens = "DOUBLE_QUOTE";
+						this.tokenRegEx = '"';
+						this.lexOutput.push([
+							[this.tokens],
+							[this.tokenRegEx],
+							[this.lineNum],
+							[this.columnNum]
+						]);
+						this.subStringStartIndex++;
+						this.lineNum++;
+						this.subStringEndIndex++;
+						this.inQuote = true;
+						while(this.inQuote = true){
+							if(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex) ==""){
+								console.log("else ran")
+								this.lexOutput.push([
+									["missingQuoteEnd"]
+								]);
+								break;
+							}
+							else if(CHAR.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
+								console.log("IF DQUOTE")
+								console.log(this.subStringStartIndex);
+								console.log(this.subStringEndIndex);
+								console.log(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex));
+								this.tokens = "CHAR";
+								this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex-1);
+								this.lexOutput.push([
+									[this.tokens],
+									[this.tokenRegEx],
+									[this.lineNum],
+									[this.columnNum]
+								]);
+								this.subStringStartIndex++;
+								this.lineNum++;
+								//this.subStringEndIndex++;
+							}
+							else if(DOUBLE_QUOTE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
+								console.log("ELIF DQUOT")
+								this.tokens = "DOUBLE_QUOTE";
+								this.tokenRegEx = '"';
+								this.lexOutput.push([
+									[this.tokens],
+									[this.tokenRegEx],
+									[this.lineNum],
+									[this.columnNum]
+								]);
+								this.subStringStartIndex++;
+								this.lineNum++;
+								//this.subStringEndIndex++;
+								this.inQuote = false;
+								break;
+							}
+							
+							this.subStringEndIndex++;
+						}
+						console.log(this.subStringEndIndex);
+						console.log(this.subStringStartIndex);
+					}
+				
 					//The following is use to create all tokens in our grammar.
 					else if(L_BRACE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						console.log(this.subStringEndIndex);
@@ -295,19 +357,7 @@ module TSC
 						this.lineNum+=2;
 						this.subStringEndIndex++;						
 					}
-					else if(DOUBLE_QUOTE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
-						this.tokens = "DOUBLE_QUOTE";
-						this.tokenRegEx = '"';
-						this.lexOutput.push([
-							[this.tokens],
-							[this.tokenRegEx],
-							[this.lineNum],
-							[this.columnNum]
-						]);
 					
-						this.subStringStartIndex++;
-						this.lineNum++;
-					}
 					else if(ASSIGN.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "ASSIGN";
 						this.tokenRegEx = "=";
@@ -414,7 +464,7 @@ module TSC
 					this.lexOutput.push([
 						["missingEOP"]
 					]);
-					this.subStringStartIndex++;
+					//this.subStringStartIndex++;
 					this.lineNum++;
 				}
 			}
