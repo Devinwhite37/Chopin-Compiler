@@ -55,19 +55,55 @@ var TSC;
             var ANY_CHAR = new RegExp('.');
             //includes all characters except those in our grammar
             //to return an invalid character
-            var INVALID_CHAR = new RegExp('^(?!.*([a-z]|[0-9]|{|}|\\(|\\)|=|\\+| |"|!|\\$|/|\\*))');
+            var INVALID_CHAR = new RegExp('^(?!.*([a-z]|[0-9]|{|}|\\(|\\)|=|\\+| |"|!|\\$|/||\\*))');
             var CHAR = new RegExp('^(?!.*("))');
             while (1 == 1) {
                 while (sourceCode.length >= this.subStringEndIndex) {
-                    console.log("WHILE RAN");
-                    console.log(this.subStringStartIndex);
-                    console.log(this.subStringEndIndex);
                     //ignores all text inside a comment
+                    /*if(sourceCode.charAt(this.subStringEndIndex-1) == "/" && sourceCode.charAt(this.subStringEndIndex) == "*"){
+                        this.subStringStartIndex+=2;
+                        this.lineNum+=2;
+                        this.subStringEndIndex+=2;
+                        this.commented = true;
+                        while(this.commented = true){
+                            if(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex) == ""){
+                                console.log(this.subStringStartIndex);
+                                console.log(this.subStringEndIndex);
+                                console.log(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex));
+
+                                this.lexOutput.push([
+                                    ["missingCommentEnd"]
+                                ]);
+                                break;
+                            }
+                            else if(sourceCode.charAt(this.subStringEndIndex-1) == "*" && sourceCode.charAt(this.subStringEndIndex) == "/"){
+                                console.log("eran")
+                                console.log(this.subStringStartIndex);
+                                console.log(this.subStringEndIndex);
+                                console.log(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex));
+                                this.subStringStartIndex+=2;
+                                this.lineNum+=2;
+                                this.subStringEndIndex+=2;
+                                this.commented = false;
+                                break;
+                            }
+                            else if(ANY_CHAR.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
+                                console.log("OEran")
+                                this.subStringStartIndex++;
+                                this.lineNum++;
+                            }
+                            this.subStringEndIndex++;
+                        }
+                    }	*/
                     if (sourceCode.charAt(this.subStringEndIndex - 1) == "/" && sourceCode.charAt(this.subStringEndIndex) == "*") {
+                        console.log(this.subStringEndIndex);
+                        console.log(this.subStringStartIndex);
                         this.subStringStartIndex += 2;
                         this.lineNum += 2;
                         this.subStringEndIndex += 2;
                         this.commented = true;
+                        console.log(this.subStringEndIndex);
+                        console.log(this.subStringStartIndex);
                         while (this.commented = true) {
                             if (sourceCode.charAt(this.subStringEndIndex - 1) == "*" && sourceCode.charAt(this.subStringEndIndex) == "/") {
                                 console.log("if RAN");
@@ -88,16 +124,13 @@ var TSC;
                                     ["missingCommentEnd"]
                                 ]);
                                 break;
+                                console.log(this.subStringEndIndex);
+                                console.log(this.subStringStartIndex);
                             }
-                            this.subStringEndIndex++;
                         }
-                        console.log(this.subStringStartIndex);
-                        console.log(this.subStringEndIndex);
                     }
                     //NEWLINE and SPACE increment linenum and column num if one is found
                     if (NEW_LINE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                        console.log("Start Index: " + this.subStringStartIndex);
-                        console.log("End Index: " + this.subStringEndIndex);
                         this.subStringStartIndex++;
                         this.columnNum++;
                         this.lineNum = 0;
@@ -121,17 +154,12 @@ var TSC;
                         this.inQuote = true;
                         while (this.inQuote = true) {
                             if (sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex) == "") {
-                                console.log("else ran");
                                 this.lexOutput.push([
                                     ["missingQuoteEnd"]
                                 ]);
                                 break;
                             }
                             else if (CHAR.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                                console.log("IF DQUOTE");
-                                console.log(this.subStringStartIndex);
-                                console.log(this.subStringEndIndex);
-                                console.log(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex));
                                 this.tokens = "CHAR";
                                 this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex - 1);
                                 this.lexOutput.push([
@@ -145,7 +173,6 @@ var TSC;
                                 //this.subStringEndIndex++;
                             }
                             else if (DOUBLE_QUOTE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                                console.log("ELIF DQUOT");
                                 this.tokens = "DOUBLE_QUOTE";
                                 this.tokenRegEx = '"';
                                 this.lexOutput.push([
@@ -162,13 +189,9 @@ var TSC;
                             }
                             this.subStringEndIndex++;
                         }
-                        console.log(this.subStringEndIndex);
-                        console.log(this.subStringStartIndex);
                     }
                     //The following is use to create all tokens in our grammar.
                     else if (L_BRACE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                        console.log(this.subStringEndIndex);
-                        console.log(this.subStringStartIndex);
                         this.tokens = "L_BRACE";
                         this.tokenRegEx = "{";
                         this.lexOutput.push([
@@ -181,8 +204,6 @@ var TSC;
                         this.lineNum++;
                     }
                     else if (R_BRACE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                        console.log(this.subStringEndIndex);
-                        console.log(this.subStringStartIndex);
                         this.tokens = "R_BRACE";
                         this.tokenRegEx = "}";
                         this.lexOutput.push([
@@ -395,9 +416,8 @@ var TSC;
                         this.lineNum++;
                     }
                     else if (VARIABLE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                        console.log(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex));
-                        console.log(this.subStringStartIndex);
                         console.log(this.subStringEndIndex);
+                        console.log(this.subStringStartIndex);
                         this.tokens = "VARIABLE";
                         this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex - 1);
                         this.lexOutput.push([
@@ -411,9 +431,6 @@ var TSC;
                     }
                     //create a token for any invalid character and return error
                     else if (INVALID_CHAR.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                        console.log(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex));
-                        console.log(this.subStringStartIndex);
-                        console.log(this.subStringEndIndex);
                         this.tokens = "INVALID_CHAR";
                         this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex - 1);
                         this.lexOutput.push([

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="dist/styles/bootstrap.min.css">
 </head>
 <body onload="init();">
-    <h1>White's Filer Compiler</h1>
+    <h1>White's Compiled Files</h1>
     <hr>
     <p>. . . <em>a simple parser for a simple grammar</em>:</p>
 
@@ -51,8 +51,6 @@
 	        // "compile" button between the two text areas, above.  
 	        // Note the <input> element's event handler: onclick="btnCompile_click();
 			init();
-
-			//console.log(tokens);
 
 			let lexer = new TSC.Lexer();
 	        // Grab the tokens from the lexer . . .
@@ -101,11 +99,10 @@
 					}
 					else if(tokens[i][0] == 'missingEOP'){
 						warnings++;
-						putMessage("LEXER -> | WARNING: Missing EOP");
+						putMessage("LEXER -> | WARNING: Missing EOP [ $ ] at end of file.");
 					}
 					else if(tokens[i][0] == 'EOP'){
 						programNum++;
-						console.log(programNum)
 						putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + " column " + tokens[i][3]);
 						//lexOutput();
 					}
