@@ -37,8 +37,8 @@ h1{
 	text-align: center;
 }
 .output{
-	float:right;
-	margin:;
+	float:left;
+	margin;
 
 }
 .source{
@@ -47,12 +47,10 @@ h1{
 	width:100%;
 }
 #taSourceCode, #taOutput{
-	font: "Courier New";
 	width:40%;
 	margin: 10px;
 	height:400px;
 }
 #taOutput{
-	font: "Courier New";
 	float:right;
 }
