@@ -44,7 +44,7 @@ module TSC
 				const R_BRACE = new RegExp('}');
 				const L_PAREN = new RegExp('\\(');
 				const R_PAREN = new RegExp('\\)');
-				const DOUBLE_QUOTE = new RegExp('"');
+				const DOUBLE_QUOTE = new RegExp('"|”');
 				const VARIABLE = new RegExp('[a-z]');
 				const ASSIGN = new RegExp('=');
                 const SPACE = new RegExp(' ');
@@ -95,9 +95,8 @@ module TSC
 									["missingCommentEnd"]
 								]);
 								break;
-						console.log(this.subStringEndIndex);
-						console.log(this.subStringStartIndex);
 							}
+							this.subStringEndIndex++;
 
 					}	
 				}			
@@ -131,6 +130,20 @@ module TSC
 								]);
 								break;
 							}
+							else if(DOUBLE_QUOTE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
+								this.tokens = "DOUBLE_QUOTE";
+								this.tokenRegEx = '"';
+								this.lexOutput.push([
+									[this.tokens],
+									[this.tokenRegEx],
+									[this.lineNum],
+									[this.columnNum]
+								]);
+								this.subStringStartIndex++;
+								this.lineNum++;
+								this.inQuote = false;
+								break;
+							}
 							else if(CHAR.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 								this.tokens = "CHAR";
 								this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex-1);
@@ -144,22 +157,6 @@ module TSC
 								this.lineNum++;
 								//this.subStringEndIndex++;
 							}
-							else if(DOUBLE_QUOTE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
-								this.tokens = "DOUBLE_QUOTE";
-								this.tokenRegEx = '"';
-								this.lexOutput.push([
-									[this.tokens],
-									[this.tokenRegEx],
-									[this.lineNum],
-									[this.columnNum]
-								]);
-								this.subStringStartIndex++;
-								this.lineNum++;
-								//this.subStringEndIndex++;
-								this.inQuote = false;
-								break;
-							}
-							
 							this.subStringEndIndex++;
 						}
 					}

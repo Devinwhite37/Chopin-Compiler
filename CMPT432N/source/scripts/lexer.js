@@ -41,7 +41,7 @@ var TSC;
             var R_BRACE = new RegExp('}');
             var L_PAREN = new RegExp('\\(');
             var R_PAREN = new RegExp('\\)');
-            var DOUBLE_QUOTE = new RegExp('"');
+            var DOUBLE_QUOTE = new RegExp('"|”');
             var VARIABLE = new RegExp('[a-z]');
             var ASSIGN = new RegExp('=');
             var SPACE = new RegExp(' ');
@@ -60,41 +60,6 @@ var TSC;
             while (1 == 1) {
                 while (sourceCode.length >= this.subStringEndIndex) {
                     //ignores all text inside a comment
-                    /*if(sourceCode.charAt(this.subStringEndIndex-1) == "/" && sourceCode.charAt(this.subStringEndIndex) == "*"){
-                        this.subStringStartIndex+=2;
-                        this.lineNum+=2;
-                        this.subStringEndIndex+=2;
-                        this.commented = true;
-                        while(this.commented = true){
-                            if(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex) == ""){
-                                console.log(this.subStringStartIndex);
-                                console.log(this.subStringEndIndex);
-                                console.log(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex));
-
-                                this.lexOutput.push([
-                                    ["missingCommentEnd"]
-                                ]);
-                                break;
-                            }
-                            else if(sourceCode.charAt(this.subStringEndIndex-1) == "*" && sourceCode.charAt(this.subStringEndIndex) == "/"){
-                                console.log("eran")
-                                console.log(this.subStringStartIndex);
-                                console.log(this.subStringEndIndex);
-                                console.log(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex));
-                                this.subStringStartIndex+=2;
-                                this.lineNum+=2;
-                                this.subStringEndIndex+=2;
-                                this.commented = false;
-                                break;
-                            }
-                            else if(ANY_CHAR.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
-                                console.log("OEran")
-                                this.subStringStartIndex++;
-                                this.lineNum++;
-                            }
-                            this.subStringEndIndex++;
-                        }
-                    }	*/
                     if (sourceCode.charAt(this.subStringEndIndex - 1) == "/" && sourceCode.charAt(this.subStringEndIndex) == "*") {
                         console.log(this.subStringEndIndex);
                         console.log(this.subStringStartIndex);
@@ -124,9 +89,8 @@ var TSC;
                                     ["missingCommentEnd"]
                                 ]);
                                 break;
-                                console.log(this.subStringEndIndex);
-                                console.log(this.subStringStartIndex);
                             }
+                            this.subStringEndIndex++;
                         }
                     }
                     //NEWLINE and SPACE increment linenum and column num if one is found
@@ -159,6 +123,20 @@ var TSC;
                                 ]);
                                 break;
                             }
+                            else if (DOUBLE_QUOTE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
+                                this.tokens = "DOUBLE_QUOTE";
+                                this.tokenRegEx = '"';
+                                this.lexOutput.push([
+                                    [this.tokens],
+                                    [this.tokenRegEx],
+                                    [this.lineNum],
+                                    [this.columnNum]
+                                ]);
+                                this.subStringStartIndex++;
+                                this.lineNum++;
+                                this.inQuote = false;
+                                break;
+                            }
                             else if (CHAR.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                                 this.tokens = "CHAR";
                                 this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex - 1);
@@ -171,21 +149,6 @@ var TSC;
                                 this.subStringStartIndex++;
                                 this.lineNum++;
                                 //this.subStringEndIndex++;
-                            }
-                            else if (DOUBLE_QUOTE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                                this.tokens = "DOUBLE_QUOTE";
-                                this.tokenRegEx = '"';
-                                this.lexOutput.push([
-                                    [this.tokens],
-                                    [this.tokenRegEx],
-                                    [this.lineNum],
-                                    [this.columnNum]
-                                ]);
-                                this.subStringStartIndex++;
-                                this.lineNum++;
-                                //this.subStringEndIndex++;
-                                this.inQuote = false;
-                                break;
                             }
                             this.subStringEndIndex++;
                         }
@@ -416,8 +379,6 @@ var TSC;
                         this.lineNum++;
                     }
                     else if (VARIABLE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                        console.log(this.subStringEndIndex);
-                        console.log(this.subStringStartIndex);
                         this.tokens = "VARIABLE";
                         this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex - 1);
                         this.lexOutput.push([
