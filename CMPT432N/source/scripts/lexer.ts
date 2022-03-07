@@ -59,7 +59,7 @@ module TSC
 				const ANY_CHAR = new RegExp('.');
 				//includes all characters except those in our grammar
 				//to return an invalid character
-				const INVALID_CHAR = new RegExp('^(?!.*([a-z]|[0-9]|{|}|\\(|\\)|=|\\+| |"|!|\\$|/||\\*))');
+				const INVALID_CHAR = new RegExp('^(?!.*([a-z]|[0-9]|{|}|\\(|\\)|=|\\+| |"|!|\\$|/|\\*))');
 				const CHAR = new RegExp('^(?!.*("))');
 			
 				while(1==1){
@@ -77,7 +77,6 @@ module TSC
 						console.log(this.subStringStartIndex);
 						while(this.commented = true){
 							if(sourceCode.charAt(this.subStringEndIndex-1) == "*" && sourceCode.charAt(this.subStringEndIndex) == "/"){
-								console.log("if RAN");
 								this.subStringStartIndex+=2;
 								this.lineNum+=2;
 								this.subStringEndIndex+=2;
@@ -85,19 +84,16 @@ module TSC
 								break;
 							}
 							else if(ANY_CHAR.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
-								console.log("ANYCHR RAN");
 								this.subStringStartIndex++;
 								this.lineNum++;
 							}
 							else{
-								console.log("else ran")
 								this.lexOutput.push([
 									["missingCommentEnd"]
 								]);
 								break;
 							}
 							this.subStringEndIndex++;
-
 					}	
 				}			
 					//NEWLINE and SPACE increment linenum and column num if one is found
@@ -407,6 +403,8 @@ module TSC
 					}
 					//create a token for any invalid character and return error
 					else if(INVALID_CHAR.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
+						console.log(this.subStringEndIndex);
+						console.log(this.subStringStartIndex);
 						this.tokens = "INVALID_CHAR";
 						this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex-1);
 						this.lexOutput.push([
