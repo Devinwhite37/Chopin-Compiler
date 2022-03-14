@@ -30,18 +30,22 @@ var TSC;
             this.commented = false;
             this.inQuote = false;
         }
+        Lexer.lex = function () {
+            throw new Error("Method not implemented.");
+        };
         Lexer.prototype.lex = function () {
             // Grab the "raw" source code.
             var sourceCode = document.getElementById("taSourceCode").value;
             // Trim the leading and trailing spaces.
             sourceCode = TSC.Utils.trim(sourceCode);
+            console.log("test");
             // Declare Regular Expressions for single characters in our grammar.
             // Multiple character tokens are taken care of using character matching if statments
             var L_BRACE = new RegExp('{');
             var R_BRACE = new RegExp('}');
             var L_PAREN = new RegExp('\\(');
             var R_PAREN = new RegExp('\\)');
-            var DOUBLE_QUOTE = new RegExp('"');
+            var DOUBLE_QUOTE = new RegExp('"|”|“|”');
             var VARIABLE = new RegExp('[a-z]');
             var ASSIGN = new RegExp('=');
             var SPACE = new RegExp(' ');
@@ -49,52 +53,17 @@ var TSC;
             var DIGIT = new RegExp('[0-9]');
             var ADDITION_OP = new RegExp('\\+');
             var EOP = new RegExp('\\$');
-            var WHITESPACE = new RegExp('\t|\n|\r');
+            //const WHITESPACE = new RegExp('\t|\n|\r');
             //includes all possible characters so comment block can increment
             //line num for anything entered in a comment
             var ANY_CHAR = new RegExp('.');
             //includes all characters except those in our grammar
             //to return an invalid character
-            var INVALID_CHAR = new RegExp('^(?!.*([a-z]|[0-9]|{|}|\\(|\\)|=|\\+| |"|!|\\$|/||\\*))');
+            var INVALID_CHAR = new RegExp('^(?!.*([a-z]|[0-9]|{|}|\\(|\\)|=|\\+| |"|!|\\$|/|\\*))');
             var CHAR = new RegExp('^(?!.*("))');
             while (1 == 1) {
                 while (sourceCode.length >= this.subStringEndIndex) {
                     //ignores all text inside a comment
-                    /*if(sourceCode.charAt(this.subStringEndIndex-1) == "/" && sourceCode.charAt(this.subStringEndIndex) == "*"){
-                        this.subStringStartIndex+=2;
-                        this.lineNum+=2;
-                        this.subStringEndIndex+=2;
-                        this.commented = true;
-                        while(this.commented = true){
-                            if(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex) == ""){
-                                console.log(this.subStringStartIndex);
-                                console.log(this.subStringEndIndex);
-                                console.log(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex));
-
-                                this.lexOutput.push([
-                                    ["missingCommentEnd"]
-                                ]);
-                                break;
-                            }
-                            else if(sourceCode.charAt(this.subStringEndIndex-1) == "*" && sourceCode.charAt(this.subStringEndIndex) == "/"){
-                                console.log("eran")
-                                console.log(this.subStringStartIndex);
-                                console.log(this.subStringEndIndex);
-                                console.log(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex));
-                                this.subStringStartIndex+=2;
-                                this.lineNum+=2;
-                                this.subStringEndIndex+=2;
-                                this.commented = false;
-                                break;
-                            }
-                            else if(ANY_CHAR.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
-                                console.log("OEran")
-                                this.subStringStartIndex++;
-                                this.lineNum++;
-                            }
-                            this.subStringEndIndex++;
-                        }
-                    }	*/
                     if (sourceCode.charAt(this.subStringEndIndex - 1) == "/" && sourceCode.charAt(this.subStringEndIndex) == "*") {
                         console.log(this.subStringEndIndex);
                         console.log(this.subStringStartIndex);
@@ -106,7 +75,6 @@ var TSC;
                         console.log(this.subStringStartIndex);
                         while (this.commented = true) {
                             if (sourceCode.charAt(this.subStringEndIndex - 1) == "*" && sourceCode.charAt(this.subStringEndIndex) == "/") {
-                                console.log("if RAN");
                                 this.subStringStartIndex += 2;
                                 this.lineNum += 2;
                                 this.subStringEndIndex += 2;
@@ -114,19 +82,16 @@ var TSC;
                                 break;
                             }
                             else if (ANY_CHAR.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                                console.log("ANYCHR RAN");
                                 this.subStringStartIndex++;
                                 this.lineNum++;
                             }
                             else {
-                                console.log("else ran");
                                 this.lexOutput.push([
                                     ["missingCommentEnd"]
                                 ]);
                                 break;
-                                console.log(this.subStringEndIndex);
-                                console.log(this.subStringStartIndex);
                             }
+                            this.subStringEndIndex++;
                         }
                     }
                     //NEWLINE and SPACE increment linenum and column num if one is found
@@ -139,6 +104,7 @@ var TSC;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
+                    //DOUBLE_QUOTE puts all chars inside quotes to CHARs
                     else if (DOUBLE_QUOTE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "DOUBLE_QUOTE";
                         this.tokenRegEx = '"';
@@ -159,6 +125,20 @@ var TSC;
                                 ]);
                                 break;
                             }
+                            else if (DOUBLE_QUOTE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
+                                this.tokens = "DOUBLE_QUOTE";
+                                this.tokenRegEx = '"';
+                                this.lexOutput.push([
+                                    [this.tokens],
+                                    [this.tokenRegEx],
+                                    [this.lineNum],
+                                    [this.columnNum]
+                                ]);
+                                this.subStringStartIndex++;
+                                this.lineNum++;
+                                this.inQuote = false;
+                                break;
+                            }
                             else if (CHAR.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                                 this.tokens = "CHAR";
                                 this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex - 1);
@@ -171,21 +151,6 @@ var TSC;
                                 this.subStringStartIndex++;
                                 this.lineNum++;
                                 //this.subStringEndIndex++;
-                            }
-                            else if (DOUBLE_QUOTE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                                this.tokens = "DOUBLE_QUOTE";
-                                this.tokenRegEx = '"';
-                                this.lexOutput.push([
-                                    [this.tokens],
-                                    [this.tokenRegEx],
-                                    [this.lineNum],
-                                    [this.columnNum]
-                                ]);
-                                this.subStringStartIndex++;
-                                this.lineNum++;
-                                //this.subStringEndIndex++;
-                                this.inQuote = false;
-                                break;
                             }
                             this.subStringEndIndex++;
                         }
@@ -416,36 +381,8 @@ var TSC;
                         this.lineNum++;
                     }
                     else if (VARIABLE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                        console.log(this.subStringEndIndex);
-                        console.log(this.subStringStartIndex);
                         this.tokens = "VARIABLE";
                         this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex - 1);
-                        this.lexOutput.push([
-                            [this.tokens],
-                            [this.tokenRegEx],
-                            [this.lineNum],
-                            [this.columnNum]
-                        ]);
-                        this.subStringStartIndex++;
-                        this.lineNum++;
-                    }
-                    //create a token for any invalid character and return error
-                    else if (INVALID_CHAR.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                        this.tokens = "INVALID_CHAR";
-                        this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex - 1);
-                        this.lexOutput.push([
-                            [this.tokens],
-                            [this.tokenRegEx],
-                            [this.lineNum],
-                            [this.columnNum]
-                        ]);
-                        this.subStringStartIndex++;
-                        this.lineNum++;
-                    }
-                    else if (EOP.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
-                        this.tokens = "EOP";
-                        this.tokenRegEx = "$";
-                        this.programNum++;
                         this.lexOutput.push([
                             [this.tokens],
                             [this.tokenRegEx],
@@ -453,6 +390,36 @@ var TSC;
                             [this.columnNum],
                             [this.programNum]
                         ]);
+                        this.subStringStartIndex++;
+                        this.lineNum++;
+                    }
+                    //create a token for any invalid character and return error
+                    else if (INVALID_CHAR.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
+                        console.log(this.subStringEndIndex);
+                        console.log(this.subStringStartIndex);
+                        this.tokens = "INVALID_CHAR";
+                        this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex - 1);
+                        this.lexOutput.push([
+                            [this.tokens],
+                            [this.tokenRegEx],
+                            [this.lineNum],
+                            [this.columnNum],
+                            [this.programNum]
+                        ]);
+                        this.subStringStartIndex++;
+                        this.lineNum++;
+                    }
+                    else if (EOP.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
+                        this.tokens = "EOP";
+                        this.tokenRegEx = "$";
+                        this.lexOutput.push([
+                            [this.tokens],
+                            [this.tokenRegEx],
+                            [this.lineNum],
+                            [this.columnNum],
+                            [this.programNum]
+                        ]);
+                        this.programNum++;
                         this.subStringStartIndex++;
                         this.lineNum++;
                         this.eopFound = true;
