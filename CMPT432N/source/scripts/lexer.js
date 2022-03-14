@@ -30,18 +30,22 @@ var TSC;
             this.commented = false;
             this.inQuote = false;
         }
+        Lexer.lex = function () {
+            throw new Error("Method not implemented.");
+        };
         Lexer.prototype.lex = function () {
             // Grab the "raw" source code.
             var sourceCode = document.getElementById("taSourceCode").value;
             // Trim the leading and trailing spaces.
             sourceCode = TSC.Utils.trim(sourceCode);
+            console.log("test");
             // Declare Regular Expressions for single characters in our grammar.
             // Multiple character tokens are taken care of using character matching if statments
             var L_BRACE = new RegExp('{');
             var R_BRACE = new RegExp('}');
             var L_PAREN = new RegExp('\\(');
             var R_PAREN = new RegExp('\\)');
-            var DOUBLE_QUOTE = new RegExp('"|”');
+            var DOUBLE_QUOTE = new RegExp('"|”|“|”');
             var VARIABLE = new RegExp('[a-z]');
             var ASSIGN = new RegExp('=');
             var SPACE = new RegExp(' ');
@@ -49,7 +53,7 @@ var TSC;
             var DIGIT = new RegExp('[0-9]');
             var ADDITION_OP = new RegExp('\\+');
             var EOP = new RegExp('\\$');
-            var WHITESPACE = new RegExp('\t|\n|\r');
+            //const WHITESPACE = new RegExp('\t|\n|\r');
             //includes all possible characters so comment block can increment
             //line num for anything entered in a comment
             var ANY_CHAR = new RegExp('.');
@@ -100,6 +104,7 @@ var TSC;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
+                    //DOUBLE_QUOTE puts all chars inside quotes to CHARs
                     else if (DOUBLE_QUOTE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "DOUBLE_QUOTE";
                         this.tokenRegEx = '"';
@@ -382,7 +387,8 @@ var TSC;
                             [this.tokens],
                             [this.tokenRegEx],
                             [this.lineNum],
-                            [this.columnNum]
+                            [this.columnNum],
+                            [this.programNum]
                         ]);
                         this.subStringStartIndex++;
                         this.lineNum++;
@@ -397,7 +403,8 @@ var TSC;
                             [this.tokens],
                             [this.tokenRegEx],
                             [this.lineNum],
-                            [this.columnNum]
+                            [this.columnNum],
+                            [this.programNum]
                         ]);
                         this.subStringStartIndex++;
                         this.lineNum++;
@@ -405,7 +412,6 @@ var TSC;
                     else if (EOP.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "EOP";
                         this.tokenRegEx = "$";
-                        this.programNum++;
                         this.lexOutput.push([
                             [this.tokens],
                             [this.tokenRegEx],
@@ -413,6 +419,7 @@ var TSC;
                             [this.columnNum],
                             [this.programNum]
                         ]);
+                        this.programNum++;
                         this.subStringStartIndex++;
                         this.lineNum++;
                         this.eopFound = true;

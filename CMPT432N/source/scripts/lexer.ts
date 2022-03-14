@@ -13,6 +13,9 @@
 module TSC
 	{
 	export class Lexer {
+        static lex() {
+            throw new Error("Method not implemented.");
+        }
 		//the following are defined and used to push those fields to index.html
 		tokens = "";
 		tokenRegEx = "";
@@ -32,19 +35,18 @@ module TSC
 		constructor(){}
 
         public lex(){
-
 		        // Grab the "raw" source code.
 				var sourceCode = (<HTMLInputElement>document.getElementById("taSourceCode")).value;
 		        // Trim the leading and trailing spaces.
 				sourceCode = TSC.Utils.trim(sourceCode);
-
+				console.log("test");
 				// Declare Regular Expressions for single characters in our grammar.
 				// Multiple character tokens are taken care of using character matching if statments
 				const L_BRACE = new RegExp('{');
 				const R_BRACE = new RegExp('}');
 				const L_PAREN = new RegExp('\\(');
 				const R_PAREN = new RegExp('\\)');
-				const DOUBLE_QUOTE = new RegExp('"|”');
+				const DOUBLE_QUOTE = new RegExp('"|”|“|”');
 				const VARIABLE = new RegExp('[a-z]');
 				const ASSIGN = new RegExp('=');
                 const SPACE = new RegExp(' ');
@@ -52,7 +54,7 @@ module TSC
 				const DIGIT = new RegExp('[0-9]');
 				const ADDITION_OP = new RegExp('\\+');
 				const EOP = new RegExp('\\$');
-				const WHITESPACE = new RegExp('\t|\n|\r');
+				//const WHITESPACE = new RegExp('\t|\n|\r');
 
 				//includes all possible characters so comment block can increment
 				//line num for anything entered in a comment
@@ -106,6 +108,8 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
+
+					//DOUBLE_QUOTE puts all chars inside quotes to CHARs
 					else if(DOUBLE_QUOTE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "DOUBLE_QUOTE";
 						this.tokenRegEx = '"';
@@ -396,7 +400,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex++;
 						this.lineNum++;
@@ -411,7 +416,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex++;
 						this.lineNum++;
@@ -419,7 +425,6 @@ module TSC
 					else if(EOP.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "EOP";
 						this.tokenRegEx = "$";
-						this.programNum++;
 						this.lexOutput.push([
 							[this.tokens],
 							[this.tokenRegEx],
@@ -427,6 +432,7 @@ module TSC
 							[this.columnNum],
 							[this.programNum]
 						]);
+						this.programNum++;
 						this.subStringStartIndex++;
 						this.lineNum++;
 						this.eopFound = true;
