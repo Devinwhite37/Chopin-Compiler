@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="dist/styles/bootstrap.min.css">
 </head>
 <body onload="init();">
-    <h1>White's Filer Compiler</h1>
+    <h1>White's Compiled Files</h1>
     <hr>
     <p>. . . <em>a simple parser for a simple grammar</em>:</p>
 
@@ -32,6 +32,8 @@
     <script type="text/javascript" src="source/scripts/utils.js"></script>	
     <script type="text/javascript" src="source/scripts/lexer.js"></script>	
 	<script type="text/javascript" src="source/scripts/globals.js"></script>	
+	<script type="text/javascript" src="source/scripts/parser.js"></script>	
+
 	<!--<script type="text/javascript" src="source/scripts/tokenizer.js"></script>	-->
 
 
@@ -52,35 +54,60 @@
 	        // Note the <input> element's event handler: onclick="btnCompile_click();
 			init();
 
-			//console.log(tokens);
-
 			let lexer = new TSC.Lexer();
 	        // Grab the tokens from the lexer . . .
 			//tokens = _Lexer.lex();
 			tokens = lexer.lex();
 			programNum = 1;
+
+			let parser = new TSC.Parser();
+			productions = parser.parse();
+
 			console.log("HTML tokens: ");
 			console.log(tokens);
-	        // . . . and parse!
-	        lexOutput();
+			console.log("HTML productions: ");
+			console.log(productions);
+			// . . . and parse!
+			
+	        compile();
 	    }
     
 	    function putMessage(msg) {
 	        document.getElementById("taOutput").value += msg + "\n";
 		}
 		
-		function lexOutput(){
-			var errors = 0;
-			var warnings = 0;
-			//while(programNum < 2){
+		function compile(){
 			if (tokens == ""){
 				putMessage("Well that's random. Try compiling some code next time.");
 			}
 			else{
 				putMessage("Compilation Started");
 				putMessage("LEXICAL ANALYSIS:");
-				putMessage("Lexing Program "+ programNum);
-				for(var i = 0; i < tokens.length; i++){
+				//putMessage("Lexing Program "+ programNum);
+				//putMessage("-----------------")
+				lexOutput();
+				//parseOutput();
+			}
+			
+		}
+		function lexOutput(){
+			var errors = 0;
+			var warnings = 0;
+			var i = 0;
+
+			for(var j = 0; j < programNum; j++){
+
+				if(tokens[i+1][0]!=""){
+				putMessage("\nLexing Program "+ programNum);
+				putMessage("-----------------")
+				}
+				else{
+				}
+				console.log("i: " + i);
+				console.log("j: " + j);
+				console.log("programNum: "+ programNum);
+				for(var i; i < tokens.length; i++){
+					console.log(i);
 					if(tokens[i][0] == 'INVALID_CHAR'){
 						errors++;
 						putMessage("LEXER -> | ERROR: Invalid Token [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + " column " + tokens[i][3]);
@@ -101,23 +128,38 @@
 					}
 					else if(tokens[i][0] == 'missingEOP'){
 						warnings++;
-						putMessage("LEXER -> | WARNING: Missing EOP");
+						putMessage("LEXER -> | WARNING: Missing EOP [ $ ] at end of file.");
 					}
 					else if(tokens[i][0] == 'EOP'){
 						programNum++;
-						console.log(programNum)
 						putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + " column " + tokens[i][3]);
 						//lexOutput();
+						i = i+1;
+						break;
+						//putMessage("---------------------------");
+						//putMessage("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).");
 					}
 					else{
 						putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + " column " + tokens[i][3]);
-					}
+					}	
+				}
+						putMessage("---------------------------");
+						putMessage("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).\n");
+						putMessage("Begin Parsing:");
+						for(var k = 0; k < productions.length; k++){
+							putMessage("PARSER -> | " + productions[k]);
+						}
+			
 			}
-				putMessage("---------------------------")
-				putMessage("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).");
+		}    
+		
+		/*function parseOutput(){
+			putMesage("Begin Parsing:");
+			for(var i = 0; i < productions.length; i++){
+				putMessage("PARSER -> | " + productions[i]);
 			}
-		//}    
-	}
+		}*/
+	
 	 	 // TODO: These parse routines really should be in TypeScript.
 		 //       This exercise is left to the student. Consider it project 0.5 .
 	    /*function parse() {
