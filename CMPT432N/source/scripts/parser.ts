@@ -50,6 +50,12 @@ module TSC {
 
             }
             public parse() { 
+                this.parseBlock();
+                console.log
+                return this.parseOutput;
+            }
+
+            public parseBlock() {
                 console.log("tokenList: ");
                 console.log(tokens);
                 for(let i = 0; i < tokens.length; i++){
@@ -62,15 +68,6 @@ module TSC {
                     }
                     return this.parseOutput;
                 }   
-            }
-            public parseBlock(){
-                for(let i = 0; i < tokens.length; i++){
-                    if(tokens[i][1] == '}'){
-                        this.parseOutput.push("VALID - Expecting [Program], found");
-                        this.i++;
-                    }
-                    return this.parseOutput;
-                }
-            }
         }
     }
+}

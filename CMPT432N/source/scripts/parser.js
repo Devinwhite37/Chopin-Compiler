@@ -41,6 +41,11 @@ var TSC;
             //this.cst = new Tree();
         }
         Parser.prototype.parse = function () {
+            this.parseBlock();
+            console.log;
+            return this.parseOutput;
+        };
+        Parser.prototype.parseBlock = function () {
             console.log("tokenList: ");
             console.log(tokens);
             for (var i = 0; i < tokens.length; i++) {
@@ -49,16 +54,7 @@ var TSC;
                     this.i++;
                 }
                 else if (tokens[i][1] != '{') {
-                    this.parseOutput.push("ERROR - Expecting [Block], found [" + tokens[i][1] + " ]");
-                }
-                return this.parseOutput;
-            }
-        };
-        Parser.prototype.parseBlock = function () {
-            for (var i = 0; i < tokens.length; i++) {
-                if (tokens[i][1] == '}') {
-                    this.parseOutput.push("VALID - Expecting [Program], found");
-                    this.i++;
+                    this.parseOutput.push("ERROR - Expecting [Block], found [ " + tokens[i][1] + " ]");
                 }
                 return this.parseOutput;
             }
