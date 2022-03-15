@@ -27,12 +27,10 @@ module TSC {
         Addition = "Addition"
     }
         export class Parser {
-            currentToken: number; // the index of the current token we're looking at
-            tokenList: Array<Lexer>; // list of tokens passed from lexer
-            parseOutput: Array<String>; // log of parser
-            error: boolean; // keeps track if the parser has run into an error
-            //cst: Tree; // pointer to the tree
-            //tokens = Lexer.lex();
+            currentToken: number; 
+            tokenList: Array<Lexer>; 
+            parseOutput: Array<String>; 
+            error: boolean; 
             i: number;
 
             // Constructor for parser, passed tokens from lexer. Inits values.
@@ -51,23 +49,64 @@ module TSC {
             }
             public parse() { 
                 this.parseBlock();
-                console.log
+                //this.statmentList();
+                console.log("parse");
                 return this.parseOutput;
             }
 
             public parseBlock() {
-                console.log("tokenList: ");
-                console.log(tokens);
-                for(let i = 0; i < tokens.length; i++){
-                    if(tokens[i][1] == '{'){
-                        this.parseOutput.push("VALID - Expecting [Program], found [Block]");
-                        this.i++;
-                    }
-                    else if(tokens[i][1] != '{'){
-                        this.parseOutput.push("ERROR - Expecting [Block], found [ " + tokens[i][1] + " ]");
-                    }
-                    return this.parseOutput;
-                }   
+                if(tokens[this.i][1]!=""){
+                    this.parseOutput.push("VALID - Expecting [Program], found [Block] on [ " + tokens[this.i][2] + " , " + tokens[this.i][3] + " ]");
+                    for(this.i = 0; this.i < tokens.length; this.i++){
+                        if(tokens[this.i][1] == '{'){
+                            this.parseOutput.push("VALID - Expecting [L_BRACE], found [{] on [ " + tokens[this.i][2] + " , " + tokens[this.i][3] + " ]");
+                            //this.i++;
+                            this.statmentList();
+                            //break;
+                        }
+                        else if(tokens[this.i][1] == '}'){
+                            this.parseOutput.push("VALID - Expecting [R_BRACE], found [}] on [ " + tokens[this.i][2] + " , " + tokens[this.i][3] + " ]");
+                            //break;
+                        }
+                        else if(tokens[this.i][1] == '$'){
+                            this.parseOutput.push("VALID - Expecting [EOP], found [$] on [ " + tokens[this.i][2] + " , " + tokens[this.i][3] + " ]");
+                            this.parseBlock();
+                        }
+                    }  
+                }
+                else{}
         }
+            public statmentList(){
+                for(this.i = 0; this.i < tokens.length; this.i++){
+                    if(tokens[this.i][1] == 'print'){
+                        this.i--;
+                        this.printStatement();
+                    }
+                    else if(tokens[this.i][2] == 'VARIABLE'){
+                        this.assignmentStatement();
+                    }
+                    else if(tokens[this.i+1][1] == '}' || tokens[this.i+1][1] =='{'){
+                        //this.i++;
+                        console.log("epsilon");
+                        this.parseOutput.push("VALID - Found ε on [ " + tokens[this.i][2] + " , " + tokens[this.i][3] + " ]");
+                        //this.parseBlock();
+                        break;
+                    }
+                    //else if(tokens[this.i][2] == '')
+            }
+        }
+            public printStatement(){
+                for(this.i = 0; this.i < tokens.length; this.i++){
+                    if(tokens[this.i][1] == 'print'){
+                        this.parseOutput.push("VALID - Expecting [Program], found [this]");
+                    }
+                    else if(tokens[this.i][1] == '('){
+
+                    }
+                }
+            }
+            public assignmentStatement(){
+
+            }
     }
 }

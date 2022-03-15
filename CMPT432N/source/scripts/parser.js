@@ -42,22 +42,61 @@ var TSC;
         }
         Parser.prototype.parse = function () {
             this.parseBlock();
-            console.log;
+            //this.statmentList();
+            console.log("parse");
             return this.parseOutput;
         };
         Parser.prototype.parseBlock = function () {
-            console.log("tokenList: ");
-            console.log(tokens);
-            for (var i = 0; i < tokens.length; i++) {
-                if (tokens[i][1] == '{') {
-                    this.parseOutput.push("VALID - Expecting [Program], found [Block]");
-                    this.i++;
+            if (tokens[this.i][1] != "") {
+                this.parseOutput.push("VALID - Expecting [Program], found [Block] on [ " + tokens[this.i][2] + " , " + tokens[this.i][3] + " ]");
+                for (this.i = 0; this.i < tokens.length; this.i++) {
+                    if (tokens[this.i][1] == '{') {
+                        this.parseOutput.push("VALID - Expecting [L_BRACE], found [{] on [ " + tokens[this.i][2] + " , " + tokens[this.i][3] + " ]");
+                        //this.i++;
+                        this.statmentList();
+                        //break;
+                    }
+                    else if (tokens[this.i][1] == '}') {
+                        this.parseOutput.push("VALID - Expecting [R_BRACE], found [}] on [ " + tokens[this.i][2] + " , " + tokens[this.i][3] + " ]");
+                        //break;
+                    }
+                    else if (tokens[this.i][1] == '$') {
+                        this.parseOutput.push("VALID - Expecting [EOP], found [$] on [ " + tokens[this.i][2] + " , " + tokens[this.i][3] + " ]");
+                        this.parseBlock();
+                    }
                 }
-                else if (tokens[i][1] != '{') {
-                    this.parseOutput.push("ERROR - Expecting [Block], found [ " + tokens[i][1] + " ]");
-                }
-                return this.parseOutput;
             }
+            else { }
+        };
+        Parser.prototype.statmentList = function () {
+            for (this.i = 0; this.i < tokens.length; this.i++) {
+                if (tokens[this.i][1] == 'print') {
+                    this.i--;
+                    this.printStatement();
+                }
+                else if (tokens[this.i][2] == 'VARIABLE') {
+                    this.assignmentStatement();
+                }
+                else if (tokens[this.i + 1][1] == '}' || tokens[this.i + 1][1] == '{') {
+                    //this.i++;
+                    console.log("epsilon");
+                    this.parseOutput.push("VALID - Found ε on [ " + tokens[this.i][2] + " , " + tokens[this.i][3] + " ]");
+                    //this.parseBlock();
+                    break;
+                }
+                //else if(tokens[this.i][2] == '')
+            }
+        };
+        Parser.prototype.printStatement = function () {
+            for (this.i = 0; this.i < tokens.length; this.i++) {
+                if (tokens[this.i][1] == 'print') {
+                    this.parseOutput.push("VALID - Expecting [Program], found [this]");
+                }
+                else if (tokens[this.i][1] == '(') {
+                }
+            }
+        };
+        Parser.prototype.assignmentStatement = function () {
         };
         return Parser;
     }());

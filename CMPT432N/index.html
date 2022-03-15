@@ -110,7 +110,7 @@
 					console.log(i);
 					if(tokens[i][0] == 'INVALID_CHAR'){
 						errors++;
-						putMessage("LEXER -> | ERROR: Invalid Token [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + " column " + tokens[i][3]);
+						putMessage("LEXER -> | ERROR: Invalid Token [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 						putMessage("Lexical Analysis stopped due to error.")
 						break;
 					}
@@ -132,7 +132,7 @@
 					}
 					else if(tokens[i][0] == 'EOP'){
 						programNum++;
-						putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + " column " + tokens[i][3]);
+						putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 						//lexOutput();
 						i = i+1;
 						break;
@@ -140,7 +140,7 @@
 						//putMessage("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).");
 					}
 					else{
-						putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on line " + tokens[i][2] + " column " + tokens[i][3]);
+						putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 					}	
 				}
 						putMessage("---------------------------");
