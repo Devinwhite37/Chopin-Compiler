@@ -38,7 +38,6 @@ var TSC;
             var sourceCode = document.getElementById("taSourceCode").value;
             // Trim the leading and trailing spaces.
             sourceCode = TSC.Utils.trim(sourceCode);
-            console.log("test");
             // Declare Regular Expressions for single characters in our grammar.
             // Multiple character tokens are taken care of using character matching if statments
             var L_BRACE = new RegExp('{');
@@ -65,14 +64,10 @@ var TSC;
                 while (sourceCode.length >= this.subStringEndIndex) {
                     //ignores all text inside a comment
                     if (sourceCode.charAt(this.subStringEndIndex - 1) == "/" && sourceCode.charAt(this.subStringEndIndex) == "*") {
-                        console.log(this.subStringEndIndex);
-                        console.log(this.subStringStartIndex);
                         this.subStringStartIndex += 2;
                         this.lineNum += 2;
                         this.subStringEndIndex += 2;
                         this.commented = true;
-                        console.log(this.subStringEndIndex);
-                        console.log(this.subStringStartIndex);
                         while (this.commented = true) {
                             if (sourceCode.charAt(this.subStringEndIndex - 1) == "*" && sourceCode.charAt(this.subStringEndIndex) == "/") {
                                 this.subStringStartIndex += 2;
