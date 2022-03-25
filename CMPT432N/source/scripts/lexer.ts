@@ -112,7 +112,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex++;
 						this.lineNum++;
@@ -132,7 +133,8 @@ module TSC
 									[this.tokens],
 									[this.tokenRegEx],
 									[this.lineNum],
-									[this.columnNum]
+									[this.columnNum],
+									[this.programNum]
 								]);
 								this.subStringStartIndex++;
 								this.lineNum++;
@@ -146,7 +148,8 @@ module TSC
 									[this.tokens],
 									[this.tokenRegEx],
 									[this.lineNum],
-									[this.columnNum]
+									[this.columnNum],
+									[this.programNum]
 								]);
 								this.subStringStartIndex++;
 								this.lineNum++;
@@ -164,7 +167,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex++;
 						this.lineNum++;
@@ -176,7 +180,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex++;
 						this.lineNum++;
@@ -189,7 +194,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 			
 						this.subStringStartIndex++;
@@ -203,7 +209,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 			
 						this.subStringStartIndex++;
@@ -217,7 +224,8 @@ module TSC
 								[this.tokens],
 								[this.tokenRegEx],
 								[this.lineNum],
-								[this.columnNum]
+								[this.columnNum],
+								[this.programNum]
 							]);
 						this.subStringStartIndex+=2;
 						this.lineNum+=2;
@@ -231,7 +239,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex+=3;
 						this.lineNum+=3;
@@ -245,7 +254,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex+=5;
 						this.lineNum+=5;
@@ -259,7 +269,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex+=5;
 						this.lineNum+=5;
@@ -273,7 +284,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex+=5;
 						this.lineNum+=5;
@@ -287,7 +299,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex+=7;
 						this.lineNum+=7;
@@ -301,7 +314,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex+=4;
 						this.lineNum+=4;
@@ -315,7 +329,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex+=6;
 						this.lineNum+=6;
@@ -329,7 +344,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex+=2;
 						this.lineNum+=2;
@@ -343,7 +359,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 					
 						this.subStringStartIndex++;
@@ -356,7 +373,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 					
 						this.subStringStartIndex++;
@@ -370,7 +388,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex+=2;
 						this.lineNum+=2;
@@ -383,7 +402,8 @@ module TSC
 							[this.tokens],
 							[this.tokenRegEx],
 							[this.lineNum],
-							[this.columnNum]
+							[this.columnNum],
+							[this.programNum]
 						]);
 						this.subStringStartIndex++;
 						this.lineNum++;
@@ -396,6 +416,7 @@ module TSC
 							[this.tokenRegEx],
 							[this.lineNum],
 							[this.columnNum],
+							[this.programNum],
 							[this.programNum]
 						]);
 						this.subStringStartIndex++;
@@ -412,6 +433,7 @@ module TSC
 							[this.tokenRegEx],
 							[this.lineNum],
 							[this.columnNum],
+							[this.programNum],
 							[this.programNum]
 						]);
 						this.subStringStartIndex++;

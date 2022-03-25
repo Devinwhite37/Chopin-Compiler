@@ -55,7 +55,7 @@ module TSC {
             }
 
             public parseBlock() {
-                if(tokens[this.i][1]!=""){
+                //if(tokens[this.i][1]!=""){
                     this.parseOutput.push("Block");
                     for(this.i = this.i; this.i < tokens.length; this.i++){
                         if(tokens[this.i][1] == '{'){
@@ -84,13 +84,14 @@ module TSC {
                         }
                     }  
                 }
-                else{}
-        }
+                //else{}
+            //}
             public statmentList(){
                 this.parseOutput.push("StatementList");
                 for(this.i = this.i; this.i < tokens.length; this.i++){
                     console.log("token: " + tokens[this.i][1]);
-                    if(tokens[this.i][1] == 'print'){
+                    console.log("token: " + tokens[this.i][0]);
+                    if(tokens[this.i][0] == 'PRINT'){
                         //this.i--;
                         this.printStatement();
                     }
@@ -98,24 +99,29 @@ module TSC {
                         console.log("Assignment Ran");
                         this.assignmentStatement();
                     }
-                    else if(tokens[this.i+1][1] == '}' || tokens[this.i+1][1] =='{'){
+                    else if(tokens[this.i][1] == '}' || tokens[this.i][1] =='{'){
                         //this.i++;
                         console.log("epsilon");
                         this.parseOutput.push("VALID - Found ε on [ " + tokens[this.i][2] + " , " + tokens[this.i][3] + " ]");
                         //this.parseBlock();
                         break;
                     }
-                    /*else if(tokens[this.i][1] == undefined){
+                    else if(tokens[this.i][1] == "undefined"){
+                        console.log("undefined ran")
                         break;
-                    }*/
+                    }
 
                     //else if(tokens[this.i][2] == '')
             }
         }
             public printStatement(){
                 this.parseOutput.push("PrintStatement");
+                console.log("PRINT STATMENT RAN")
+                this.i--;
                 for(this.i = this.i; this.i < tokens.length; this.i++){
-                    if(tokens[this.i][1] == 'print'){
+                    console.log("token: " + tokens[this.i-1][1]);
+                    console.log("token: " + tokens[this.i-1][0]);
+                    if(tokens[this.i-1][1] == 'print'){
                         this.parseOutput.push("VALID - Expecting [PRINT], found [print]");
                     }
                     else if(tokens[this.i][0] == 'missingEOP'){
@@ -132,14 +138,15 @@ module TSC {
                     else if(tokens[this.i][1] == ')'){
                         this.parseOutput.push("VALID - Expecting [L_PAREN], found [)]");
                     }
-
-                    
+                    else{
+                        break;
+                    }
                 }
             }
+
             public assignmentStatement(){
                 console.log("AssiGNMENT RAN");
                 this.parseOutput.push("AssignmentStatement");
-
             }
     }
 }

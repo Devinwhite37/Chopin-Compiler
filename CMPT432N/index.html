@@ -103,9 +103,6 @@
 				}
 				else{
 				}
-				console.log("i: " + i);
-				console.log("j: " + j);
-				console.log("programNum: "+ programNum);
 				for(var i; i < tokens.length; i++){
 					console.log(i);
 					if(tokens[i][0] == 'INVALID_CHAR'){
@@ -145,10 +142,16 @@
 				}
 						putMessage("---------------------------");
 						putMessage("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).\n");
-						putMessage("Begin Parsing:");
-						for(var k = 0; k < productions.length; k++){
-							putMessage("PARSER -> | " + productions[k]);
-						}
+
+							putMessage("Begin Parsing:");
+							for(var l = 0; l < productions.length; l++){
+								if(productions[l+1]!=""){
+									putMessage("\nLexing Program "+ programNum);
+									putMessage("-----------------")
+								}
+								
+							}
+						
 			
 			}
 		}    
