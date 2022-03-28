@@ -8,46 +8,47 @@
     <link rel="stylesheet" href="dist/styles/bootstrap.min.css">
 </head>
 
-<body onload="init();">
+<body style="background-image: url(source/images/IMG_2456.jpg); background-repeat: no-repeat; background-size: cover;" onload="init();">
 	<nav class="topbar navbar navbar-expand-lg navbar-light bg-primary sticky-top">
-		<h1 style="font-family:cursive; text-align: center; color:black;">Chopin Compiler</h1>
+		<h1 style="font-family:cursive; text-align: center; color:black; font-size: 400%; font-style: italic;">𝄞       Chopin Compiler   𝄢</h1>
 	<h1> </h1>
 	</nav>
+</div>
 	<span class="page">
 	<div style="margin: 0 auto; display: table;">
-	<audio controls autoplay style="margin: 0;">
+	<audio controls style="padding: .7%;">
 		<source src="source/audio/nocturne_E_flat_major.mp3" type="audio/mpeg">
 		<source src="source/audio/nocturne_E_flat_major.mp3" type="audio/ogg">
 		<source src="source/audio/nocturne_E_flat_major.mp3" type="audio/wav">
 	</audio>
-	<audio controls autoplay>
+	<audio controls style="padding: .7%;"> 
 		<source src="source/audio/nocturne_C_sharp_minor.mp3" type="audio/mpeg">
 		<source src="source/audio/nocturne_C_sharp_minor.mp3" type="audio/ogg">
 		<source src="source/audio/nocturne_C_sharp_minor.mp3" type="audio/wav">
 	</audio>
-	<audio controls autoplay>
+	<audio controls style="padding: .7%;">
 		<source src="source/audio/nocturne_B_flat_minor.mp3" type="audio/mpeg">
 		<source src="source/audio/nocturne_B_flat_minor.mp3" type="audio/ogg">
 		<source src="source/audio/nocturne_B_flat_minor.mp3" type="audio/wav">
 	</audio>
 	</div>
-	<hr>
+	<hr style = "color:black;">
 	
-    <h4 style = "text-align:center;"><p><em>~ A relaxing compiler ~</em></p></h4>
+    <h4 style = "text-align:center; font-family: cursive; font-weight: bold; color:black">~ A relaxing compiler ~</h4>
 
     <div style="text-align:center;">
-        <input type="button" id="btnCompile" value="Compile" onclick="btnCompile_click();"/>
+        <input style="border:solid 1px black;" type="button" id="btnCompile" value="Compile" onclick="btnCompile_click();"/>
     </div>
 
     <div>
         <div class="source">
-            <textarea style="font-family:Courier New;" id="taSourceCode"></textarea>
-            <textarea style="font-family:Courier New;" id="taOutput"></textarea>
-        </div>        
+            <textarea style="font-family:Courier New; color:black; border:solid 2px black; font-weight: bold;" id="taSourceCode"></textarea>
+			<textarea style="font-family:Courier New; color: black; border:solid 2px black; font-weight: bold;" id="taOutput" readonly></textarea>
+			<hr>
+		</div>        
 	</div>
-	<hr>
-	<hr>
-	<h1>test<h1>
+	<h5 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 10px; font-weight: bold;">A Compiler by Devin White</h5>
+	
 	
 
     <!--<div>
