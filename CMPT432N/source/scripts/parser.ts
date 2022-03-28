@@ -117,15 +117,20 @@ module TSC {
             public printStatement(){
                 this.parseOutput.push("PrintStatement");
                 console.log("PRINT STATMENT RAN")
-                this.i--;
+                //this.i--;
                 for(this.i = this.i; this.i < tokens.length; this.i++){
                     console.log("token: " + tokens[this.i-1][1]);
                     console.log("token: " + tokens[this.i-1][0]);
-                    if(tokens[this.i-1][1] == 'print'){
+                    if(1==1){
+                        console.log("1=1");
+                    }
+                    if(tokens[this.i-1][0] == 'PRINT'){
+                        console.log("print ran");
                         this.parseOutput.push("VALID - Expecting [PRINT], found [print]");
+                        break;
                     }
-                    else if(tokens[this.i][0] == 'missingEOP'){
-                    }
+                    /*else if(tokens[this.i][0] == 'missingEOP'){
+                    }*/
                     else if(tokens[this.i][1] == '('){
                         this.parseOutput.push("VALID - Expecting [R_PAREN], found [(]");
                     }

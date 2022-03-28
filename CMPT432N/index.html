@@ -1,15 +1,39 @@
 <!DOCTYPE HTML>
 <html>
+	
 <head>
-    <title>White's Compiler</title>
+    <title>Chopin Compiler</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="dist/styles/compiler.css" />
     <link rel="stylesheet" href="dist/styles/bootstrap.min.css">
 </head>
+
 <body onload="init();">
-    <h1>White's Compiled Files</h1>
-    <hr>
-    <p>. . . <em>a simple parser for a simple grammar</em>:</p>
+	<nav class="topbar navbar navbar-expand-lg navbar-light bg-primary sticky-top">
+		<h1 style="font-family:cursive; text-align: center; color:black;">Chopin Compiler</h1>
+	<h1> </h1>
+	</nav>
+	<span class="page">
+	<div style="margin: 0 auto; display: table;">
+	<audio controls autoplay style="margin: 0;">
+		<source src="source/audio/nocturne_E_flat_major.mp3" type="audio/mpeg">
+		<source src="source/audio/nocturne_E_flat_major.mp3" type="audio/ogg">
+		<source src="source/audio/nocturne_E_flat_major.mp3" type="audio/wav">
+	</audio>
+	<audio controls autoplay>
+		<source src="source/audio/nocturne_C_sharp_minor.mp3" type="audio/mpeg">
+		<source src="source/audio/nocturne_C_sharp_minor.mp3" type="audio/ogg">
+		<source src="source/audio/nocturne_C_sharp_minor.mp3" type="audio/wav">
+	</audio>
+	<audio controls autoplay>
+		<source src="source/audio/nocturne_B_flat_minor.mp3" type="audio/mpeg">
+		<source src="source/audio/nocturne_B_flat_minor.mp3" type="audio/ogg">
+		<source src="source/audio/nocturne_B_flat_minor.mp3" type="audio/wav">
+	</audio>
+	</div>
+	<hr>
+	
+    <h4 style = "text-align:center;"><p><em>~ A relaxing compiler ~</em></p></h4>
 
     <div style="text-align:center;">
         <input type="button" id="btnCompile" value="Compile" onclick="btnCompile_click();"/>
@@ -20,7 +44,11 @@
             <textarea style="font-family:Courier New;" id="taSourceCode"></textarea>
             <textarea style="font-family:Courier New;" id="taOutput"></textarea>
         </div>        
-    </div>
+	</div>
+	<hr>
+	<hr>
+	<h1>test<h1>
+	
 
     <!--<div>
         <img style="display:block; margin-left:auto; margin-right:auto;"
@@ -131,6 +159,8 @@
 						programNum++;
 						putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 						//lexOutput();
+						errors = 0;
+						warnings = 0;
 						i = i+1;
 						break;
 						//putMessage("---------------------------");
@@ -143,17 +173,15 @@
 						putMessage("---------------------------");
 						putMessage("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).\n");
 
-							putMessage("Begin Parsing:");
+							putMessage("Begin Parsing Program "+ programNum);
+							putMessage("-----------------")
 							for(var l = 0; l < productions.length; l++){
-								if(productions[l+1]!=""){
-									putMessage("\nLexing Program "+ programNum);
-									putMessage("-----------------")
-								}
-								
+								//if(){
+									putMessage("PARSER -> " + productions[l]);
+
+								//}
 							}
-						
-			
-			}
+				}
 		}    
 		
 		/*function parseOutput(){
