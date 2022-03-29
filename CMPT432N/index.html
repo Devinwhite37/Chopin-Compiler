@@ -16,32 +16,47 @@
 </div>
 	<span class="page">
 	<div style="margin: 0 auto; display: table;">
-	<audio controls style="padding: .7%;">
+		<table>
+			<tr>
+				<th><h4 style="font-family:cursive; text-align: center; color:black; font-style: italic; font-weight: bold;">Nocturne in E Flat Major</h4></th>
+				<th><h4 style="font-family:cursive; text-align: center; color:black; font-style: italic; font-weight: bold;">Nocturne in C Sharp Minor</h4></th>
+				<th><h4 style="font-family:cursive; text-align: center; color:black; font-style: italic; font-weight: bold;">Nocturne in B Flat Minor</h4></th>
+			  </tr>
+			  <tr>
+				  <td>
+	<audio controls style="padding: 3%;">
 		<source src="source/audio/nocturne_E_flat_major.mp3" type="audio/mpeg">
 		<source src="source/audio/nocturne_E_flat_major.mp3" type="audio/ogg">
 		<source src="source/audio/nocturne_E_flat_major.mp3" type="audio/wav">
 	</audio>
-	<audio controls style="padding: .7%;"> 
+	</td>
+	<td>
+	<audio controls style="padding: 3%;"> 
 		<source src="source/audio/nocturne_C_sharp_minor.mp3" type="audio/mpeg">
 		<source src="source/audio/nocturne_C_sharp_minor.mp3" type="audio/ogg">
 		<source src="source/audio/nocturne_C_sharp_minor.mp3" type="audio/wav">
 	</audio>
-	<audio controls style="padding: .7%;">
+	</td>
+	<td>
+	<audio controls style="padding: 3%;">
 		<source src="source/audio/nocturne_B_flat_minor.mp3" type="audio/mpeg">
 		<source src="source/audio/nocturne_B_flat_minor.mp3" type="audio/ogg">
 		<source src="source/audio/nocturne_B_flat_minor.mp3" type="audio/wav">
 	</audio>
+	</td>
+	</table>
 	</div>
 	<hr style = "color:black;">
 	
-    <h4 style = "text-align:center; font-family: cursive; font-weight: bold; color:black">~ A classical compiler ~</h4>
+    <h3 style = "text-align:center; font-family: cursive; font-weight: bold; font-style: italic; color:black">A classical compiler featuring some of Chopin's finest works.</h3>
 
     <div style="text-align:center;">
-        <input style="border:solid 1px black;" type="button" id="btnCompile" value="Compile" onclick="btnCompile_click();"/>
+        <input style="border:solid 1px black; font-family:cursive; font-weight: bold; font-size: 150%" type="button" id="btnCompile" value="~Compile~" onclick="btnCompile_click();"/>
     </div>
 
     <div>
         <div class="source">
+			
             <textarea style="font-family:Courier New; color:black; border:solid 2px black; font-weight: bold;" id="taSourceCode"></textarea>
 			<textarea style="font-family:Courier New; color: black; border:solid 2px black; font-weight: bold;" id="taOutput" readonly></textarea>
 			<hr>

@@ -65,7 +65,6 @@ module TSC
 			
 				while(1==1){
 					while(sourceCode.length >=this.subStringEndIndex){
-
 					//ignores all text inside a comment
 					if(sourceCode.charAt(this.subStringEndIndex-1) == "/" && sourceCode.charAt(this.subStringEndIndex) == "*"){
 						this.subStringStartIndex+=2;
@@ -153,7 +152,6 @@ module TSC
 								]);
 								this.subStringStartIndex++;
 								this.lineNum++;
-								//this.subStringEndIndex++;
 							}
 							this.subStringEndIndex++;
 						}
@@ -186,7 +184,7 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 						}
-						
+					// creare ( token
 					else if(L_PAREN.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "L_PAREN";
 						this.tokenRegEx = "(";
@@ -197,11 +195,10 @@ module TSC
 							[this.columnNum],
 							[this.programNum]
 						]);
-			
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
-
+					//create ) token
 					else if(R_PAREN.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "R_PAREN";
 						this.tokenRegEx = ")";
@@ -212,7 +209,6 @@ module TSC
 							[this.columnNum],
 							[this.programNum]
 						]);
-			
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
@@ -351,7 +347,7 @@ module TSC
 						this.lineNum+=2;
 						this.subStringEndIndex++;						
 					}
-					
+					// create = token
 					else if(ASSIGN.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "ASSIGN";
 						this.tokenRegEx = "=";
@@ -366,6 +362,7 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
+					//create + token
 					else if(ADDITION_OP.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "ADDITION_OP";
 						this.tokenRegEx = "+";
@@ -395,6 +392,7 @@ module TSC
 						this.lineNum+=2;
 						this.subStringEndIndex++;						
 					}
+					// create a digit token
 					else if (DIGIT.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))) {
 						this.tokens = "DIGIT";
 						this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex-1);
@@ -408,6 +406,7 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
+					// create a variable token
 					else if (VARIABLE.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))) {
 						this.tokens = "VARIABLE";
 						this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex-1);
@@ -439,6 +438,7 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 						}
+						//create EOP token
 					else if(EOP.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "EOP";
 						this.tokenRegEx = "$";
