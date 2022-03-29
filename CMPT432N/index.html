@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="dist/styles/bootstrap.min.css">
 </head>
 
-<body style="background-image: url(source/images/IMG_2456.jpg); background-repeat: no-repeat; background-size: cover;" onload="init();">
+<body style="background-image: url(source/images/IMG_2468.jpg); background-repeat: no-repeat; background-size: cover;" onload="init();">
 	<nav class="topbar navbar navbar-expand-lg navbar-light bg-primary sticky-top">
 		<h1 style="font-family:cursive; text-align: center; color:black; font-size: 400%; font-style: italic;">𝄞       Chopin Compiler   𝄢</h1>
 	<h1> </h1>
@@ -56,10 +56,20 @@
 
     <div>
         <div class="source">
+			<table class = "center">
+				<tr>
+					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 10px; font-weight: bold;">Input</h3></td>
+					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 10px; font-weight: bold;">Output</h3></td>
+				</tr>
+				<tr>
+					<td><textarea style="font-family:Courier New; color:black; border:solid 2px black; font-weight: bold;" id="taSourceCode"></textarea></td>
+					<td><textarea style="font-family:Courier New; color: black; border:solid 2px black; font-weight: bold;" id="taOutput" readonly></textarea></td>
+				</tr>
+			</table>
+            
 			
-            <textarea style="font-family:Courier New; color:black; border:solid 2px black; font-weight: bold;" id="taSourceCode"></textarea>
-			<textarea style="font-family:Courier New; color: black; border:solid 2px black; font-weight: bold;" id="taOutput" readonly></textarea>
-			<hr>
+			
+
 		</div>        
 	</div>
 	<h5 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 10px; font-weight: bold;">A Compiler by Devin White</h5>
@@ -120,7 +130,8 @@
 	    }
     
 	    function putMessage(msg) {
-	        document.getElementById("taOutput").value += msg + "\n";
+			document.getElementById("taOutput").value += msg + "\n";
+			
 		}
 		
 		function compile(){

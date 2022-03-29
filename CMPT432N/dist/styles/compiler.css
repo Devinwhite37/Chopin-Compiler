@@ -36,21 +36,24 @@ h1{
 	width:200px;
 	text-align: center;
 }
-.output{
-	float:right;
-	margin:;
 
-}
 .source{
-	float:left;
 	display: inline-block;
 	width:100%;
 }
-#taSourceCode, #taOutput{
-	width:48%;
+.center {
+	margin-left: auto;
+	margin-right: auto;
+  }
+
+#taSourceCode{
+	width:450px;
 	margin: 10px;
 	height:400px;
 }
 #taOutput{
-	float:right;
+	width:450px;
+	margin: 10px;
+	height:400px;
 }
+
