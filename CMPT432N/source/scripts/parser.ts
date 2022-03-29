@@ -117,21 +117,21 @@ module TSC {
             public printStatement(){
                 this.parseOutput.push("PrintStatement");
                 console.log("PRINT STATMENT RAN")
-                //this.i--;
                 for(this.i = this.i; this.i < tokens.length; this.i++){
                     console.log("token: " + tokens[this.i-1][1]);
                     console.log("token: " + tokens[this.i-1][0]);
-                    if(1==1){
-                        console.log("1=1");
-                    }
-                    if(tokens[this.i-1][0] == 'PRINT'){
-                        console.log("print ran");
+                    if(tokens[this.i][0] == 'PRINT'){
+                        this.i++;
                         this.parseOutput.push("VALID - Expecting [PRINT], found [print]");
-                        break;
+                        if(tokens[this.i][0] == '('){
+                            this.parseOutput.push("VALID - Expecting [L_PAREN], found [(]");
+                            console.log("test");
+                            break;
+                        }
                     }
                     /*else if(tokens[this.i][0] == 'missingEOP'){
                     }*/
-                    else if(tokens[this.i][1] == '('){
+                    /*else if(tokens[this.i][1] == '('){
                         this.parseOutput.push("VALID - Expecting [R_PAREN], found [(]");
                     }
                     else if(tokens[this.i][1] != '('){
@@ -142,7 +142,7 @@ module TSC {
                     }
                     else if(tokens[this.i][1] == ')'){
                         this.parseOutput.push("VALID - Expecting [L_PAREN], found [)]");
-                    }
+                    }*/
                     else{
                         break;
                     }
