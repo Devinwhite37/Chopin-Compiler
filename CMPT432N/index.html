@@ -4,11 +4,11 @@
 <head>
     <title>Chopin Compiler</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet" type="text/css" href="dist/styles/compiler.css" />
-    <link rel="stylesheet" href="dist/styles/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="source/styles/compiler.css" />
+    <link rel="stylesheet" href="source/styles/bootstrap.min.css">
 </head>
 
-<body style="background-image: url(source/images/IMG_2468.jpg); background-repeat: no-repeat; background-size: cover;" onload="init();">
+<body style="background-image: url(source/images/IMG_2468.jpg); background-repeat: repeat; background-size: cover;" onload="init();">
 	<nav class="topbar navbar navbar-expand-lg navbar-light bg-primary sticky-top">
 		<h1 style="font-family:cursive; text-align: center; color:black; font-size: 400%; font-style: italic;">𝄞       Chopin Compiler   𝄢</h1>
 	<h1> </h1>
@@ -58,12 +58,20 @@
         <div class="source">
 			<table class = "center">
 				<tr>
-					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 10px; font-weight: bold;">Input</h3></td>
-					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 10px; font-weight: bold;">Output</h3></td>
+					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Input</h3></td>
+					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Output</h3></td>
 				</tr>
 				<tr>
-					<td><textarea style="font-family:Courier New; color:black; border:solid 2px black; font-weight: bold;" id="taSourceCode"></textarea></td>
-					<td><textarea style="font-family:Courier New; color: black; border:solid 2px black; font-weight: bold;" id="taOutput" readonly></textarea></td>
+					<td><textarea id="taSourceCode"></textarea></td>
+					<td><textarea id="taOutput" readonly></textarea></td>
+				</tr>
+				<tr>
+					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">CST</h3></td>
+					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">AST</h3></td>
+				</tr>
+				<tr>
+					<td><textarea id="taCST" readonly></textarea></td>
+					<td><textarea id="taAST" readonly></textarea></td>
 				</tr>
 			</table>
             
