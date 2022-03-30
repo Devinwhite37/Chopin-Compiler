@@ -45,7 +45,7 @@ h1{
 
 #taSourceCode{
 	width:400px;
-	margin: 20px;
+	margin: 15px;
     height:450px;
     font-family:Courier New; 
     color: black; 
@@ -55,7 +55,7 @@ h1{
 
 #taOutput, #taCST, #taAST{
 	width:400px;
-	margin: 20px;
+	margin: 15px;
     height:450px;
     font-family:Courier New; 
     color: black; 
@@ -63,7 +63,7 @@ h1{
     font-weight: bold;
     background-color: #F2F2F2;
 }
-
+/* button code found from https://getcssscan.com/css-buttons-examples*/
 #btnCompile {
   appearance: none;
   backface-visibility: hidden;

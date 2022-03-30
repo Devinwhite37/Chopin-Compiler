@@ -143,7 +143,7 @@
 		}
 		
 		function compile(){
-			if (tokens == ""){
+			if (tokens == null){
 				putMessage("Well that's random. Try compiling some code next time.");
 			}
 			else{
@@ -170,7 +170,6 @@
 				else{
 				}
 				for(var i; i < tokens.length; i++){
-					console.log(i);
 					if(tokens[i][0] == 'INVALID_CHAR'){
 						errors++;
 						putMessage("LEXER -> | ERROR: Invalid Token [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
@@ -194,7 +193,7 @@
 						putMessage("LEXER -> | WARNING: Missing EOP [ $ ] at end of file.");
 					}
 					else if(tokens[i][0] == 'EOP'){
-						programNum++;
+						//programNum++;
 						putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 						//lexOutput();
 						errors = 0;
@@ -214,10 +213,13 @@
 							putMessage("Begin Parsing Program "+ programNum);
 							putMessage("-----------------")
 							for(var l = 0; l < productions.length; l++){
-								//if(){
+								if(productions[l] == 'VALID - Found [EOP]'){
+									programNum++;
 									putMessage("PARSER -> " + productions[l]);
-
-								//}
+								}
+								else{
+									putMessage("PARSER -> " + productions[l]);
+								}
 							}
 				}
 		}    

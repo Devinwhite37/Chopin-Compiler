@@ -48,8 +48,10 @@ module TSC {
                 //this.cst = new Tree();
 
             }
-            public parse() { 
-                if(tokens[this.currentToken][1] == '{'){
+            public parse() {
+                if(tokens[this.currentToken][1] == undefined){
+                } 
+                else if(tokens[this.currentToken][1] == '{'){
                     this.parseBlock();
                 }
                 else{
@@ -102,12 +104,15 @@ module TSC {
                     this.parseOutput.push("VALID - Found [R_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                     if(tokens[this.currentToken][1] == '$'){
-                        this.parseOutput.push("VALID - Found [EOP] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                        this.parseOutput.push("VALID - Found [EOP]");
                         this.currentToken++;
                     }
                     else{
                         this.statementList();
                     }
+                }
+                else if(tokens[this.currentToken][1] != '}'){
+                    this.parseOutput.push("ERROR - No )")
                 }
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
@@ -123,7 +128,8 @@ module TSC {
                         || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
                         || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
                         //goes to statement
-                        console.log("statement elif ran");
+                        //console.log("statement elif ran");
+                        //this.currentToken++;
                         this.statement();
                         //if the current token is EOP then loop here
                         /*while (tokens[this.currentToken][0] != "EOP") {
@@ -131,7 +137,7 @@ module TSC {
                             this.statementList();
                         }*/
                     
-                    if(tokens[this.currentToken][1] == '}'){
+                    /*if(tokens[this.currentToken][1] == '}'){
                         //this.currentToken++;
                         console.log("epsilon");
                         this.parseOutput.push("VALID - Found ε on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -140,7 +146,7 @@ module TSC {
                     }
                     else if(tokens[this.currentToken][1] =='{'){
                         this.parseBlock();
-                    }
+                    }*/
                     /*else if(tokens[this.currentToken][1] == "undefined"){
                         console.log("undefined ran")
                         break;
@@ -149,49 +155,66 @@ module TSC {
                     //else if(tokens[this.currentToken][2] == '')
             //}
                     }
+                    else{
+                        return;
+                    }
             }
             public statement(){
                 this.parseOutput.push("Statement");
                 if(tokens[this.currentToken][0] == 'PRINT'){
+                    this.currentToken++;
                     this.printStatement();
                 }
                 else if(tokens[this.currentToken][0] == 'VARIABLE'){
-                    console.log("Assignment Ran");
                     this.assignmentStatement();
+                }
+                else if(tokens[this.currentToken][0] == 'VARIABLE'){
+                    this.assignmentStatement();
+                }
+                else if(tokens[this.currentToken][0] == 'VARIABLE'){
+                    this.assignmentStatement();
+                }
+                else if(tokens[this.currentToken][0] == 'VARIABLE'){
+                    this.assignmentStatement();
+                }
+                else{
+                    return;
                 }
             }
             public printStatement(){
                 this.parseOutput.push("PrintStatement");
-                console.log("PRINT STATMENT RAN")
-                //for(this.currentToken = this.currentToken; this.currentToken < tokens.length; this.currentToken++){
-                    if(tokens[this.currentToken][0] == 'PRINT'){
-                        this.currentToken++;
-                        console.log("token: " + tokens[this.currentToken][1]);
-                        console.log("token: " + tokens[this.currentToken][0]);
-                        this.parseOutput.push("VALID - Found [PRINT] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                        if(tokens[this.currentToken][1] == '('){
-                            this.parseOutput.push("VALID - Found [L_PAREN] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                            return;
-                        }
-                    }
-                    /*else if(tokens[this.currentToken][0] == 'missingEOP'){
-                    }*/
-                    /*else if(tokens[this.currentToken][1] == '('){
-                        this.parseOutput.push("VALID - Expecting [R_PAREN], found [(]");
-                    }
-                    else if(tokens[this.currentToken][1] != '('){
-                        this.parseOutput.push("ERROR - Expecting [R_PAREN], found ["+ tokens[this.currentToken][0]+"]");
-                    }
-                    else if(tokens[this.currentToken][0] == 'DIGIT' || 'VARIABLE'){
-                        this.parseOutput.push("VALID - Expecting [EXPR], found [" + tokens[this.currentToken][0] + "]");
-                    }
-                    else if(tokens[this.currentToken][1] == ')'){
-                        this.parseOutput.push("VALID - Expecting [L_PAREN], found [)]");
-                    }*/
-                    else{
-                        return;
-                    }
-                //}
+                if(tokens[this.currentToken][1] == '('){
+                    this.parseOutput.push("VALID - Found [L_PAREN] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.currentToken++;
+                    this.expression();
+                    return;
+                }
+            }
+            
+            public expression(){
+                console.log("EXPR");
+                this.parseOutput.push("Expr");
+                if (tokens[this.currentToken][0] == "DIGIT") {
+                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
+                    return;
+                    this.intExpr();
+                } 
+                /*else if (tokens[this.currentToken][0] == "QUOTE") {
+                    stringExpr();
+                } 
+                else if (tokens[this.currentToken][0] == "LEFT_PARENTHESES" || currentToken.type == "BOOL") {
+                    booleanExpr();
+                } 
+                else if (tokens[this.currentToken][0] == "VARIABLE") {
+                    iD();
+                }*/
+            }
+
+            public intExpr(){
+                this.parseOutput.push("IntExpr");
+                if(tokens[this.currentToken][0] == 'ADDITION_OP'){
+
+                }
             }
 
             public assignmentStatement(){
