@@ -29,7 +29,7 @@ module TSC
 		//tells wheater or not EOP marker is found
 		eopFound: boolean = false;
 		programNum = 1;
-		//tells wheater on not we are in a comment
+		//tells wheater on not we are in a comment or quote
 		commented: boolean = false;
 		inQuote: boolean = false;
 		constructor(){}
@@ -39,6 +39,7 @@ module TSC
 				var sourceCode = (<HTMLInputElement>document.getElementById("taSourceCode")).value;
 		        // Trim the leading and trailing spaces.
 				sourceCode = TSC.Utils.trim(sourceCode);
+				
 				// Declare Regular Expressions for single characters in our grammar.
 				// Multiple character tokens are taken care of using character matching if statments
 				const L_BRACE = new RegExp('{');
@@ -53,8 +54,6 @@ module TSC
 				const DIGIT = new RegExp('[0-9]');
 				const ADDITION_OP = new RegExp('\\+');
 				const EOP = new RegExp('\\$');
-				//const WHITESPACE = new RegExp('\t|\n|\r');
-
 				//includes all possible characters so comment block can increment
 				//line num for anything entered in a comment
 				const ANY_CHAR = new RegExp('.');
@@ -184,6 +183,7 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 						}
+
 					// creare ( token
 					else if(L_PAREN.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "L_PAREN";
@@ -198,6 +198,7 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
+
 					//create ) token
 					else if(R_PAREN.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "R_PAREN";
@@ -212,6 +213,7 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 					}
+
 					//create IF token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "i" && sourceCode.charAt(this.subStringEndIndex) == "f"){
 							this.tokens = "IF";
@@ -227,6 +229,7 @@ module TSC
 						this.lineNum+=2;
 						this.subStringEndIndex++;						
 					}
+
 					//create INT token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "i" && sourceCode.charAt(this.subStringEndIndex) == "n" && sourceCode.charAt(this.subStringEndIndex+1) == "t" && sourceCode.charAt(this.subStringEndIndex-3) != "p"){
 						this.tokens = "INT_TYPE";
@@ -242,6 +245,7 @@ module TSC
 						this.lineNum+=3;
 						this.subStringEndIndex+=2;						
 					}
+
 					//creat PRINT token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "p" && sourceCode.charAt(this.subStringEndIndex) == "r" && sourceCode.charAt(this.subStringEndIndex+1) == "i" && sourceCode.charAt(this.subStringEndIndex+2) == "n" && sourceCode.charAt(this.subStringEndIndex+3) == "t"){
 						this.tokens = "PRINT";
@@ -257,6 +261,7 @@ module TSC
 						this.lineNum+=5;
 						this.subStringEndIndex+=4;						
 					}
+
 					//create WHILE token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "w" && sourceCode.charAt(this.subStringEndIndex) == "h" && sourceCode.charAt(this.subStringEndIndex+1) == "i" && sourceCode.charAt(this.subStringEndIndex+2) == "l" && sourceCode.charAt(this.subStringEndIndex+3) == "e"){
 						this.tokens = "WHILE";
@@ -272,6 +277,7 @@ module TSC
 						this.lineNum+=5;
 						this.subStringEndIndex+=4;						
 					}
+
 					//create false token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "f" && sourceCode.charAt(this.subStringEndIndex) == "a" && sourceCode.charAt(this.subStringEndIndex+1) == "l" && sourceCode.charAt(this.subStringEndIndex+2) == "s" && sourceCode.charAt(this.subStringEndIndex+3) == "e"){
 						this.tokens = "BOOL_FALSE";
@@ -287,6 +293,7 @@ module TSC
 						this.lineNum+=5;
 						this.subStringEndIndex+=4;						
 					}
+
 					//create boolean token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "b" && sourceCode.charAt(this.subStringEndIndex) == "o" && sourceCode.charAt(this.subStringEndIndex+1) == "o" && sourceCode.charAt(this.subStringEndIndex+2) == "l" && sourceCode.charAt(this.subStringEndIndex+3) == "e" && sourceCode.charAt(this.subStringEndIndex+4) == "a" && sourceCode.charAt(this.subStringEndIndex+5) == "n"){
 						this.tokens = "BOOL_TYPE";
@@ -302,6 +309,7 @@ module TSC
 						this.lineNum+=7;
 						this.subStringEndIndex+=6;						
 					}
+
 					//create true token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "t" && sourceCode.charAt(this.subStringEndIndex) == "r" && sourceCode.charAt(this.subStringEndIndex+1) == "u" && sourceCode.charAt(this.subStringEndIndex+2) == "e"){
 						this.tokens = "BOOL_TRUE";
@@ -317,6 +325,7 @@ module TSC
 						this.lineNum+=4;
 						this.subStringEndIndex+=3;						
 					}
+
 					//create string token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "s" && sourceCode.charAt(this.subStringEndIndex) == "t" && sourceCode.charAt(this.subStringEndIndex+1) == "r" && sourceCode.charAt(this.subStringEndIndex+2) == "i" && sourceCode.charAt(this.subStringEndIndex+3) == "n" && sourceCode.charAt(this.subStringEndIndex+4) == "g"){
 						this.tokens = "STRING_TYPE";
@@ -332,6 +341,7 @@ module TSC
 						this.lineNum+=6;
 						this.subStringEndIndex+=5;						
 					}
+
 					//create == token
 					else if(sourceCode.charAt(this.subStringEndIndex-1) == "=" && sourceCode.charAt(this.subStringEndIndex) == "="){
 						this.tokens = "BOOL_EQUAL";
@@ -347,6 +357,7 @@ module TSC
 						this.lineNum+=2;
 						this.subStringEndIndex++;						
 					}
+
 					// create = token
 					else if(ASSIGN.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "ASSIGN";
@@ -438,6 +449,7 @@ module TSC
 						this.subStringStartIndex++;
 						this.lineNum++;
 						}
+
 						//create EOP token
 					else if(EOP.test(sourceCode.substring(this.subStringStartIndex,this.subStringEndIndex))){
 						this.tokens = "EOP";

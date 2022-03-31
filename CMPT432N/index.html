@@ -62,7 +62,7 @@
 					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Output</h3></td>
 				</tr>
 				<tr>
-					<td><textarea id="taSourceCode"></textarea></td>
+					<td><textarea class="lined" id="taSourceCode" autofocus></textarea></td>
 					<td><textarea id="taOutput" readonly></textarea></td>
 				</tr>
 				<tr>
@@ -127,11 +127,6 @@
 
 			let parser = new TSC.Parser();
 			productions = parser.parse();
-
-			console.log("HTML tokens: ");
-			console.log(tokens);
-			console.log("HTML productions: ");
-			console.log(productions);
 			// . . . and parse!
 			
 	        compile();
