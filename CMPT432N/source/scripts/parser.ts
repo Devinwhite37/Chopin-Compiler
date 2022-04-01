@@ -1,4 +1,15 @@
+/* parser.ts  */
 
+/**
+ * parser.ts
+ * Devin White, CMPT432N
+ * 
+ * Inspiration taken from Sonar in hall of fame projects.
+ * 
+ * parser.ts is used to read the tokens created by lexer.
+ * parser will test these tokens against our grammer to 
+ * ensure weve made correct productions
+ */
 
 module TSC {
         export class Parser {
@@ -15,8 +26,8 @@ module TSC {
                 // Tree data structure
                 //this.cst = new Tree();
                 this.braces = 0;
-
             }
+
             public parse() {
                 if(tokens[this.currentToken][1] == undefined){
                 } 
@@ -30,47 +41,16 @@ module TSC {
                 return this.parseOutput;
             }
 
-            /*public parseBlock() {
-                //if(tokens[this.currentToken][1]!=""){
-                    this.parseOutput.push("Block");
-                    for(this.currentToken = this.currentToken; this.currentToken < tokens.length; this.currentToken++){
-                        if(tokens[this.currentToken][1] == '{'){
-                            this.parseOutput.push("VALID - Expecting [L_BRACE], found [{] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                            this.currentToken++;
-                            this.statementList();
-                            if(tokens[this.currentToken][1] == '}'){
-                                this.parseOutput.push("VALID - Expecting [R_BRACE], found [}] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                                this.currentToken++;
-                                if(tokens[this.currentToken][1] == '$'){
-                                    this.parseOutput.push("VALID - Expecting [EOP], found [$] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                                }
-                                else if(tokens[this.currentToken][0] != '$'){
-                                    this.parseOutput.push("ERROR - Expecting [EOP]");
-                                    break;
-                                }
-                            }
-                            else if(tokens[this.currentToken][1] != '}'){
-                                this.parseOutput.push("ERROR - Expecting [}]");
-                                break;
-                            }
-                        }
-                        else if(tokens[this.currentToken][1] != '{'){
-                            this.parseOutput.push("ERROR - Expecting [{]");
-                            break;
-                        }
-                    }  
-                }*/
-                //else{}
-            //}
             public parseBlock(){
                 this.parseOutput.push("Block");
                 if(tokens[this.currentToken][1] == '{'){
                     this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
-                    this.statementList();
-                    console.log("SHould be here now"+ tokens[this.currentToken][1]);
-
                     this.braces++;   
+ 
+                    this.statementList();
+                    //console.log("SHould be here now"+ tokens[this.currentToken][1]);
+
                 }
                 else if(tokens[this.currentToken][1] == '}'){
                     this.parseOutput.push("VALID - Found [R_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -94,19 +74,22 @@ module TSC {
             }
             public statementList(){
                 this.parseOutput.push("StatementList");
-                    /*if (tokens[this.currentToken][1] == '}') {
-                        this.parseBlock();
-                    }*/
-                    if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
-                        || tokens[this.currentToken][0] == "INT_TYPE" || tokens[this.currentToken][0] == "STRING_TYPE"
-                        || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
-                        || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
-                        //console.log("statement elif ran");
-                        //this.currentToken++;
-                        this.statement();
-                    }
-                    console.log("Statement list return");
-                    return;
+                if(tokens[this.currentToken][1] == '}'){
+                    this.parseBlock();
+                }
+                /*if (tokens[this.currentToken][1] == '}') {
+                    this.parseBlock();
+                }*/
+                else if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
+                    || tokens[this.currentToken][0] == "INT_TYPE" || tokens[this.currentToken][0] == "STRING_TYPE"
+                    || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
+                    || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
+                    //console.log("statement elif ran");
+                    //this.currentToken++;
+                    this.statement();
+                }
+                console.log("Statement list return");
+                return;
             }
             public statement(){
                 this.parseOutput.push("Statement");
@@ -142,16 +125,18 @@ module TSC {
                     this.parseOutput.push("VALID - Found [L_PAREN] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                     this.expression();
-                    console.log("does this run?");
-                    console.log("this is " + tokens[this.currentToken][1])
                     if(tokens[this.currentToken][1] == ')'){
-                        console.log("why this no run");
                         this.parseOutput.push("VALID - Found [R_PAREN] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                         this.currentToken++;
-                        console.log("this is " + tokens[this.currentToken][1] + " now")
-                        return;
                     }
-                }   
+                    else{
+                        this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
+                    }
+                }
+                else{
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
+                }
+                return;
             }
             
             public expression(){
@@ -162,6 +147,19 @@ module TSC {
                     this.currentToken++;
                     this.intExpr();
                 } 
+                else if (tokens[this.currentToken][0] == "DOUBLE_QUOTE") {
+                    this.currentToken++;
+                    this.stringExpr();
+                }
+                else if (tokens[this.currentToken][0] == "VARIABLE") {
+                    this.currentToken++;
+                    this.charList();
+                }
+                else if (tokens[this.currentToken][0] == "L_PAREN" || "BOOL_TRUE" || "BOOL_FALSE") {
+                    this.currentToken++;
+                    this.booleanExpr();
+                }
+                
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
                     return;
@@ -176,7 +174,24 @@ module TSC {
                     this.expression();
                     return;
                 }
-                else{
+                return;
+                
+            }
+
+            public stringExpr(){
+                this.parseOutput.push("StringExpr");
+                this.charList();
+            }
+
+            public charList(){
+                this.parseOutput.push("CharList with value of [" + tokens[this.currentToken][1] + "]"); 
+                this.currentToken++;
+
+                if(tokens[this.currentToken][0] == "CHAR"){
+                    this.charList();
+                }
+                else if(tokens[this.currentToken][0] == "DOUBLE_QUOTE"){
+                    this.currentToken++;
                     return;
                 }
             }
@@ -184,6 +199,10 @@ module TSC {
             public assignmentStatement(){
                 console.log("AssiGNMENT RAN");
                 this.parseOutput.push("AssignmentStatement");
+            }
+
+            public booleanExpr(){
+                this.parseOutput.push("BooleanExpr");
             }
 
 

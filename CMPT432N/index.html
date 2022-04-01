@@ -74,10 +74,6 @@
 					<td><textarea id="taAST" readonly></textarea></td>
 				</tr>
 			</table>
-            
-			
-			
-
 		</div>        
 	</div>
 	<h5 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 10px; font-weight: bold;">A Compiler by Devin White</h5>
@@ -105,7 +101,9 @@
     <script type="text/javascript">
 		 function init() {
 	        // Clear the message box.
-	        document.getElementById("taOutput").value = "";
+			document.getElementById("taOutput").value = "";
+			document.getElementById("taCST").value = "";
+
 	        // Set the initial values for our globals.
 	        tokens = "";
 	        tokenIndex = 0;
@@ -125,6 +123,8 @@
 			tokens = lexer.lex();
 			programNum = 1;
 
+			console.log("HTML TOKENS:");
+			console.log(tokens);
 			let parser = new TSC.Parser();
 			productions = parser.parse();
 			// . . . and parse!
@@ -132,21 +132,26 @@
 	        compile();
 	    }
     
-	    function putMessage(msg) {
-			document.getElementById("taOutput").value += msg + "\n";
-			
+	    function putMessageOP(msgOP) {
+			document.getElementById("taOutput").value += msgOP + "\n";
+		}
+
+		function putMessageCST(msgCST) {
+			document.getElementById("taCST").value += msgCST + "\n";
 		}
 		
 		function compile(){
 			if (tokens == null){
-				putMessage("Well that's random. Try compiling some code next time.");
+				putMessageOP("Well that's random. Try compiling some code next time.");
 			}
 			else{
-				putMessage("Compilation Started");
-				putMessage("LEXICAL ANALYSIS:");
-				//putMessage("Lexing Program "+ programNum);
-				//putMessage("-----------------")
+				putMessageOP("Compilation Started");
+				putMessageOP("LEXICAL ANALYSIS:");
+				//putMessageOP("Lexing Program "+ programNum);
+				//putMessageOP("-----------------")
 				lexOutput();
+				cstOutput();
+
 				//parseOutput();
 			}
 			
@@ -159,83 +164,87 @@
 			for(var j = 0; j < programNum; j++){
 
 				if(tokens[i+1][0]!=""){
-				putMessage("\nLexing Program "+ programNum);
-				putMessage("-----------------")
+				putMessageOP("\nLexing Program "+ programNum);
+				putMessageOP("-----------------")
 				}
 				else{
 				}
 				for(var i; i < tokens.length; i++){
 					if(tokens[i][0] == 'INVALID_CHAR'){
 						errors++;
-						putMessage("LEXER -> | ERROR: Invalid Token [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
-						putMessage("Lexical Analysis stopped due to error.")
+						putMessageOP("LEXER -> | ERROR: Invalid Token [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
+						putMessageOP("Lexical Analysis stopped due to error.")
 						break;
 					}
 					else if(tokens[i][0] == 'missingCommentEnd'){
 						errors++;
-						putMessage("LEXER -> | ERROR: Missing Comment End");
-						putMessage("Lexical Analysis stopped due to error.")
+						putMessageOP("LEXER -> | ERROR: Missing Comment End");
+						putMessageOP("Lexical Analysis stopped due to error.")
 						break;
 					}
 					else if(tokens[i][0] == 'missingQuoteEnd'){
 						errors++;
-						putMessage("LEXER -> | ERROR: Missing Quote End");
-						putMessage("Lexical Analysis stopped due to error.")
+						putMessageOP("LEXER -> | ERROR: Missing Quote End");
+						putMessageOP("Lexical Analysis stopped due to error.")
 						break;
 					}
 					else if(tokens[i][0] == 'missingEOP'){
 						warnings++;
-						putMessage("LEXER -> | WARNING: Missing EOP [ $ ] at end of file.");
+						putMessageOP("LEXER -> | WARNING: Missing EOP [ $ ] at end of file.");
 					}
 					else if(tokens[i][0] == 'EOP'){
 						//programNum++;
-						putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
+						putMessageOP("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 						//lexOutput();
 						errors = 0;
 						warnings = 0;
 						i = i+1;
 						break;
-						//putMessage("---------------------------");
-						//putMessage("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).");
+						//putMessageOP("---------------------------");
+						//putMessageOP("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).");
 					}
 					else{
-						putMessage("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
+						putMessageOP("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 					}	
 				}
-						putMessage("---------------------------");
-						putMessage("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).\n");
+						putMessageOP("---------------------------");
+						putMessageOP("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).\n");
 
-							putMessage("Begin Parsing Program "+ programNum);
-							putMessage("-----------------")
+							putMessageOP("Begin Parsing Program "+ programNum);
+							putMessageOP("-----------------")
 							for(var l = 0; l < productions.length; l++){
 								if(productions[l] == 'VALID - Found [EOP]'){
 									programNum++;
-									putMessage("PARSER -> " + productions[l]);
+									putMessageOP("PARSER -> " + productions[l]);
 								}
 								else{
-									putMessage("PARSER -> " + productions[l]);
+									putMessageOP("PARSER -> " + productions[l]);
 								}
 							}
 				}
 		}    
+		function cstOutput(){
+			putMessageCST("<Program 1>");
+
+		}
 		
 		/*function parseOutput(){
 			putMesage("Begin Parsing:");
 			for(var i = 0; i < productions.length; i++){
-				putMessage("PARSER -> | " + productions[i]);
+				putMessageOP("PARSER -> | " + productions[i]);
 			}
 		}*/
 	
 	 	 // TODO: These parse routines really should be in TypeScript.
 		 //       This exercise is left to the student. Consider it project 0.5 .
 	    /*function parse() {
-	        putMessage("Parsing [" + tokens + "]");
+	        putMessageOP("Parsing [" + tokens + "]");
 	        // Grab the next token.
 	        currentToken = getNextToken();
 	        // A valid parse derives the G(oal) production, so begin there.
 	        parseG();
 	        // Report the results.
-	        putMessage("Parsing found " + errorCount + " error(s).");        
+	        putMessageOP("Parsing found " + errorCount + " error(s).");        
 	    }
     
 	    function parseG() {
@@ -255,40 +264,40 @@
 	        } else {
 	            // There is nothing else in the token stream, 
 	            // and that's cool since E ::== digit is valid.
-	            putMessage("EOF reached");
+	            putMessageOP("EOF reached");
 	        }
 	    }*/
 
 	    function checkToken(expectedKind) {
 	        // Validate that we have the expected token kind and et the next token.
 	        switch(expectedKind) {
-	            case "digit":   putMessage("Expecting a digit");
+	            case "digit":   putMessageOP("Expecting a digit");
 	                            if (currentToken=="0" || currentToken=="1" || currentToken=="2" || 
 	                                currentToken=="3" || currentToken=="4" || currentToken=="5" || 
 	                                currentToken=="6" || currentToken=="7" || currentToken=="8" || 
 	                                currentToken=="9")
 	                            {
-									putMessage("Got a digit!");
+									putMessageOP("Got a digit!");
 									console.log("digit");
 	                            }
 	                            else
 	                            {
 	                                errorCount++;
-	                                putMessage("NOT a digit.  Error at position " + tokenIndex + ".");
+	                                putMessageOP("NOT a digit.  Error at position " + tokenIndex + ".");
 	                            }
 	                            break;
-	            case "op":      putMessage("Expecting an operator");
+	            case "op":      putMessageOP("Expecting an operator");
 	                            if (currentToken=="+" || currentToken=="-")
 	                            {
-	                                putMessage("Got an operator!");
+	                                putMessageOP("Got an operator!");
 	                            }
 	                            else
 	                            {
 	                                errorCount++;
-	                                putMessage("NOT an operator.  Error at position " + tokenIndex + ".");
+	                                putMessageOP("NOT an operator.  Error at position " + tokenIndex + ".");
 	                            }
 	                            break;
-	            default:        putMessage("Parse Error: Invalid Token Type at position " + tokenIndex + ".");
+	            default:        putMessageOP("Parse Error: Invalid Token Type at position " + tokenIndex + ".");
 	                            break;			
 	        }
 	        // Consume another token, having just checked this one, because that 
@@ -302,7 +311,7 @@
 	        {
 	            // If we're not at EOF, then return the next token in the stream and advance the index.
 	            thisToken = tokens[tokenIndex];
-	            putMessage("Current token:" + thisToken);
+	            putMessageOP("Current token:" + thisToken);
 	            tokenIndex++;
 	        }
 	        return thisToken;
