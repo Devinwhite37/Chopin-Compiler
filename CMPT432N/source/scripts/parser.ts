@@ -98,10 +98,13 @@ module TSC {
                     this.printStatement();
                 }
                 else if(tokens[this.currentToken][0] == 'VARIABLE'){
+                    this.currentToken++;
                     this.assignmentStatement();
                 }
-                else if(tokens[this.currentToken][0] == 'VARIABLE'){
-                    this.assignmentStatement();
+                else if(tokens[this.currentToken][0] == 'INT_TYPE' || 'BOOL_TYPE' || 'STRING_TYPE'){
+                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][1] + "]");
+                    this.currentToken++;
+                    this.varDecl();
                 }
                 else if(tokens[this.currentToken][0] == 'VARIABLE'){
                     this.assignmentStatement();
@@ -114,6 +117,9 @@ module TSC {
                 }
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]")
+                }
+                if(tokens[this.currentToken][1] == '}' || '{'){
+                    this.parseBlock();
                 }
                 console.log("Statement return");
                 return;
@@ -155,7 +161,8 @@ module TSC {
                     this.currentToken++;
                     this.charList();
                 }
-                else if (tokens[this.currentToken][0] == "L_PAREN" || "BOOL_TRUE" || "BOOL_FALSE") {
+                else if (tokens[this.currentToken][1] == '(' || 'true' || 'false') {
+                    console.log(tokens[this.currentToken][0]);
                     this.currentToken++;
                     this.booleanExpr();
                 }
@@ -186,7 +193,6 @@ module TSC {
             public charList(){
                 this.parseOutput.push("CharList with value of [" + tokens[this.currentToken][1] + "]"); 
                 this.currentToken++;
-
                 if(tokens[this.currentToken][0] == "CHAR"){
                     this.charList();
                 }
@@ -194,29 +200,35 @@ module TSC {
                     this.currentToken++;
                     return;
                 }
+                return;
             }
 
             public assignmentStatement(){
-                console.log("AssiGNMENT RAN");
                 this.parseOutput.push("AssignmentStatement");
+                if(tokens[this.currentToken][1] == "="){
+                    this.currentToken++;
+                    this.expression();
+                }
+                return;
+            }
+
+            public varDecl(){
+                this.parseOutput.push("VarDecl");
+                if(tokens[this.currentToken][0] == 'VARIABLE'){
+                    this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][1] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.currentToken++;
+                    return;
+                }
+                else{
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
+                }
+                return;
             }
 
             public booleanExpr(){
                 this.parseOutput.push("BooleanExpr");
             }
 
-
-
-
-
-
-            public lBrace(){
-                this.braces++;
-                return;
-            }
-            public rBrace(){
-                this.braces--;
-                return;
-            }
+           
     }
 }

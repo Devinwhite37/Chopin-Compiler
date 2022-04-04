@@ -88,10 +88,13 @@ var TSC;
                 this.printStatement();
             }
             else if (tokens[this.currentToken][0] == 'VARIABLE') {
+                this.currentToken++;
                 this.assignmentStatement();
             }
-            else if (tokens[this.currentToken][0] == 'VARIABLE') {
-                this.assignmentStatement();
+            else if (tokens[this.currentToken][0] == 'INT_TYPE' || 'BOOL_TYPE' || 'STRING_TYPE') {
+                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][1] + "]");
+                this.currentToken++;
+                this.varDecl();
             }
             else if (tokens[this.currentToken][0] == 'VARIABLE') {
                 this.assignmentStatement();
@@ -104,6 +107,9 @@ var TSC;
             }
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
+            }
+            if (tokens[this.currentToken][1] == '}' || '{') {
+                this.parseBlock();
             }
             console.log("Statement return");
             return;
@@ -144,7 +150,8 @@ var TSC;
                 this.currentToken++;
                 this.charList();
             }
-            else if (tokens[this.currentToken][0] == "L_PAREN" || "BOOL_TRUE" || "BOOL_FALSE") {
+            else if (tokens[this.currentToken][1] == '(' || 'true' || 'false') {
+                console.log(tokens[this.currentToken][0]);
                 this.currentToken++;
                 this.booleanExpr();
             }
@@ -177,10 +184,27 @@ var TSC;
                 this.currentToken++;
                 return;
             }
+            return;
         };
         Parser.prototype.assignmentStatement = function () {
-            console.log("AssiGNMENT RAN");
             this.parseOutput.push("AssignmentStatement");
+            if (tokens[this.currentToken][1] == "=") {
+                this.currentToken++;
+                this.expression();
+            }
+            return;
+        };
+        Parser.prototype.varDecl = function () {
+            this.parseOutput.push("VarDecl");
+            if (tokens[this.currentToken][0] == 'VARIABLE') {
+                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.currentToken++;
+                return;
+            }
+            else {
+                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
+            }
+            return;
         };
         Parser.prototype.booleanExpr = function () {
             this.parseOutput.push("BooleanExpr");
