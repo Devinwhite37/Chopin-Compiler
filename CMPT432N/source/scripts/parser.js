@@ -35,6 +35,7 @@ var TSC;
         };
         Parser.prototype.parseBlock = function () {
             this.parseOutput.push("Block");
+            console.log(tokens[this.currentToken][2]);
             if (tokens[this.currentToken][1] == '{') {
                 this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
@@ -56,7 +57,7 @@ var TSC;
                 }
             }
             else {
-                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
+                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] - block");
             }
             /*if(this.braces != 0){
                 this.parseOutput.push("ERROR - missing [}]")
@@ -64,21 +65,26 @@ var TSC;
         };
         Parser.prototype.statementList = function () {
             this.parseOutput.push("StatementList");
-            if (tokens[this.currentToken][1] == '}') {
-                this.parseBlock();
-            }
-            /*if (tokens[this.currentToken][1] == '}') {
-                this.parseBlock();
-            }*/
-            else if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
+            if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
                 || tokens[this.currentToken][0] == "INT_TYPE" || tokens[this.currentToken][0] == "STRING_TYPE"
                 || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
                 || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
                 //console.log("statement elif ran");
                 //this.currentToken++;
                 this.statement();
+                /*while (tokens[this.currentToken][0] != "EOP") {
+                    this.currentToken++;
+                    this.statementList();
+                }*/
             }
-            console.log("Statement list return");
+            else if (tokens[this.currentToken][1] == '}') {
+                this.parseBlock();
+            }
+            /*if (tokens[this.currentToken][1] == '}') {
+                this.parseBlock();
+            }*/
+            else
+                console.log("Statement list return");
             return;
         };
         Parser.prototype.statement = function () {
@@ -96,19 +102,23 @@ var TSC;
                 this.currentToken++;
                 this.varDecl();
             }
-            else if (tokens[this.currentToken][0] == 'VARIABLE') {
-                this.assignmentStatement();
+            else if (tokens[this.currentToken][0] == 'WHILE') {
+                this.currentToken++;
+                this.whileStatement();
             }
-            else if (tokens[this.currentToken][0] == 'VARIABLE') {
-                this.assignmentStatement();
+            else if (tokens[this.currentToken][0] == 'IF') {
+                this.currentToken++;
+                this.ifStatement();
             }
-            else if (tokens[this.currentToken][0] == "L_BRACE") {
+            else if (tokens[this.currentToken][1] == '{' || tokens[this.currentToken][1] == '}') {
+                //this.currentToken++;
                 this.parseBlock();
             }
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
             }
-            if (tokens[this.currentToken][1] == '}' || '{') {
+            if (tokens[this.currentToken][1] == '{' || tokens[this.currentToken][1] == '}') {
+                //this.currentToken++;
                 this.parseBlock();
             }
             console.log("Statement return");
@@ -147,8 +157,9 @@ var TSC;
                 this.stringExpr();
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
+                this.parseOutput.push("VALID- Found [" + tokens[this.currentToken][1] + "]");
                 this.currentToken++;
-                this.charList();
+                //this.id();
             }
             else if (tokens[this.currentToken][1] == '(' || 'true' || 'false') {
                 console.log(tokens[this.currentToken][0]);
@@ -199,7 +210,6 @@ var TSC;
             if (tokens[this.currentToken][0] == 'VARIABLE') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
-                return;
             }
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
@@ -208,13 +218,14 @@ var TSC;
         };
         Parser.prototype.booleanExpr = function () {
             this.parseOutput.push("BooleanExpr");
-        };
-        Parser.prototype.lBrace = function () {
-            this.braces++;
             return;
         };
-        Parser.prototype.rBrace = function () {
-            this.braces--;
+        Parser.prototype.ifStatement = function () {
+            this.parseOutput.push("IfStatement");
+            return;
+        };
+        Parser.prototype.whileStatement = function () {
+            this.parseOutput.push("WhileStatement");
             return;
         };
         return Parser;

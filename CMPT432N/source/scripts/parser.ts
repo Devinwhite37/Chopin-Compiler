@@ -43,14 +43,13 @@ module TSC {
 
             public parseBlock(){
                 this.parseOutput.push("Block");
+                console.log(tokens[this.currentToken][2]);
                 if(tokens[this.currentToken][1] == '{'){
                     this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
-                    this.braces++;   
- 
+                    this.braces++;
                     this.statementList();
                     //console.log("SHould be here now"+ tokens[this.currentToken][1]);
-
                 }
                 else if(tokens[this.currentToken][1] == '}'){
                     this.parseOutput.push("VALID - Found [R_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -66,7 +65,7 @@ module TSC {
                     }
                 }
                 else{
-                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] - block");
                 }
                 /*if(this.braces != 0){
                     this.parseOutput.push("ERROR - missing [}]")
@@ -74,20 +73,25 @@ module TSC {
             }
             public statementList(){
                 this.parseOutput.push("StatementList");
-                if(tokens[this.currentToken][1] == '}'){
-                    this.parseBlock();
-                }
-                /*if (tokens[this.currentToken][1] == '}') {
-                    this.parseBlock();
-                }*/
-                else if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
+                if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
                     || tokens[this.currentToken][0] == "INT_TYPE" || tokens[this.currentToken][0] == "STRING_TYPE"
                     || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
                     || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
                     //console.log("statement elif ran");
                     //this.currentToken++;
                     this.statement();
+                    /*while (tokens[this.currentToken][0] != "EOP") {
+                        this.currentToken++;
+                        this.statementList();
+                    }*/
                 }
+                else if(tokens[this.currentToken][1] == '}'){
+                    this.parseBlock();
+                }
+                /*if (tokens[this.currentToken][1] == '}') {
+                    this.parseBlock();
+                }*/
+                else 
                 console.log("Statement list return");
                 return;
             }
@@ -106,21 +110,26 @@ module TSC {
                     this.currentToken++;
                     this.varDecl();
                 }
-                else if(tokens[this.currentToken][0] == 'VARIABLE'){
-                    this.assignmentStatement();
+                else if(tokens[this.currentToken][0] == 'WHILE'){
+                    this.currentToken++;
+                    this.whileStatement();
                 }
-                else if(tokens[this.currentToken][0] == 'VARIABLE'){
-                    this.assignmentStatement();
+                else if(tokens[this.currentToken][0] == 'IF'){
+                    this.currentToken++;
+                    this.ifStatement();
                 }
-                else if (tokens[this.currentToken][0] == "L_BRACE") {
+                else if (tokens[this.currentToken][1] == '{' || tokens[this.currentToken][1] == '}') {
+                    //this.currentToken++;
                     this.parseBlock();
                 }
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]")
                 }
-                if(tokens[this.currentToken][1] == '}' || '{'){
+                if(tokens[this.currentToken][1] == '{' || tokens[this.currentToken][1] == '}'){
+                    //this.currentToken++;
                     this.parseBlock();
                 }
+                
                 console.log("Statement return");
                 return;
             }
@@ -158,8 +167,9 @@ module TSC {
                     this.stringExpr();
                 }
                 else if (tokens[this.currentToken][0] == "VARIABLE") {
+                    this.parseOutput.push("VALID- Found [" + tokens[this.currentToken][1] + "]");
                     this.currentToken++;
-                    this.charList();
+                    //this.id();
                 }
                 else if (tokens[this.currentToken][1] == '(' || 'true' || 'false') {
                     console.log(tokens[this.currentToken][0]);
@@ -184,6 +194,7 @@ module TSC {
                 return;
                 
             }
+
 
             public stringExpr(){
                 this.parseOutput.push("StringExpr");
@@ -217,7 +228,6 @@ module TSC {
                 if(tokens[this.currentToken][0] == 'VARIABLE'){
                     this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][1] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
-                    return;
                 }
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
@@ -227,6 +237,17 @@ module TSC {
 
             public booleanExpr(){
                 this.parseOutput.push("BooleanExpr");
+                return;
+            }
+
+            public ifStatement(){
+                this.parseOutput.push("IfStatement");
+                return;
+            }
+
+            public whileStatement(){
+                this.parseOutput.push("WhileStatement");
+                return;
             }
 
            

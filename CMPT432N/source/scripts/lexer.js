@@ -26,7 +26,7 @@ var TSC;
             //tells wheater or not EOP marker is found
             this.eopFound = false;
             this.programNum = 1;
-            //tells wheater on not we are in a comment
+            //tells wheater on not we are in a comment or quote
             this.commented = false;
             this.inQuote = false;
         }
@@ -52,7 +52,6 @@ var TSC;
             var DIGIT = new RegExp('[0-9]');
             var ADDITION_OP = new RegExp('\\+');
             var EOP = new RegExp('\\$');
-            //const WHITESPACE = new RegExp('\t|\n|\r');
             //includes all possible characters so comment block can increment
             //line num for anything entered in a comment
             var ANY_CHAR = new RegExp('.');
@@ -148,7 +147,6 @@ var TSC;
                                 ]);
                                 this.subStringStartIndex++;
                                 this.lineNum++;
-                                //this.subStringEndIndex++;
                             }
                             this.subStringEndIndex++;
                         }
@@ -180,6 +178,7 @@ var TSC;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
+                    // creare ( token
                     else if (L_PAREN.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "L_PAREN";
                         this.tokenRegEx = "(";
@@ -193,6 +192,7 @@ var TSC;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
+                    //create ) token
                     else if (R_PAREN.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "R_PAREN";
                         this.tokenRegEx = ")";
@@ -341,6 +341,7 @@ var TSC;
                         this.lineNum += 2;
                         this.subStringEndIndex++;
                     }
+                    // create = token
                     else if (ASSIGN.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "ASSIGN";
                         this.tokenRegEx = "=";
@@ -354,6 +355,7 @@ var TSC;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
+                    //create + token
                     else if (ADDITION_OP.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "ADDITION_OP";
                         this.tokenRegEx = "+";
@@ -382,6 +384,7 @@ var TSC;
                         this.lineNum += 2;
                         this.subStringEndIndex++;
                     }
+                    // create a digit token
                     else if (DIGIT.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "DIGIT";
                         this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex - 1);
@@ -395,6 +398,7 @@ var TSC;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
+                    // create a variable token
                     else if (VARIABLE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "VARIABLE";
                         this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex - 1);
@@ -426,6 +430,7 @@ var TSC;
                         this.subStringStartIndex++;
                         this.lineNum++;
                     }
+                    //create EOP token
                     else if (EOP.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                         this.tokens = "EOP";
                         this.tokenRegEx = "$";
