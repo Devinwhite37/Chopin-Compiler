@@ -127,6 +127,7 @@
 			console.log(tokens);
 			let parser = new TSC.Parser();
 			productions = parser.parse();
+			console.log(productions); 
 			// . . . and parse!
 			
 	        compile();
@@ -165,7 +166,7 @@
 
 				if(tokens[i+1][0]!=""){
 				putMessageOP("\nLexing Program "+ programNum);
-				putMessageOP("-----------------")
+				putMessageOP("---------------------------------")
 				}
 				else{
 				}
@@ -211,7 +212,7 @@
 						putMessageOP("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).\n");
 
 							putMessageOP("Begin Parsing Program "+ programNum);
-							putMessageOP("-----------------")
+							putMessageOP("---------------------------")
 							for(var l = 0; l < productions.length; l++){
 								if(productions[l] == 'VALID - Found [EOP]'){
 									programNum++;
