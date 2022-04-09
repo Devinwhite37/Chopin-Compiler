@@ -27,8 +27,11 @@ var TSC;
         };
         Parser.prototype.program = function () {
             this.currentToken = this.currentToken + 1;
-            console.log("PROGRAM: this " + tokens[this.currentToken][1] + " " + this.currentToken);
-            if (tokens[this.currentToken][1] == '{') {
+            //console.log("PROGRAM: this " + tokens[this.currentToken][1] + " "  + this.currentToken);
+            if (tokens[this.currentToken][0] == "") {
+                this.parseOutput.push("nocode");
+            }
+            else if (tokens[this.currentToken][1] == '{') {
                 this.parseBlock();
             }
             else {
@@ -102,7 +105,8 @@ var TSC;
                 this.currentToken++;
                 this.assignmentStatement();
             }
-            else if (tokens[this.currentToken][0] == 'INT_TYPE' || tokens[this.currentToken][0] == 'BOOL_TYPE' || tokens[this.currentToken][0] == 'STRING_TYPE') {
+            else if (tokens[this.currentToken][0] == 'INT_TYPE' || tokens[this.currentToken][0] == 'BOOL_TYPE'
+                || tokens[this.currentToken][0] == 'STRING_TYPE') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][1] + "]");
                 this.currentToken++;
                 this.varDecl();
@@ -204,6 +208,7 @@ var TSC;
         Parser.prototype.assignmentStatement = function () {
             this.parseOutput.push("AssignmentStatement");
             if (tokens[this.currentToken][1] == "=") {
+                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.expression();
             }
@@ -224,10 +229,12 @@ var TSC;
             this.parseOutput.push("BooleanExpr");
             console.log(tokens[this.currentToken][0]);
             if (tokens[this.currentToken][0] == 'L_PAREN') {
+                this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 console.log(tokens[this.currentToken][0]);
                 this.expression();
                 if (tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!=') {
+                    this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                     this.expression();
                 }
@@ -237,10 +244,8 @@ var TSC;
         Parser.prototype.ifStatement = function () {
             this.parseOutput.push("IfStatement");
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
-                //go to boolean expression
                 this.currentToken++;
                 this.booleanExpr();
-                //goes to block
                 this.parseBlock();
             }
             else {

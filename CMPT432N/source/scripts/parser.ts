@@ -35,9 +35,11 @@ module TSC {
 
             public program(){
                 this.currentToken = this.currentToken+1;
-                console.log("PROGRAM: this " + tokens[this.currentToken][1] + " "  + this.currentToken);
-
-                if(tokens[this.currentToken][1] == '{'){
+                //console.log("PROGRAM: this " + tokens[this.currentToken][1] + " "  + this.currentToken);
+                if(tokens[this.currentToken][0] == ""){
+                    this.parseOutput.push("nocode");
+                }
+                else if(tokens[this.currentToken][1] == '{'){
                     this.parseBlock();
                 }
                 else{
@@ -114,7 +116,8 @@ module TSC {
                     this.currentToken++;
                     this.assignmentStatement();
                 }
-                else if(tokens[this.currentToken][0] == 'INT_TYPE' || tokens[this.currentToken][0] == 'BOOL_TYPE' || tokens[this.currentToken][0] == 'STRING_TYPE'){
+                else if(tokens[this.currentToken][0] == 'INT_TYPE' || tokens[this.currentToken][0] == 'BOOL_TYPE' 
+                || tokens[this.currentToken][0] == 'STRING_TYPE'){
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][1] + "]");
                     this.currentToken++;
                     this.varDecl();
@@ -225,6 +228,7 @@ module TSC {
             public assignmentStatement(){
                 this.parseOutput.push("AssignmentStatement");
                 if(tokens[this.currentToken][1] == "="){
+                    this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][1] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                     this.expression();
                 }
@@ -248,10 +252,12 @@ module TSC {
                 console.log(tokens[this.currentToken][0]);
 
                 if(tokens[this.currentToken][0] == 'L_PAREN'){
+                    this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                     console.log(tokens[this.currentToken][0]);
                     this.expression();
                     if(tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!='){
+                        this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                         this.currentToken++;
                         this.expression();
                     }
@@ -262,10 +268,8 @@ module TSC {
             public ifStatement(){
                 this.parseOutput.push("IfStatement");
                 if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
-                    //go to boolean expression
                     this.currentToken++;
                     this.booleanExpr();
-                    //goes to block
                     this.parseBlock();
                 }
                 else{
