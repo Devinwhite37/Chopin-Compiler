@@ -69,7 +69,6 @@ var TSC;
             }*/
         };
         Parser.prototype.statementList = function () {
-            this.parseOutput.push("StatementList");
             if (tokens[this.currentToken][1] == '}') {
                 this.parseBlock();
                 //this.currentToken++;
@@ -80,6 +79,7 @@ var TSC;
                 || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
                 //console.log("statement elif ran");
                 //this.currentToken++;
+                this.parseOutput.push("StatementList");
                 this.statement();
                 if (tokens[this.currentToken][1] != "$") {
                     console.log("EOP IF RAN:: " + tokens[this.currentToken][1]);
