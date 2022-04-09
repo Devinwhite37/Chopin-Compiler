@@ -74,7 +74,7 @@ module TSC {
                     }
                 }
                 else{
-                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] - block");
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
                 /*if(this.braces != 0){
                     this.parseOutput.push("ERROR - missing [}]")
@@ -83,9 +83,7 @@ module TSC {
             public statementList(){
                 if(tokens[this.currentToken][1] == '}'){
                     this.parseBlock();
-                    //this.currentToken++;
                 }
-                
                 else if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
                 || tokens[this.currentToken][0] == "INT_TYPE" || tokens[this.currentToken][0] == "STRING_TYPE"
                 || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
@@ -94,16 +92,12 @@ module TSC {
                 //this.currentToken++;
                 this.parseOutput.push("StatementList");
                 this.statement();
-                if(tokens[this.currentToken][1] != "$") {
-                    console.log("EOP IF RAN:: " + tokens[this.currentToken][1])
-                    //this.currentToken++;
-                    this.statementList();
+                    if(tokens[this.currentToken][1] != "$") {
+                        console.log("EOP IF RAN:: " + tokens[this.currentToken][1])
+                        //this.currentToken++;
+                        this.statementList();
+                    }
                 }
-                
-            }
-                /*if (tokens[this.currentToken][1] == '}') {
-                    this.parseBlock();
-                }*/
                 return;
             }
             public statement(){
@@ -118,59 +112,53 @@ module TSC {
                 }
                 else if(tokens[this.currentToken][0] == 'INT_TYPE' || tokens[this.currentToken][0] == 'BOOL_TYPE' 
                 || tokens[this.currentToken][0] == 'STRING_TYPE'){
-                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][1] + "]");
+                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                     this.currentToken++;
                     this.varDecl();
                 }
                 else if(tokens[this.currentToken][0] == 'WHILE'){
+                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                     this.currentToken++;
                     this.whileStatement();
                 }
                 else if(tokens[this.currentToken][0] == 'IF'){
+                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                     this.currentToken++;
                     this.ifStatement();
                 }
                 else if(tokens[this.currentToken][1] == '{' || tokens[this.currentToken][1] == '}') {
-                    //this.currentToken++;
                     this.parseBlock();
                 }
                 else{
-                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]")
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
-                /*if(tokens[this.currentToken][1] == '{' || tokens[this.currentToken][1] == '}'){
-                    //this.currentToken++;
-                    this.parseBlock();
-                }*/
-                
-                console.log("Statement return");
                 return;
             }
             public printStatement(){
                 this.parseOutput.push("PrintStatement");
-                this.parseOutput.push("VALID - Found [PRINT] on [ " + tokens[this.currentToken-1][2] + " , " + tokens[this.currentToken-1][3] + " ]");
+                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                 if(tokens[this.currentToken][1] == '('){
-                    this.parseOutput.push("VALID - Found [L_PAREN] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                     this.currentToken++;
                     this.expression();
                     if(tokens[this.currentToken][1] == ')'){
-                        this.parseOutput.push("VALID - Found [R_PAREN] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                        this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                         this.currentToken++;
                     }
                     else{
-                        this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
+                        this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     }
                 }
                 else{
-                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
                 return;
             }
             
             public expression(){
-                console.log("EXPR");
                 this.parseOutput.push("Expr");
                 if (tokens[this.currentToken][0] == "DIGIT") {
-                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
+                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                     this.currentToken++;
                     this.intExpr();
                 } 
@@ -179,7 +167,7 @@ module TSC {
                     this.stringExpr();
                 }
                 else if (tokens[this.currentToken][0] == "VARIABLE") {
-                    this.parseOutput.push("VALID- Found [" + tokens[this.currentToken][1] + "]");
+                    this.parseOutput.push("VALID- Found [" + tokens[this.currentToken][0] + "]");
                     this.currentToken++;
                     //this.id();
                 }
@@ -189,9 +177,9 @@ module TSC {
                 }
                 
                 else{
-                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
-                    return;
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
+                return;
             }
 
             public intExpr(){
@@ -200,10 +188,11 @@ module TSC {
                     this.parseOutput.push("VALID - Found [+] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                     this.expression();
-                    return;
                 }
-                return;
-                
+                else{
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                }
+                return; 
             }
 
 
@@ -228,7 +217,7 @@ module TSC {
             public assignmentStatement(){
                 this.parseOutput.push("AssignmentStatement");
                 if(tokens[this.currentToken][1] == "="){
-                    this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][1] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][0] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                     this.expression();
                 }
@@ -238,37 +227,48 @@ module TSC {
             public varDecl(){
                 this.parseOutput.push("VarDecl");
                 if(tokens[this.currentToken][0] == 'VARIABLE'){
-                    this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][1] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][0] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                 }
                 else{
-                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "]");
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
                 return;
             }
 
             public booleanExpr(){
                 this.parseOutput.push("BooleanExpr");
-                console.log(tokens[this.currentToken][0]);
-
                 if(tokens[this.currentToken][0] == 'L_PAREN'){
-                    this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][0] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
-                    console.log(tokens[this.currentToken][0]);
                     this.expression();
                     if(tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!='){
-                        this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                        this.parseOutput.push("BoolOp");
+                        this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][0] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                         this.currentToken++;
                         this.expression();
+                        if(tokens[this.currentToken][0] == 'R_PAREN'){
+                            this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][0] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                            this.currentToken++;
+                        }
+                        else{
+                            this.parseOutput.push("first else ERROR - Found [" + tokens[this.currentToken][0] + "]] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                        }
                     }
+                    else{
+                        this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "]] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    }
+                }
+                else{
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "]] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
                 return;
             }
 
             public ifStatement(){
                 this.parseOutput.push("IfStatement");
+
                 if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
-                    this.currentToken++;
                     this.booleanExpr();
                     this.parseBlock();
                 }
@@ -280,9 +280,32 @@ module TSC {
 
             public whileStatement(){
                 this.parseOutput.push("WhileStatement");
+                if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
+                    this.booleanExpr();
+                    this.parseBlock();
+                }
+                else{
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                }
                 return;
             }
 
            
     }
 }
+
+/*{
+    int a
+    a = 0
+    string z
+    while(a!=9){
+        if(a!=5){
+            print("bond")
+        }
+        {
+        a = 1 + a
+        string b
+        b = "james bond"}
+        print(b)
+    }
+}*/
