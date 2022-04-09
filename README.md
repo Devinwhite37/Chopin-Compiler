@@ -7,4 +7,4 @@ Double click on index.html after download.
 
 
 ## About
-Each portion of this project can be found as a seperate branch. More deatailed information can be found at https://www.labouseur.com/courses/compilers/
+Each portion of this project can be found as a seperate branch, including a lexer and parser(to date). More deatailed information about each section can be found at https://www.labouseur.com/courses/compilers/
