@@ -4,7 +4,8 @@ Chopin Compiler gives you some of Chopins finest pieces to play as you compile.
 
 
 ## Running Chopin Compiler
-Double click on index.html after download. 
+1. Download to your local device.
+2. Double click on index.html to open in your browser. 
 
 
 ## About
