@@ -27,6 +27,7 @@ var TSC;
         };
         Parser.prototype.program = function () {
             this.currentToken = this.currentToken + 1;
+            this.parseOutput.push("Progrm");
             //console.log("PROGRAM: this " + tokens[this.currentToken][1] + " "  + this.currentToken);
             if (tokens[this.currentToken][0] == "") {
                 this.parseOutput.push("nocode");
@@ -94,10 +95,12 @@ var TSC;
         Parser.prototype.statement = function () {
             this.parseOutput.push("Statement");
             if (tokens[this.currentToken][0] == 'PRINT') {
+                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.printStatement();
             }
             else if (tokens[this.currentToken][0] == 'VARIABLE') {
+                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.assignmentStatement();
             }
@@ -127,7 +130,6 @@ var TSC;
         };
         Parser.prototype.printStatement = function () {
             this.parseOutput.push("PrintStatement");
-            this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             if (tokens[this.currentToken][1] == '(') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
@@ -172,7 +174,8 @@ var TSC;
         };
         Parser.prototype.intExpr = function () {
             this.parseOutput.push("IntExpr");
-            if (tokens[this.currentToken][0] == 'ADDITION_OP') {
+            console.log("intEXPR" + tokens[this.currentToken + 1][0]);
+            if (tokens[this.currentToken + 1][0] == 'ADDITION_OP') {
                 this.parseOutput.push("VALID - Found [+] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.expression();
@@ -204,6 +207,9 @@ var TSC;
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.expression();
+            }
+            else {
+                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
             return;
         };

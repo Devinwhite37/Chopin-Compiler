@@ -35,6 +35,7 @@ module TSC {
 
             public program(){
                 this.currentToken = this.currentToken+1;
+                this.parseOutput.push("Progrm");
                 //console.log("PROGRAM: this " + tokens[this.currentToken][1] + " "  + this.currentToken);
                 if(tokens[this.currentToken][0] == ""){
                     this.parseOutput.push("nocode");
@@ -100,13 +101,16 @@ module TSC {
                 }
                 return;
             }
+
             public statement(){
                 this.parseOutput.push("Statement");
                 if(tokens[this.currentToken][0] == 'PRINT'){
+                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                     this.currentToken++;
                     this.printStatement();
                 }
                 else if(tokens[this.currentToken][0] == 'VARIABLE'){
+                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                     this.currentToken++;
                     this.assignmentStatement();
                 }
@@ -136,7 +140,6 @@ module TSC {
             }
             public printStatement(){
                 this.parseOutput.push("PrintStatement");
-                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                 if(tokens[this.currentToken][1] == '('){
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                     this.currentToken++;
@@ -174,8 +177,7 @@ module TSC {
                 else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
                     //this.currentToken++;
                     this.booleanExpr();
-                }
-                
+                }  
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
@@ -184,7 +186,8 @@ module TSC {
 
             public intExpr(){
                 this.parseOutput.push("IntExpr");
-                if(tokens[this.currentToken][0] == 'ADDITION_OP'){
+                console.log("intEXPR" + tokens[this.currentToken+1][0])
+                if(tokens[this.currentToken+1][0] == 'ADDITION_OP'){
                     this.parseOutput.push("VALID - Found [+] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                     this.expression();
@@ -220,6 +223,9 @@ module TSC {
                     this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][0] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                     this.expression();
+                }
+                else{
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
                 return;
             }
@@ -307,5 +313,29 @@ module TSC {
         string b
         b = "james bond"}
         print(b)
+        }
     }
-}*/
+    {}
+    boolean c
+    c = true
+    boolean d
+    d = (true ==(true == false))
+    d = (a == b)
+    d = (1 == a)
+    d = (1 != 1)
+    d = ("string" == 1)
+    d = (a != "string")
+    if(d == true){
+        int c
+        c = 1 + d
+        if(c == 1){
+            print("ugh")
+        }
+    }
+    while("string" == a){
+        while(1 == true){
+            a = 1 + "string"
+        }
+    }
+}
+*/
