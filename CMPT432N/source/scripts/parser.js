@@ -37,9 +37,9 @@ var TSC;
             //this.statementList();
         };
         Parser.prototype.parseBlock = function () {
-            this.parseOutput.push("Block");
             //console.log(tokens[this.currentToken][2]);
             if (tokens[this.currentToken][1] == '{') {
+                this.parseOutput.push("Block");
                 this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.braces++;
@@ -167,8 +167,7 @@ var TSC;
                 //this.id();
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
-                console.log(tokens[this.currentToken][0]);
-                this.currentToken++;
+                //this.currentToken++;
                 this.booleanExpr();
             }
             else {
@@ -223,6 +222,16 @@ var TSC;
         };
         Parser.prototype.booleanExpr = function () {
             this.parseOutput.push("BooleanExpr");
+            console.log(tokens[this.currentToken][0]);
+            if (tokens[this.currentToken][0] == 'L_PAREN') {
+                this.currentToken++;
+                console.log(tokens[this.currentToken][0]);
+                this.expression();
+                if (tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!=') {
+                    this.currentToken++;
+                    this.expression();
+                }
+            }
             return;
         };
         Parser.prototype.ifStatement = function () {
