@@ -100,7 +100,7 @@ var TSC;
                 this.printStatement();
             }
             else if (tokens[this.currentToken][0] == 'VARIABLE') {
-                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.assignmentStatement();
             }
@@ -159,7 +159,7 @@ var TSC;
                 this.stringExpr();
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
-                this.parseOutput.push("VALID- Found [" + tokens[this.currentToken][0] + "]");
+                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 //this.id();
             }
@@ -175,13 +175,10 @@ var TSC;
         Parser.prototype.intExpr = function () {
             this.parseOutput.push("IntExpr");
             console.log("intEXPR" + tokens[this.currentToken + 1][0]);
-            if (tokens[this.currentToken + 1][0] == 'ADDITION_OP') {
+            if (tokens[this.currentToken][0] == 'ADDITION_OP') {
                 this.parseOutput.push("VALID - Found [+] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.expression();
-            }
-            else {
-                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
             return;
         };
@@ -216,7 +213,7 @@ var TSC;
         Parser.prototype.varDecl = function () {
             this.parseOutput.push("VarDecl");
             if (tokens[this.currentToken][0] == 'VARIABLE') {
-                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
             }
             else {
@@ -226,7 +223,12 @@ var TSC;
         };
         Parser.prototype.booleanExpr = function () {
             this.parseOutput.push("BooleanExpr");
-            if (tokens[this.currentToken][0] == 'L_PAREN') {
+            if (tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
+                this.parseOutput.push("BoolVal");
+                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.currentToken++;
+            }
+            else if (tokens[this.currentToken][0] == 'L_PAREN') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.expression();
@@ -291,5 +293,29 @@ var TSC;
         string b
         b = "james bond"}
         print(b)
+        }
     }
-}*/ 
+    {}
+    boolean c
+    c = true
+    boolean d
+    d = (true ==(true == false))
+    d = (a == b)
+    d = (1 == a)
+    d = (1 != 1)
+    d = ("string" == 1)
+    d = (a != "string")
+    if(d == true){
+        int c
+        c = 1 + d
+        if(c == 1){
+            print("ugh")
+        }
+    }
+    while("string" == a){
+        while(1 == true){
+            a = 1 + "string"
+        }
+    }
+}
+*/
