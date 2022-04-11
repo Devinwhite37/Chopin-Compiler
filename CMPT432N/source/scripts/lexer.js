@@ -58,6 +58,7 @@ var TSC;
             //includes all characters except those in our grammar
             //to return an invalid character
             var INVALID_CHAR = new RegExp('^(?!.*([a-z]|[0-9]|{|}|\\(|\\)|=|\\+| |"|!|\\$|/|\\*))');
+            //const INVALID_CHAR_QUOTE = new RegExp('^(?!.*([a-z]|[0-9]|{|}|\\(|\\)|=|\\+| |"|!|\\$|/|\\*))');
             var CHAR = new RegExp('^(?!.*("))');
             while (1 == 1) {
                 while (sourceCode.length >= this.subStringEndIndex) {
@@ -135,7 +136,7 @@ var TSC;
                                 this.inQuote = false;
                                 break;
                             }
-                            else if (CHAR.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
+                            else if (VARIABLE.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
                                 this.tokens = "CHAR";
                                 this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex - 1);
                                 this.lexOutput.push([
@@ -143,6 +144,22 @@ var TSC;
                                     [this.tokenRegEx],
                                     [this.lineNum],
                                     [this.columnNum],
+                                    [this.programNum]
+                                ]);
+                                this.subStringStartIndex++;
+                                this.lineNum++;
+                            }
+                            else if (INVALID_CHAR.test(sourceCode.substring(this.subStringStartIndex, this.subStringEndIndex))) {
+                                console.log(this.subStringEndIndex);
+                                console.log(this.subStringStartIndex);
+                                this.tokens = "INVALID_CHAR";
+                                this.tokenRegEx = sourceCode.charAt(this.subStringEndIndex - 1);
+                                this.lexOutput.push([
+                                    [this.tokens],
+                                    [this.tokenRegEx],
+                                    [this.lineNum],
+                                    [this.columnNum],
+                                    [this.programNum],
                                     [this.programNum]
                                 ]);
                                 this.subStringStartIndex++;

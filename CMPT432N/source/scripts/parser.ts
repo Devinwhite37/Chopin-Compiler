@@ -17,24 +17,34 @@ module TSC {
             tokenList: Array<Lexer>; 
             parseOutput: Array<String>; 
             braces: number;
+            cstOutput: Array<String>;
+            cstt: Array<Tree>;
+
 
             // Constructor for parser, passed tokens from lexer. Inits values.
             constructor(tokens){
                 this.tokenList = tokens;
                 this.parseOutput = [];
-                this.currentToken = -1;
+                this.currentToken = 0;
+                this.cstOutput = [];
                 // Tree data structure
+                //this.cst = new Tree();
                 //this.cst = new Tree();
                 this.braces = 0;
             }
+
 
             public parse() {
                 this.program();
                 return this.parseOutput;
             }
 
+            public cst(){
+                return this.cstOutput;
+            }
+
             public program(){
-                this.currentToken = this.currentToken+1;
+                //this.currentToken++;
                 this.parseOutput.push("Progrm");
                 //console.log("PROGRAM: this " + tokens[this.currentToken][1] + " "  + this.currentToken);
                 if(tokens[this.currentToken][0] == ""){
@@ -67,7 +77,7 @@ module TSC {
                     console.log("Braces: "+ this.braces)
                     if(tokens[this.currentToken][1] == '$'){
                         this.parseOutput.push("VALID - Found [EOP]");
-                        //this.currentToken++;
+                        this.currentToken++;
                         this.program();
                     }
                     else{
@@ -98,6 +108,10 @@ module TSC {
                         //this.currentToken++;
                         this.statementList();
                     }
+                }
+                else{
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("Expected token(s) [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]")
                 }
                 return;
             }
@@ -223,6 +237,7 @@ module TSC {
                 }
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("Expected tokens: [ASSIGNMENT]")
                 }
                 return;
             }

@@ -16,8 +16,10 @@ var TSC;
         function Parser(tokens) {
             this.tokenList = tokens;
             this.parseOutput = [];
-            this.currentToken = -1;
+            this.currentToken = 0;
+            this.cstOutput = [];
             // Tree data structure
+            //this.cst = new Tree();
             //this.cst = new Tree();
             this.braces = 0;
         }
@@ -25,8 +27,11 @@ var TSC;
             this.program();
             return this.parseOutput;
         };
+        Parser.prototype.cst = function () {
+            return this.cstOutput;
+        };
         Parser.prototype.program = function () {
-            this.currentToken = this.currentToken + 1;
+            //this.currentToken++;
             this.parseOutput.push("Progrm");
             //console.log("PROGRAM: this " + tokens[this.currentToken][1] + " "  + this.currentToken);
             if (tokens[this.currentToken][0] == "") {
@@ -58,7 +63,7 @@ var TSC;
                 console.log("Braces: " + this.braces);
                 if (tokens[this.currentToken][1] == '$') {
                     this.parseOutput.push("VALID - Found [EOP]");
-                    //this.currentToken++;
+                    this.currentToken++;
                     this.program();
                 }
                 else {
@@ -89,6 +94,10 @@ var TSC;
                     //this.currentToken++;
                     this.statementList();
                 }
+            }
+            else {
+                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("Expected token(s) [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]");
             }
             return;
         };
@@ -207,6 +216,7 @@ var TSC;
             }
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("Expected tokens: [ASSIGNMENT]");
             }
             return;
         };
