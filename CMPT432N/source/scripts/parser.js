@@ -31,22 +31,18 @@ var TSC;
             return this.cstOutput;
         };
         Parser.prototype.program = function () {
-            //this.currentToken++;
-            this.parseOutput.push("Progrm");
-            //console.log("PROGRAM: this " + tokens[this.currentToken][1] + " "  + this.currentToken);
-            if (tokens[this.currentToken][0] == "") {
-                this.parseOutput.push("nocode");
+            if (tokens[this.currentToken] === undefined) {
+                return;
             }
             else if (tokens[this.currentToken][1] == '{') {
+                this.parseOutput.push("Progrm");
                 this.parseBlock();
             }
             else {
                 this.parseOutput.push("ERROR - Expecting [{] found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
-            //this.statementList();
         };
         Parser.prototype.parseBlock = function () {
-            //console.log(tokens[this.currentToken][2]);
             if (tokens[this.currentToken][1] == '{') {
                 this.parseOutput.push("Block");
                 this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -91,12 +87,12 @@ var TSC;
                 this.statement();
                 if (tokens[this.currentToken][1] != "$") {
                     console.log("EOP IF RAN:: " + tokens[this.currentToken][1]);
-                    //this.currentToken++;
+                    this.currentToken++;
                     this.statementList();
                 }
             }
             else {
-                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("statement list - ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.parseOutput.push("Expected token(s) [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]");
             }
             return;
@@ -118,6 +114,7 @@ var TSC;
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.varDecl();
+                console.log("VARDECL AFTER RETURN: " + tokens[this.currentToken][0]);
             }
             else if (tokens[this.currentToken][0] == 'WHILE') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -133,8 +130,9 @@ var TSC;
                 this.parseBlock();
             }
             else {
-                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("statemenet - ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
+            console.log("VARDECL AFTER RETURN2: " + tokens[this.currentToken][0]);
             return;
         };
         Parser.prototype.printStatement = function () {
@@ -186,7 +184,7 @@ var TSC;
             console.log("intEXPR" + tokens[this.currentToken + 1][0]);
             if (tokens[this.currentToken][0] == 'ADDITION_OP') {
                 this.parseOutput.push("VALID - Found [+] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                this.currentToken++;
+                //this.currentToken++;
                 this.expression();
             }
             return;
@@ -194,6 +192,7 @@ var TSC;
         Parser.prototype.stringExpr = function () {
             this.parseOutput.push("StringExpr");
             this.charList();
+            return;
         };
         Parser.prototype.charList = function () {
             this.parseOutput.push("CharList with value of [" + tokens[this.currentToken][1] + "]");
@@ -224,7 +223,8 @@ var TSC;
             this.parseOutput.push("VarDecl");
             if (tokens[this.currentToken][0] == 'VARIABLE') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                this.currentToken++;
+                //this.currentToken++;
+                console.log(tokens[this.currentToken][0]);
             }
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");

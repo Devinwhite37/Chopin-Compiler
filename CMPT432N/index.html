@@ -164,11 +164,13 @@
 
 			for(var j = 0; j < programNum; j++){
 
-				if(tokens[i+1][0]!=""){
-				putMessageOP("\nLexing Program "+ programNum);
-				putMessageOP("---------------------------------")
+				if(tokens[i+1] === undefined){
+					return;
+				
 				}
 				else{
+					putMessageOP("\nLexing Program "+ programNum);
+					putMessageOP("---------------------------------")
 				}
 				for(var i; i < tokens.length; i++){
 					if(tokens[i][0] == 'INVALID_CHAR'){
