@@ -44,7 +44,7 @@ h1{
   }
 
 #taSourceCode{
-	width:400px;
+	width:410px;
 	margin: 15px;
     height:450px;
     font-family:Courier New; 
@@ -54,7 +54,7 @@ h1{
 }
 
 #taOutput, #taCST, #taAST{
-	width:400px;
+	width:410px;
 	margin: 15px;
     height:450px;
     font-family:Courier New; 

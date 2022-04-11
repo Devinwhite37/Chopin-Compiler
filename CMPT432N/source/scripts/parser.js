@@ -59,6 +59,7 @@ var TSC;
                 console.log("Braces: " + this.braces);
                 if (tokens[this.currentToken][1] == '$') {
                     this.parseOutput.push("VALID - Found [EOP]");
+                    //this.parseOutput.push("on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                     this.program();
                 }
@@ -74,7 +75,12 @@ var TSC;
             }*/
         };
         Parser.prototype.statementList = function () {
-            if (tokens[this.currentToken][1] == '}') {
+            if (tokens[this.currentToken][1] == '}' && tokens[this.currentToken - 1][1] == '{') {
+                this.parseOutput.push("StatementList");
+                this.parseOutput.push("VALID - Found [ε] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseBlock();
+            }
+            else if (tokens[this.currentToken][1] == '}') {
                 this.parseBlock();
             }
             else if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"

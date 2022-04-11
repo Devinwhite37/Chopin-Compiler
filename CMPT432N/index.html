@@ -142,7 +142,7 @@
 		}
 		
 		function compile(){
-			if (tokens == null){
+			if (tokens[0] == undefined){
 				putMessageOP("Well that's random. Try compiling some code next time.");
 			}
 			else{
@@ -161,6 +161,7 @@
 			var errors = 0;
 			var warnings = 0;
 			var i = 0;
+			var l = 0;
 
 			for(var j = 0; j < programNum; j++){
 
@@ -195,9 +196,7 @@
 						putMessageOP("LEXER -> | WARNING: Missing EOP [ $ ] at end of file.");
 					}
 					else if(tokens[i][0] == 'EOP'){
-						//programNum++;
 						putMessageOP("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
-						//lexOutput();
 						errors = 0;
 						warnings = 0;
 						i = i+1;
@@ -212,12 +211,15 @@
 						putMessageOP("---------------------------");
 						putMessageOP("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).\n");
 
-							putMessageOP("Begin Parsing Program "+ programNum);
+							putMessageOP("Parsing Program "+ programNum);
 							putMessageOP("---------------------------")
-							for(var l = 0; l < productions.length; l++){
+							for(var l; l < productions.length; l++){
 								if(productions[l] == 'VALID - Found [EOP]'){
 									programNum++;
 									putMessageOP("PARSER -> " + productions[l]);
+									putMessageOP("\n")
+									l++;
+									break;
 								}
 								else{
 									putMessageOP("PARSER -> " + productions[l]);
