@@ -62,14 +62,11 @@ module TSC {
                     this.currentToken++;
                     this.braces++;
                     this.statementList();
-                    //console.log("SHould be here now"+ tokens[this.currentToken][1]);
                 }
                 else if(tokens[this.currentToken][1] == '}'){
                     this.parseOutput.push("VALID - Found [R_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
-                    //console.log("this " + tokens[this.currentToken][1] + " "  + this.currentToken);
                     this.braces--;                    
-                    console.log("Braces: "+ this.braces)
                     if(tokens[this.currentToken][1] == '$'){
                         this.parseOutput.push("VALID - Found [EOP]");
                         //this.parseOutput.push("on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -83,9 +80,9 @@ module TSC {
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
-                /*if(this.braces != 0){
+                if(this.braces != 0){
                     this.parseOutput.push("ERROR - missing [}]")
-                }*/
+                }
             }
             public statementList(){
                 if(tokens[this.currentToken][1] == '}' && tokens[this.currentToken-1][1] == '{'){
@@ -100,12 +97,9 @@ module TSC {
                 || tokens[this.currentToken][0] == "INT_TYPE" || tokens[this.currentToken][0] == "STRING_TYPE"
                 || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
                 || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
-                //console.log("statement elif ran");
-                //this.currentToken++;
                 this.parseOutput.push("StatementList");
                 this.statement();
                     if(tokens[this.currentToken][1] != "$") {
-                        console.log("EOP IF RAN:: " + tokens[this.currentToken][1])
                         this.currentToken++;
                         this.statementList();
                     }
@@ -134,7 +128,6 @@ module TSC {
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                     this.currentToken++;
                     this.varDecl();
-                    console.log("VARDECL AFTER RETURN: " + tokens[this.currentToken][0])
                 }
                 else if(tokens[this.currentToken][0] == 'WHILE'){
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
@@ -152,8 +145,6 @@ module TSC {
                 else{
                     this.parseOutput.push("statemenet - ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
-                console.log("VARDECL AFTER RETURN2: " + tokens[this.currentToken][0])
-
                 return;
             }
             public printStatement(){
@@ -190,10 +181,8 @@ module TSC {
                 else if (tokens[this.currentToken][0] == "VARIABLE") {
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0]+ " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                     this.currentToken++;
-                    //this.id();
                 }
                 else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
-                    //this.currentToken++;
                     this.booleanExpr();
                 }  
                 else{
@@ -204,15 +193,12 @@ module TSC {
 
             public intExpr(){
                 this.parseOutput.push("IntExpr");
-                console.log("intEXPR" + tokens[this.currentToken+1][0])
                 if(tokens[this.currentToken][0] == 'ADDITION_OP'){
                     this.parseOutput.push("VALID - Found [+] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                    //this.currentToken++;
                     this.expression();
                 }
                 return; 
             }
-
 
             public stringExpr(){
                 this.parseOutput.push("StringExpr");
@@ -251,8 +237,6 @@ module TSC {
                 this.parseOutput.push("VarDecl");
                 if(tokens[this.currentToken][0] == 'VARIABLE'){
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0]+ " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
-                    //this.currentToken++;
-                    console.log(tokens[this.currentToken][0]);
                 }
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -281,7 +265,7 @@ module TSC {
                             this.currentToken++;
                         }
                         else{
-                            this.parseOutput.push("first else ERROR - Found [" + tokens[this.currentToken][0] + "]] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                            this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "]] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                         }
                     }
                     else{

@@ -76,7 +76,7 @@
 			</table>
 		</div>        
 	</div>
-	<h5 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 10px; font-weight: bold;">A Compiler by Devin White</h5>
+	<h5 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 10px; font-weight: bold;">A Compiler by Devin H White</h5>
 	<h5 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 10px; font-weight: bold;">© 2022 Chopin Compiler</h5>
 
 	
@@ -144,18 +144,13 @@
 		function compile(){
 			if (tokens[0] == undefined){
 				putMessageOP("Well that's random. Try compiling some code next time.");
+				putMessageCST("No CST to show.");
 			}
 			else{
 				putMessageOP("Compilation Started");
-				putMessageOP("LEXICAL ANALYSIS:");
-				//putMessageOP("Lexing Program "+ programNum);
-				//putMessageOP("-----------------")
 				lexOutput();
 				cstOutput();
-
-				//parseOutput();
 			}
-			
 		}
 		function lexOutput(){
 			var errors = 0;
