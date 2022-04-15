@@ -72,7 +72,10 @@ var TSC;
             }
         };
         Parser.prototype.statementList = function () {
-            if (tokens[this.currentToken][1] == '}' && tokens[this.currentToken - 1][1] == '{') {
+            if (tokens[this.currentToken] === undefined) {
+                return;
+            }
+            else if (tokens[this.currentToken][1] == '}' && tokens[this.currentToken - 1][1] == '{') {
                 this.parseOutput.push("StatementList");
                 this.parseOutput.push("VALID - Found [ε] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.parseBlock();
@@ -86,7 +89,10 @@ var TSC;
                 || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
                 this.parseOutput.push("StatementList");
                 this.statement();
-                if (tokens[this.currentToken][1] != "$") {
+                if (tokens[this.currentToken] === undefined) {
+                    return;
+                }
+                else if (tokens[this.currentToken][1] != "$") {
                     this.currentToken++;
                     this.statementList();
                 }
@@ -155,7 +161,7 @@ var TSC;
         Parser.prototype.expression = function () {
             this.parseOutput.push("Expr");
             if (tokens[this.currentToken][0] == "DIGIT") {
-                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.intExpr();
             }
@@ -179,6 +185,7 @@ var TSC;
             this.parseOutput.push("IntExpr");
             if (tokens[this.currentToken][0] == 'ADDITION_OP') {
                 this.parseOutput.push("VALID - Found [+] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.currentToken++;
                 this.expression();
             }
             return;
@@ -208,7 +215,7 @@ var TSC;
                 this.expression();
             }
             else {
-                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("assignmentStatement - ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.parseOutput.push("Expected tokens: [ASSIGNMENT]");
             }
             return;
@@ -219,7 +226,7 @@ var TSC;
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
             else {
-                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("varDecl - ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
             return;
         };
@@ -244,15 +251,15 @@ var TSC;
                         this.currentToken++;
                     }
                     else {
-                        this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "]] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                        this.parseOutput.push("booleanExpr1 - ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     }
                 }
                 else {
-                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "]] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("booleanExpr2 - ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
             }
             else {
-                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "]] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("booleanExpr3 - ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
             return;
         };
@@ -263,7 +270,7 @@ var TSC;
                 this.parseBlock();
             }
             else {
-                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("ifStatement - ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
             return;
         };
