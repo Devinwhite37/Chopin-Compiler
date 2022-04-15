@@ -93,7 +93,7 @@ var TSC;
                     return;
                 }
                 else if (tokens[this.currentToken][1] != "$") {
-                    this.currentToken++;
+                    //this.currentToken++;
                     this.statementList();
                 }
             }
@@ -109,6 +109,7 @@ var TSC;
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.printStatement();
+                console.log(tokens[this.currentToken][0]);
             }
             else if (tokens[this.currentToken][0] == 'VARIABLE') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -150,11 +151,11 @@ var TSC;
                     this.currentToken++;
                 }
                 else {
-                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("PrintStatement1 - ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
             }
             else {
-                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("PrintStatement2 - ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
             return;
         };
@@ -168,6 +169,7 @@ var TSC;
             else if (tokens[this.currentToken][0] == "DOUBLE_QUOTE") {
                 this.currentToken++;
                 this.stringExpr();
+                console.log(tokens[this.currentToken][0]);
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -198,7 +200,7 @@ var TSC;
         Parser.prototype.charList = function () {
             this.parseOutput.push("CharList with value of [" + tokens[this.currentToken][1] + "]");
             this.currentToken++;
-            if (tokens[this.currentToken][0] == "CHAR") {
+            if (tokens[this.currentToken][0] == "CHAR" || tokens[this.currentToken][0] == "SPACE") {
                 this.charList();
             }
             else if (tokens[this.currentToken][0] == "DOUBLE_QUOTE") {
@@ -224,9 +226,11 @@ var TSC;
             this.parseOutput.push("VarDecl");
             if (tokens[this.currentToken][0] == 'VARIABLE') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.currentToken++;
             }
             else {
                 this.parseOutput.push("varDecl - ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.currentToken++;
             }
             return;
         };

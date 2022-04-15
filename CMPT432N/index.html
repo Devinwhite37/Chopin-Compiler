@@ -140,14 +140,20 @@
 		function putMessageCST(msgCST) {
 			document.getElementById("taCST").value += msgCST + "\n";
 		}
+
+		function putMessageAST(msgCST) {
+			document.getElementById("taAST").value += msgCST + "\n";
+		}
 		
 		function compile(){
 			if (tokens[0] == undefined){
 				putMessageOP("Well that's random. Try compiling some code next time.");
 				putMessageCST("No CST to show.");
+				putMessageAST("No AST to show.");
+
 			}
 			else{
-				putMessageOP("Compilation Started");
+				//putMessageOP("Compilation Started");
 				lexOutput();
 				cstOutput();
 			}
@@ -164,8 +170,10 @@
 					return;
 				}
 				else{
-					putMessageOP("\nLexing Program "+ programNum);
-					putMessageOP("---------------------------------")
+					putMessageOP(" ____________________________________________ ")
+					putMessageOP("     -------- COMPILING PROGRAM " + programNum + " --------");
+					putMessageOP("\n Lexing Program "+ programNum);
+					putMessageOP("---------------------------")
 				}
 				for(var i; i < tokens.length; i++){
 					if(tokens[i][0] == 'INVALID_CHAR'){
@@ -203,10 +211,10 @@
 						putMessageOP("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 					}	
 				}
-						putMessageOP("---------------------------");
-						putMessageOP("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).\n");
+						//putMessageOP("---------------------------");
+						putMessageOP("\nLexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).\n");
 
-							putMessageOP("Parsing Program "+ programNum);
+							putMessageOP(" Parsing Program "+ programNum);
 							putMessageOP("---------------------------")
 							for(var l; l < productions.length; l++){
 								if(productions[l] == 'VALID - Found [EOP]'){
