@@ -112,7 +112,7 @@ module TSC {
                     }
                 }
                 else{
-                    this.parseOutput.push("statement list - ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.parseOutput.push("Expected token(s) [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]")
                 }
                 return;
@@ -151,7 +151,7 @@ module TSC {
                     this.parseBlock();
                 }
                 else{
-                    this.parseOutput.push("statemenet - ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
                 return;
             }
@@ -166,11 +166,11 @@ module TSC {
                         this.currentToken++;
                     }
                     else{
-                        this.parseOutput.push("PrintStatement1 - ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                        this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     }
                 }
                 else{
-                    this.parseOutput.push("PrintStatement2 - ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
                 return;
             }
@@ -237,7 +237,7 @@ module TSC {
                     this.expression();
                 }
                 else{
-                    this.parseOutput.push("assignmentStatement - ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.parseOutput.push("Expected tokens: [ASSIGNMENT]")
                 }
                 return;
@@ -250,7 +250,7 @@ module TSC {
                     this.currentToken++;
                 }
                 else{
-                    this.parseOutput.push("varDecl - ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                 }
                 return;
@@ -277,15 +277,15 @@ module TSC {
                             this.currentToken++;
                         }
                         else{
-                            this.parseOutput.push("booleanExpr1 - ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                            this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                         }
                     }
                     else{
-                        this.parseOutput.push("booleanExpr2 - ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                        this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     }
                 }
                 else{
-                    this.parseOutput.push("booleanExpr3 - ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
                 return;
             }
@@ -298,7 +298,7 @@ module TSC {
                     this.parseBlock();
                 }
                 else{
-                    this.parseOutput.push("ifStatement - ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
                 return;
             }
@@ -318,43 +318,3 @@ module TSC {
         
     }
 }
-
-/*{
-    int a
-    a = 0
-    string z
-    while(a!=9){
-        if(a!=5){
-            print("bond")
-        }
-        {
-        a = 1 + a
-        string b
-        b = "james bond"}
-        print(b)
-        }
-    }
-    {}
-    boolean c
-    c = true
-    boolean d
-    d = (true ==(true == false))
-    d = (a == b)
-    d = (1 == a)
-    d = (1 != 1)
-    d = ("string" == 1)
-    d = (a != "string")
-    if(d == true){
-        int c
-        c = 1 + d
-        if(c == 1){
-            print("ugh")
-        }
-    }
-    while("string" == a){
-        while(1 == true){
-            a = 1 + "string"
-        }
-    }
-}
-*/
