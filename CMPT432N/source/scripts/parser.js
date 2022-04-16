@@ -23,13 +23,18 @@ var TSC;
             //this.cst = new Tree();
             this.braces = 0;
         }
+        //define array to return productions to index.html
         Parser.prototype.parse = function () {
             this.program();
             return this.parseOutput;
         };
+        //define array to return CST to index.html
         Parser.prototype.cst = function () {
             return this.cstOutput;
         };
+        //most of the following can be easily understood. There are many methods
+        //which define portions of our grammar and add productions to parseOutput
+        //Program tests to see if the first character is valid. if not send an error
         Parser.prototype.program = function () {
             if (tokens[this.currentToken] === undefined) {
                 return;
@@ -42,6 +47,7 @@ var TSC;
                 this.parseOutput.push("ERROR - Expecting [{] found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
         };
+        //parseBlock handles open and closed curly braces followed by an EOP marker
         Parser.prototype.parseBlock = function () {
             if (tokens[this.currentToken][1] == '{') {
                 this.parseOutput.push("Block");
@@ -55,8 +61,15 @@ var TSC;
                 this.currentToken++;
                 this.braces--;
                 if (tokens[this.currentToken][1] == '$') {
+                    if (this.braces != 0) {
+                        if (this.braces > 0) {
+                            this.parseOutput.push("ERROR - missing [}]");
+                        }
+                        else if (this.braces < 0) {
+                            this.parseOutput.push("ERROR - missing [{]");
+                        }
+                    }
                     this.parseOutput.push("VALID - Found [EOP]");
-                    //this.parseOutput.push("on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                     this.program();
                 }
@@ -67,10 +80,8 @@ var TSC;
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
-            if (this.braces != 0) {
-                this.parseOutput.push("ERROR - missing [}]");
-            }
         };
+        //StatementList tests the tokens to see if we have valid statementLists
         Parser.prototype.statementList = function () {
             if (tokens[this.currentToken] === undefined) {
                 return;
@@ -103,13 +114,13 @@ var TSC;
             }
             return;
         };
+        //statement is used to validate the tokens 
         Parser.prototype.statement = function () {
             this.parseOutput.push("Statement");
             if (tokens[this.currentToken][0] == 'PRINT') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.printStatement();
-                console.log(tokens[this.currentToken][0]);
             }
             else if (tokens[this.currentToken][0] == 'VARIABLE') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -169,7 +180,6 @@ var TSC;
             else if (tokens[this.currentToken][0] == "DOUBLE_QUOTE") {
                 this.currentToken++;
                 this.stringExpr();
-                console.log(tokens[this.currentToken][0]);
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
