@@ -18,7 +18,11 @@ module TSC {
             parseOutput: Array<String>; 
             braces: number;
             cstOutput: Array<String>;
-            cstt: Array<Tree>;
+            cstt: Array<Cst>;
+            cstDepth: number;
+            programNum: number;
+            cstValueDepth: String;
+            cstValue: String;
 
 
             // Constructor for parser, passed tokens from lexer. Inits values.
@@ -31,15 +35,18 @@ module TSC {
                 //this.cst = new Tree();
                 //this.cst = new Tree();
                 this.braces = 0;
+                this.cstDepth = 0;
+                this.programNum = 0;
+                this.cstValueDepth = "";
             }
 
-            //define array to return productions to index.html
+            //function to return productions to index.html
             public parse() {
                 this.program();
                 return this.parseOutput;
             }
 
-            //define array to return CST to index.html
+            //function to return CST to index.html
             public cst(){
                 return this.cstOutput;
             }
@@ -48,10 +55,15 @@ module TSC {
             //which define portions of our grammar and add productions to parseOutput
             //Program tests to see if the first character is valid. if not send an error
             public program(){
+                this.programNum++;
+                this.cstDepth = 0;
                 if(tokens[this.currentToken] === undefined){
                     return;
                 }
                 else if(tokens[this.currentToken][1] == '{'){
+                    this.cstOutput.push("<Program "+ this.programNum + ">");
+                    this.cstDepth++;
+                    console.log("CST DEPTH" + this.cstDepth);
                     this.parseOutput.push("Progrm");
                     this.parseBlock();
                 }
@@ -64,6 +76,9 @@ module TSC {
             public parseBlock(){
                 if(tokens[this.currentToken][1] == '{'){
                     this.parseOutput.push("Block");
+                    this.cstValue = "<Block>";
+                    this.handleCst();
+                    this.cstDepth++;
                     this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                     this.braces++;
@@ -106,14 +121,20 @@ module TSC {
                     this.parseBlock();
                 }
                 else if(tokens[this.currentToken][1] == '}'){
+                    this.cstValue = "<Block>";
+                    this.handleCst();
+                    this.cstDepth--;
                     this.parseBlock();
                 }
                 else if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
-                || tokens[this.currentToken][0] == "INT_TYPE" || tokens[this.currentToken][0] == "STRING_TYPE"
-                || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
-                || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
-                this.parseOutput.push("StatementList");
-                this.statement();
+                    || tokens[this.currentToken][0] == "INT_TYPE" || tokens[this.currentToken][0] == "STRING_TYPE"
+                    || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
+                    || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
+                    this.parseOutput.push("StatementList");
+                    this.cstValue = "<StatementList>";
+                    this.handleCst();
+                    this.cstDepth++;
+                    this.statement();
                     if(tokens[this.currentToken] === undefined){
                         return;
                     }
@@ -131,8 +152,14 @@ module TSC {
 
             //statement is used to validate the tokens that are statmenets and pass them to their specified statement
             public statement(){
+                this.cstValue = "<Statement>";
+                this.handleCst();
+                this.cstDepth++;
                 this.parseOutput.push("Statement");
-                if(tokens[this.currentToken][0] == 'PRINT'){
+                if(tokens[this.currentToken] === undefined){
+                    return;
+                }
+                else if(tokens[this.currentToken][0] == 'PRINT'){
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                     this.currentToken++;
                     this.printStatement();
@@ -325,6 +352,13 @@ module TSC {
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
                 return;
+            }
+            public handleCst(){
+                this.cstValueDepth = "";
+                for(let i = 0; i < this.cstDepth; i++){
+                    this.cstValueDepth += "-";
+                }
+                this.cstOutput.push(this.cstValueDepth + "" + this.cstValue);
             }
     }
 }

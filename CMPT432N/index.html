@@ -126,6 +126,9 @@
 			console.log("HTML TOKENS:");
 			console.log(tokens);
 			let parser = new TSC.Parser();
+			//let cst = new TSC.Parser();
+			cst = parser.cst();
+			console.log(cst);
 			productions = parser.parse();
 			console.log(productions); 
 			// . . . and parse!
@@ -224,6 +227,13 @@
 									l++;
 									break;
 								}
+								else if(productions[l] == 'ERROR - Found [undefined] on [ undefined , undefined ]'){
+									programNum++;
+									putMessageOP("PARSER -> WARNING: Missing EOP [ $ ] at end of file.");
+									putMessageOP("\n")
+									l++;
+									break;	
+								}
 								else{
 									putMessageOP("PARSER -> " + productions[l]);
 								}
@@ -231,8 +241,10 @@
 				}
 		}    
 		function cstOutput(){
-			putMessageCST("<Program 1>");
-
+			for(var m = 0; m < cst.length; m++){
+					putMessageCST(cst[m]);
+					//m++;
+			}
 		}
 		
 		/*function parseOutput(){

@@ -22,13 +22,16 @@ var TSC;
             //this.cst = new Tree();
             //this.cst = new Tree();
             this.braces = 0;
+            this.cstDepth = 0;
+            this.programNum = 0;
+            this.cstValueDepth = "";
         }
-        //define array to return productions to index.html
+        //function to return productions to index.html
         Parser.prototype.parse = function () {
             this.program();
             return this.parseOutput;
         };
-        //define array to return CST to index.html
+        //function to return CST to index.html
         Parser.prototype.cst = function () {
             return this.cstOutput;
         };
@@ -36,10 +39,15 @@ var TSC;
         //which define portions of our grammar and add productions to parseOutput
         //Program tests to see if the first character is valid. if not send an error
         Parser.prototype.program = function () {
+            this.programNum++;
+            this.cstDepth = 0;
             if (tokens[this.currentToken] === undefined) {
                 return;
             }
             else if (tokens[this.currentToken][1] == '{') {
+                this.cstOutput.push("<Program " + this.programNum + ">");
+                this.cstDepth++;
+                console.log("CST DEPTH" + this.cstDepth);
                 this.parseOutput.push("Progrm");
                 this.parseBlock();
             }
@@ -51,6 +59,9 @@ var TSC;
         Parser.prototype.parseBlock = function () {
             if (tokens[this.currentToken][1] == '{') {
                 this.parseOutput.push("Block");
+                this.cstValue = "<Block>";
+                this.handleCst();
+                this.cstDepth++;
                 this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.braces++;
@@ -92,6 +103,9 @@ var TSC;
                 this.parseBlock();
             }
             else if (tokens[this.currentToken][1] == '}') {
+                this.cstValue = "<Block>";
+                this.handleCst();
+                this.cstDepth--;
                 this.parseBlock();
             }
             else if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
@@ -99,6 +113,9 @@ var TSC;
                 || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
                 || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
                 this.parseOutput.push("StatementList");
+                this.cstValue = "<StatementList>";
+                this.handleCst();
+                this.cstDepth++;
                 this.statement();
                 if (tokens[this.currentToken] === undefined) {
                     return;
@@ -116,8 +133,14 @@ var TSC;
         };
         //statement is used to validate the tokens that are statmenets and pass them to their specified statement
         Parser.prototype.statement = function () {
+            this.cstValue = "<Statement>";
+            this.handleCst();
+            this.cstDepth++;
             this.parseOutput.push("Statement");
-            if (tokens[this.currentToken][0] == 'PRINT') {
+            if (tokens[this.currentToken] === undefined) {
+                return;
+            }
+            else if (tokens[this.currentToken][0] == 'PRINT') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.printStatement();
@@ -298,6 +321,13 @@ var TSC;
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
             return;
+        };
+        Parser.prototype.handleCst = function () {
+            this.cstValueDepth = "";
+            for (var i = 0; i < this.cstDepth; i++) {
+                this.cstValueDepth += "-";
+            }
+            this.cstOutput.push(this.cstValueDepth + "" + this.cstValue);
         };
         return Parser;
     }());
