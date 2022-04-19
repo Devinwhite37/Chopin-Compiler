@@ -84,7 +84,6 @@ module TSC {
                         }
                         this.parseOutput.push("VALID - Found [EOP]");
                         this.currentToken++;
-                        
                         this.program();
                     }
                     else{
@@ -94,7 +93,6 @@ module TSC {
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
-                
             }
 
             //StatementList tests the tokens to see if we have valid statementLists
@@ -131,7 +129,7 @@ module TSC {
                 return;
             }
 
-            //statement is used to validate the tokens 
+            //statement is used to validate the tokens that are statmenets and pass them to their specified statement
             public statement(){
                 this.parseOutput.push("Statement");
                 if(tokens[this.currentToken][0] == 'PRINT'){
@@ -168,6 +166,8 @@ module TSC {
                 }
                 return;
             }
+
+            
             public printStatement(){
                 this.parseOutput.push("PrintStatement");
                 if(tokens[this.currentToken][1] == '('){

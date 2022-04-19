@@ -114,7 +114,7 @@ var TSC;
             }
             return;
         };
-        //statement is used to validate the tokens 
+        //statement is used to validate the tokens that are statmenets and pass them to their specified statement
         Parser.prototype.statement = function () {
             this.parseOutput.push("Statement");
             if (tokens[this.currentToken][0] == 'PRINT') {
