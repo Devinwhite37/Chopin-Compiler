@@ -21,7 +21,7 @@ module TSC {
             cstt: Array<Cst>;
             cstDepth: number;
             programNum: number;
-            cstValueDepth: String;
+            cstDash: String;
             cstValue: String;
 
 
@@ -31,13 +31,11 @@ module TSC {
                 this.parseOutput = [];
                 this.currentToken = 0;
                 this.cstOutput = [];
-                // Tree data structure
-                //this.cst = new Tree();
-                //this.cst = new Tree();
+               
                 this.braces = 0;
                 this.cstDepth = 0;
                 this.programNum = 0;
-                this.cstValueDepth = "";
+                this.cstDash = "";
             }
 
             //function to return productions to index.html
@@ -61,7 +59,7 @@ module TSC {
                     return;
                 }
                 else if(tokens[this.currentToken][1] == '{'){
-                    this.cstOutput.push("<Program "+ this.programNum + ">");
+                    this.cstOutput.push("\n<Program "+ this.programNum + ">");
                     this.cstDepth++;
                     console.log("CST DEPTH" + this.cstDepth);
                     this.parseOutput.push("Progrm");
@@ -77,6 +75,7 @@ module TSC {
                 if(tokens[this.currentToken][1] == '{'){
                     this.parseOutput.push("Block");
                     this.cstValue = "<Block>";
+                    console.log("BLOCK RAN");
                     this.handleCst();
                     this.cstDepth++;
                     this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -147,6 +146,7 @@ module TSC {
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.parseOutput.push("Expected token(s) [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]")
                 }
+                this.cstDepth--;
                 return;
             }
 
@@ -353,12 +353,13 @@ module TSC {
                 }
                 return;
             }
+
             public handleCst(){
-                this.cstValueDepth = "";
+                this.cstDash = "";
                 for(let i = 0; i < this.cstDepth; i++){
-                    this.cstValueDepth += "-";
+                    this.cstDash += "-";
                 }
-                this.cstOutput.push(this.cstValueDepth + "" + this.cstValue);
+                this.cstOutput.push(this.cstDash + "" + this.cstValue);
             }
     }
 }

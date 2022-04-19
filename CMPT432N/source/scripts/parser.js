@@ -18,13 +18,10 @@ var TSC;
             this.parseOutput = [];
             this.currentToken = 0;
             this.cstOutput = [];
-            // Tree data structure
-            //this.cst = new Tree();
-            //this.cst = new Tree();
             this.braces = 0;
             this.cstDepth = 0;
             this.programNum = 0;
-            this.cstValueDepth = "";
+            this.cstDash = "";
         }
         //function to return productions to index.html
         Parser.prototype.parse = function () {
@@ -45,7 +42,7 @@ var TSC;
                 return;
             }
             else if (tokens[this.currentToken][1] == '{') {
-                this.cstOutput.push("<Program " + this.programNum + ">");
+                this.cstOutput.push("\n<Program " + this.programNum + ">");
                 this.cstDepth++;
                 console.log("CST DEPTH" + this.cstDepth);
                 this.parseOutput.push("Progrm");
@@ -129,6 +126,7 @@ var TSC;
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.parseOutput.push("Expected token(s) [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]");
             }
+            this.cstDepth--;
             return;
         };
         //statement is used to validate the tokens that are statmenets and pass them to their specified statement
@@ -323,11 +321,11 @@ var TSC;
             return;
         };
         Parser.prototype.handleCst = function () {
-            this.cstValueDepth = "";
+            this.cstDash = "";
             for (var i = 0; i < this.cstDepth; i++) {
-                this.cstValueDepth += "-";
+                this.cstDash += "-";
             }
-            this.cstOutput.push(this.cstValueDepth + "" + this.cstValue);
+            this.cstOutput.push(this.cstDash + "" + this.cstValue);
         };
         return Parser;
     }());
