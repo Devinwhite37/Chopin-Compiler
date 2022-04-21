@@ -12,6 +12,9 @@
 var TSC;
 (function (TSC) {
     var Parser = /** @class */ (function () {
+        /*cstDepth: number;
+        cstDash: String;
+        cstValue: String;*/
         // Constructor for parser, passed tokens from lexer. Inits values.
         function Parser(tokens) {
             this.tokenList = tokens;
@@ -19,33 +22,33 @@ var TSC;
             this.currentToken = 0;
             this.cstOutput = [];
             this.braces = 0;
-            this.cstDepth = 0;
+            /*this.cstDepth = 0;
             this.programNum = 0;
-            this.cstDash = "";
+            this.cstDash = "";*/
+            this.cst = new TSC.Tree();
+            this.cst.addNode("Root", "branch");
         }
         //function to return productions to index.html
         Parser.prototype.parse = function () {
             this.program();
             return this.parseOutput;
+            //"cst": this.cst
         };
         //function to return CST to index.html
-        Parser.prototype.cst = function () {
+        Parser.prototype.cstTree = function () {
             return this.cstOutput;
         };
         //most of the following can be easily understood. There are many methods
         //which define portions of our grammar and add productions to parseOutput
         //Program tests to see if the first character is valid. if not send an error
         Parser.prototype.program = function () {
-            this.programNum++;
-            this.cstDepth = 0;
+            this.cst.addNode("Program ", "branch");
             if (tokens[this.currentToken] === undefined) {
                 return;
             }
             else if (tokens[this.currentToken][1] == '{') {
                 this.cstOutput.push("\n<Program " + this.programNum + ">");
-                this.cstDepth++;
-                console.log("CST DEPTH" + this.cstDepth);
-                this.parseOutput.push("Progrm");
+                this.parseOutput.push("Program");
                 this.parseBlock();
             }
             else {
@@ -55,10 +58,8 @@ var TSC;
         //parseBlock handles open and closed curly braces followed by an EOP marker
         Parser.prototype.parseBlock = function () {
             if (tokens[this.currentToken][1] == '{') {
+                this.cst.addNode("Block", "branch");
                 this.parseOutput.push("Block");
-                this.cstValue = "<Block>";
-                this.handleCst();
-                this.cstDepth++;
                 this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.currentToken++;
                 this.braces++;
@@ -66,6 +67,7 @@ var TSC;
             }
             else if (tokens[this.currentToken][1] == '}') {
                 this.parseOutput.push("VALID - Found [R_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.cst.endChildren();
                 this.currentToken++;
                 this.braces--;
                 if (tokens[this.currentToken][1] == '$') {
@@ -78,6 +80,7 @@ var TSC;
                         }
                     }
                     this.parseOutput.push("VALID - Found [EOP]");
+                    this.cst.toString();
                     this.currentToken++;
                     this.program();
                 }
@@ -100,9 +103,6 @@ var TSC;
                 this.parseBlock();
             }
             else if (tokens[this.currentToken][1] == '}') {
-                this.cstValue = "<Block>";
-                this.handleCst();
-                this.cstDepth--;
                 this.parseBlock();
             }
             else if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
@@ -110,9 +110,6 @@ var TSC;
                 || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
                 || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
                 this.parseOutput.push("StatementList");
-                this.cstValue = "<StatementList>";
-                this.handleCst();
-                this.cstDepth++;
                 this.statement();
                 if (tokens[this.currentToken] === undefined) {
                     return;
@@ -126,14 +123,10 @@ var TSC;
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.parseOutput.push("Expected token(s) [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]");
             }
-            this.cstDepth--;
             return;
         };
         //statement is used to validate the tokens that are statmenets and pass them to their specified statement
         Parser.prototype.statement = function () {
-            this.cstValue = "<Statement>";
-            this.handleCst();
-            this.cstDepth++;
             this.parseOutput.push("Statement");
             if (tokens[this.currentToken] === undefined) {
                 return;
@@ -184,11 +177,14 @@ var TSC;
                 }
                 else {
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("Expected token(s): [R_PAREN]");
                 }
             }
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("Expected token(s): [L_PAREN]");
             }
+            //
             return;
         };
         Parser.prototype.expression = function () {
@@ -212,6 +208,7 @@ var TSC;
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
+            //
             return;
         };
         Parser.prototype.intExpr = function () {
@@ -261,6 +258,7 @@ var TSC;
             }
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("Expected token(s): [VARIABLE]");
                 this.currentToken++;
             }
             return;
@@ -287,10 +285,12 @@ var TSC;
                     }
                     else {
                         this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                        this.parseOutput.push("Expected token(s): [R_PAREN]");
                     }
                 }
                 else {
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("Expected token(s): [BOOL_EQUAL, BOOL_NOTEQUAL]");
                 }
             }
             else {
@@ -306,6 +306,7 @@ var TSC;
             }
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("Expected token(s): [L_PAREN, BOOL_TRUE, BOOL_FALSE]");
             }
             return;
         };
@@ -317,15 +318,9 @@ var TSC;
             }
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.parseOutput.push("Expected token(s): [L_PAREN, BOOL_TRUE, BOOL_FALSE]");
             }
             return;
-        };
-        Parser.prototype.handleCst = function () {
-            this.cstDash = "";
-            for (var i = 0; i < this.cstDepth; i++) {
-                this.cstDash += "-";
-            }
-            this.cstOutput.push(this.cstDash + "" + this.cstValue);
         };
         return Parser;
     }());

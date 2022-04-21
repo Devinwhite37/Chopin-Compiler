@@ -18,11 +18,11 @@ module TSC {
             parseOutput: Array<String>; 
             braces: number;
             cstOutput: Array<String>;
-            cstt: Array<Cst>;
-            cstDepth: number;
+            cst: Tree;
             programNum: number;
+            /*cstDepth: number;
             cstDash: String;
-            cstValue: String;
+            cstValue: String;*/
 
 
             // Constructor for parser, passed tokens from lexer. Inits values.
@@ -31,21 +31,25 @@ module TSC {
                 this.parseOutput = [];
                 this.currentToken = 0;
                 this.cstOutput = [];
-               
                 this.braces = 0;
-                this.cstDepth = 0;
+                /*this.cstDepth = 0;
                 this.programNum = 0;
-                this.cstDash = "";
+                this.cstDash = "";*/
+                this.cst = new TSC.Tree();
+                this.cst.addNode("Root", "branch");
+
             }
 
             //function to return productions to index.html
             public parse() {
                 this.program();
                 return this.parseOutput;
+                    //"cst": this.cst
+                
             }
 
             //function to return CST to index.html
-            public cst(){
+            public cstTree(){
                 return this.cstOutput;
             }
             
@@ -53,16 +57,14 @@ module TSC {
             //which define portions of our grammar and add productions to parseOutput
             //Program tests to see if the first character is valid. if not send an error
             public program(){
-                this.programNum++;
-                this.cstDepth = 0;
+                this.cst.addNode("Program ", "branch");
                 if(tokens[this.currentToken] === undefined){
                     return;
                 }
                 else if(tokens[this.currentToken][1] == '{'){
                     this.cstOutput.push("\n<Program "+ this.programNum + ">");
-                    this.cstDepth++;
-                    console.log("CST DEPTH" + this.cstDepth);
-                    this.parseOutput.push("Progrm");
+                    
+                    this.parseOutput.push("Program");
                     this.parseBlock();
                 }
                 else{
@@ -73,11 +75,8 @@ module TSC {
             //parseBlock handles open and closed curly braces followed by an EOP marker
             public parseBlock(){
                 if(tokens[this.currentToken][1] == '{'){
-                    this.parseOutput.push("Block");
-                    this.cstValue = "<Block>";
-                    console.log("BLOCK RAN");
-                    this.handleCst();
-                    this.cstDepth++;
+                    this.cst.addNode("Block", "branch");
+                    this.parseOutput.push("Block");                    
                     this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
                     this.braces++;
@@ -85,6 +84,7 @@ module TSC {
                 }
                 else if(tokens[this.currentToken][1] == '}'){
                     this.parseOutput.push("VALID - Found [R_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.cst.endChildren();
                     this.currentToken++;
                     this.braces--;                    
                     if(tokens[this.currentToken][1] == '$'){
@@ -96,7 +96,8 @@ module TSC {
                                 this.parseOutput.push("ERROR - missing [{]")
                             }
                         }
-                        this.parseOutput.push("VALID - Found [EOP]");
+                        this.parseOutput.push("VALID - Found [EOP]");    
+                        this.cst.toString();                    
                         this.currentToken++;
                         this.program();
                     }
@@ -110,7 +111,7 @@ module TSC {
             }
 
             //StatementList tests the tokens to see if we have valid statementLists
-            public statementList(){
+            public statementList(){                
                 if(tokens[this.currentToken] === undefined){
                     return;
                 }
@@ -120,9 +121,7 @@ module TSC {
                     this.parseBlock();
                 }
                 else if(tokens[this.currentToken][1] == '}'){
-                    this.cstValue = "<Block>";
-                    this.handleCst();
-                    this.cstDepth--;
+                    
                     this.parseBlock();
                 }
                 else if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
@@ -130,9 +129,7 @@ module TSC {
                     || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
                     || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
                     this.parseOutput.push("StatementList");
-                    this.cstValue = "<StatementList>";
-                    this.handleCst();
-                    this.cstDepth++;
+                    
                     this.statement();
                     if(tokens[this.currentToken] === undefined){
                         return;
@@ -146,15 +143,12 @@ module TSC {
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.parseOutput.push("Expected token(s) [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]")
                 }
-                this.cstDepth--;
+                
                 return;
             }
 
             //statement is used to validate the tokens that are statmenets and pass them to their specified statement
             public statement(){
-                this.cstValue = "<Statement>";
-                this.handleCst();
-                this.cstDepth++;
                 this.parseOutput.push("Statement");
                 if(tokens[this.currentToken] === undefined){
                     return;
@@ -170,7 +164,7 @@ module TSC {
                     this.assignmentStatement();
                 }
                 else if(tokens[this.currentToken][0] == 'INT_TYPE' || tokens[this.currentToken][0] == 'BOOL_TYPE' 
-                || tokens[this.currentToken][0] == 'STRING_TYPE'){
+                    || tokens[this.currentToken][0] == 'STRING_TYPE'){
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
                     this.currentToken++;
                     this.varDecl();
@@ -191,32 +185,44 @@ module TSC {
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
+                
+                
                 return;
             }
 
             
             public printStatement(){
                 this.parseOutput.push("PrintStatement");
+                
+                
+                
                 if(tokens[this.currentToken][1] == '('){
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
+                    
                     this.currentToken++;
                     this.expression();
                     if(tokens[this.currentToken][1] == ')'){
                         this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                        
                         this.currentToken++;
                     }
                     else{
                         this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                        this.parseOutput.push("Expected token(s): [R_PAREN]");
                     }
                 }
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("Expected token(s): [L_PAREN]");
                 }
+                //
                 return;
             }
             
             public expression(){
                 this.parseOutput.push("Expr");
+                
+                
                 if (tokens[this.currentToken][0] == "DIGIT") {
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
@@ -236,10 +242,12 @@ module TSC {
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
+                //
                 return;
             }
 
             public intExpr(){
+
                 this.parseOutput.push("IntExpr");
                 if(tokens[this.currentToken][0] == 'ADDITION_OP'){
                     this.parseOutput.push("VALID - Found [+] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -290,6 +298,7 @@ module TSC {
                 }
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("Expected token(s): [VARIABLE]");
                     this.currentToken++;
                 }
                 return;
@@ -317,10 +326,12 @@ module TSC {
                         }
                         else{
                             this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                            this.parseOutput.push("Expected token(s): [R_PAREN]");
                         }
                     }
                     else{
                         this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                        this.parseOutput.push("Expected token(s): [BOOL_EQUAL, BOOL_NOTEQUAL]");
                     }
                 }
                 else{
@@ -338,6 +349,8 @@ module TSC {
                 }
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("Expected token(s): [L_PAREN, BOOL_TRUE, BOOL_FALSE]");
+
                 }
                 return;
             }
@@ -350,16 +363,17 @@ module TSC {
                 }
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("Expected token(s): [L_PAREN, BOOL_TRUE, BOOL_FALSE]");
                 }
                 return;
             }
 
-            public handleCst(){
+           /* public handleCst(){
                 this.cstDash = "";
                 for(let i = 0; i < this.cstDepth; i++){
                     this.cstDash += "-";
                 }
                 this.cstOutput.push(this.cstDash + "" + this.cstValue);
-            }
+            }*/
     }
 }

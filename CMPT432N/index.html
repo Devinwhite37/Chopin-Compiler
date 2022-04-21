@@ -59,7 +59,7 @@
 			<table class = "center">
 				<tr>
 					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Input</h3></td>
-					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Output</h3></td>
+					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Log</h3></td>
 				</tr>
 				<tr>
 					<td><textarea class="lined" id="taSourceCode" autofocus></textarea></td>
@@ -94,6 +94,7 @@
     <script type="text/javascript" src="source/scripts/lexer.js"></script>	
 	<script type="text/javascript" src="source/scripts/globals.js"></script>	
 	<script type="text/javascript" src="source/scripts/parser.js"></script>	
+	<script type="text/javascript" src="source/scripts/tree.js"></script>	
 
 	<!--<script type="text/javascript" src="source/scripts/tokenizer.js"></script>	-->
 
@@ -123,12 +124,16 @@
 			tokens = lexer.lex();
 			programNum = 1;
 
+			errors = 0;
 			console.log("HTML TOKENS:");
 			console.log(tokens);
 			let parser = new TSC.Parser();
+			productions = parser.parse();
+
 			//let cst = new TSC.Parser();
-			cst = parser.cst();
-			console.log(cst);
+			let tree = new TSC.Tree();
+			//cst = parser.cst();
+			tree = tree.toString();
 			productions = parser.parse();
 			console.log(productions); 
 			// . . . and parse!
@@ -181,7 +186,7 @@
 				for(var i; i < tokens.length; i++){
 					if(tokens[i][0] == 'INVALID_CHAR'){
 						errors++;
-						putMessageOP("LEXER -> | ERROR: Invalid Token [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
+						putMessageOP("LEXER -> | ERROR: Invalid Token [ " + tokens[i][1] + " ] on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 						putMessageOP("Lexical Analysis stopped due to error.")
 						break;
 					}
@@ -202,139 +207,65 @@
 						putMessageOP("LEXER -> | WARNING: Missing EOP [ $ ] at end of file.");
 					}
 					else if(tokens[i][0] == 'EOP'){
-						putMessageOP("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
+						putMessageOP("LEXER -> | " + tokens[i][0] + " [ " + tokens[i][1] + " ] on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 						errors = 0;
 						warnings = 0;
 						i = i+1;
 						break;
-						//putMessageOP("---------------------------");
-						//putMessageOP("Lexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).");
-					}
+						}
 					else{
-						putMessageOP("LEXER -> | " + tokens[i][0] + "  [ " + tokens[i][1] + " ]  on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
+						putMessageOP("LEXER -> | " + tokens[i][0] + " [ " + tokens[i][1] + " ] on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 					}	
 				}
-						//putMessageOP("---------------------------");
-						putMessageOP("\nLexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).\n");
+				putMessageOP("\nLexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).\n");
 
-							putMessageOP(" Parsing Program "+ programNum);
-							putMessageOP("---------------------------")
+					putMessageOP(" Parsing Program "+ programNum);
+					putMessageOP("---------------------------")
+					for(var l; l < productions.length; l++){
+						if(productions[l] == 'VALID - Found [EOP]'){
+							programNum++;
+							putMessageOP("PARSER -> | " + productions[l]);
+							putMessageOP("\n")
+							l++;
+							break;
+						}
+						else if(productions[l] == 'ERROR - Found [undefined] on [ undefined , undefined ]'){
+							programNum++;
+							putMessageOP("PARSER -> | WARNING: Missing EOP [ $ ] at end of file.");
+							putMessageOP("\n")
+							l++;
+							break;	
+						}
+						else if(productions[l].slice(0, 5) == 'ERROR'){
+							programNum++;
+							putMessageOP("PARSER -> | " + productions[l]);
+							l++;
+							putMessageOP("PARSER -> | " + productions[l]);
+							//skip all profuctions after error until we find next program
 							for(var l; l < productions.length; l++){
-								if(productions[l] == 'VALID - Found [EOP]'){
-									programNum++;
-									putMessageOP("PARSER -> " + productions[l]);
-									putMessageOP("\n")
-									l++;
+								console.log("TEST " + l);
+								if(productions[l] == 'Program'){
 									break;
 								}
-								else if(productions[l] == 'ERROR - Found [undefined] on [ undefined , undefined ]'){
-									programNum++;
-									putMessageOP("PARSER -> WARNING: Missing EOP [ $ ] at end of file.");
-									putMessageOP("\n")
-									l++;
-									break;	
-								}
-								else{
-									putMessageOP("PARSER -> " + productions[l]);
-								}
 							}
+							break;
+						}
+						else{
+							putMessageOP("PARSER -> | " + productions[l]);
+						}
+					}
 				}
 		}    
 		function cstOutput(){
-			for(var m = 0; m < cst.length; m++){
-					putMessageCST(cst[m]);
-					//m++;
+			if(errors >= 1){
+				putMessageCST("No CST due to error.");
+			}
+			else{
+				for(var m = 0; m < tree.length; m++){
+					putMessageCST(tree[m]);
+				}
 			}
 		}
-		
-		/*function parseOutput(){
-			putMesage("Begin Parsing:");
-			for(var i = 0; i < productions.length; i++){
-				putMessageOP("PARSER -> | " + productions[i]);
-			}
-		}*/
-	
-	 	 // TODO: These parse routines really should be in TypeScript.
-		 //       This exercise is left to the student. Consider it project 0.5 .
-	    /*function parse() {
-	        putMessageOP("Parsing [" + tokens + "]");
-	        // Grab the next token.
-	        currentToken = getNextToken();
-	        // A valid parse derives the G(oal) production, so begin there.
-	        parseG();
-	        // Report the results.
-	        putMessageOP("Parsing found " + errorCount + " error(s).");        
-	    }
-    
-	    function parseG() {
-	        // A G(oal) production can only be an E(xpression), so parse the E production.
-	        parseE();
-	    }
-
-	    function parseE() {
-	        // All E productions begin with a digit, so make sure that we have one.
-	        checkToken("digit");
-	        // Look ahead 1 char (which is now in currentToken because checkToken 
-	        // consumes another one) and see which E production to follow.
-	        if (currentToken != EOF) {
-	            // We're not done, we expect to have an op.
-	            checkToken("op");
-	            parseE();
-	        } else {
-	            // There is nothing else in the token stream, 
-	            // and that's cool since E ::== digit is valid.
-	            putMessageOP("EOF reached");
-	        }
-	    }*/
-
-	    function checkToken(expectedKind) {
-	        // Validate that we have the expected token kind and et the next token.
-	        switch(expectedKind) {
-	            case "digit":   putMessageOP("Expecting a digit");
-	                            if (currentToken=="0" || currentToken=="1" || currentToken=="2" || 
-	                                currentToken=="3" || currentToken=="4" || currentToken=="5" || 
-	                                currentToken=="6" || currentToken=="7" || currentToken=="8" || 
-	                                currentToken=="9")
-	                            {
-									putMessageOP("Got a digit!");
-									console.log("digit");
-	                            }
-	                            else
-	                            {
-	                                errorCount++;
-	                                putMessageOP("NOT a digit.  Error at position " + tokenIndex + ".");
-	                            }
-	                            break;
-	            case "op":      putMessageOP("Expecting an operator");
-	                            if (currentToken=="+" || currentToken=="-")
-	                            {
-	                                putMessageOP("Got an operator!");
-	                            }
-	                            else
-	                            {
-	                                errorCount++;
-	                                putMessageOP("NOT an operator.  Error at position " + tokenIndex + ".");
-	                            }
-	                            break;
-	            default:        putMessageOP("Parse Error: Invalid Token Type at position " + tokenIndex + ".");
-	                            break;			
-	        }
-	        // Consume another token, having just checked this one, because that 
-	        // will allow the code to see what's coming next... a sort of "look-ahead".
-	        currentToken = getNextToken();
-	    }
-
-	    function getNextToken() {
-	        var thisToken = EOF;    // Let's assume that we're at the EOF.
-	        if (tokenIndex < tokens.length)
-	        {
-	            // If we're not at EOF, then return the next token in the stream and advance the index.
-	            thisToken = tokens[tokenIndex];
-	            putMessageOP("Current token:" + thisToken);
-	            tokenIndex++;
-	        }
-	        return thisToken;
-	    }
     </script>
 </body>
 </html>
