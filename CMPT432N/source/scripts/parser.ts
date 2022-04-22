@@ -35,9 +35,10 @@ module TSC {
                 /*this.cstDepth = 0;
                 this.programNum = 0;
                 this.cstDash = "";*/
-                this.cst = new TSC.Tree();
+                this.cst = new Tree();
                 this.cst.addNode("Root", "branch");
-
+                this.programNum = 1;
+                
             }
 
             //function to return productions to index.html
@@ -50,32 +51,36 @@ module TSC {
 
             //function to return CST to index.html
             public cstTree(){
-                return this.cstOutput;
+                //console.log(this.cst.toString());
+                return this.cst.toString();
             }
             
             //most of the following can be easily understood. There are many methods
             //which define portions of our grammar and add productions to parseOutput
             //Program tests to see if the first character is valid. if not send an error
             public program(){
-                this.cst.addNode("Program ", "branch");
                 if(tokens[this.currentToken] === undefined){
                     return;
                 }
                 else if(tokens[this.currentToken][1] == '{'){
-                    this.cstOutput.push("\n<Program "+ this.programNum + ">");
-                    
+                    //console.log(this.cst);
+                    this.cst.addNode("Program " + this.programNum, "branch");
+                    //console.log(this.cst);
+                    //this.cstOutput.push("\n<Program "+ this.programNum + ">");
                     this.parseOutput.push("Program");
                     this.parseBlock();
                 }
                 else{
                     this.parseOutput.push("ERROR - Expecting [{] found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
+                //this.cst.endChildren();
             }
 
             //parseBlock handles open and closed curly braces followed by an EOP marker
             public parseBlock(){
                 if(tokens[this.currentToken][1] == '{'){
                     this.cst.addNode("Block", "branch");
+                    this.cst.addNode(tokens[this.currentToken][1], "leaf");
                     this.parseOutput.push("Block");                    
                     this.parseOutput.push("VALID - Found [L_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.currentToken++;
@@ -84,6 +89,7 @@ module TSC {
                 }
                 else if(tokens[this.currentToken][1] == '}'){
                     this.parseOutput.push("VALID - Found [R_BRACE] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.cst.addNode(tokens[this.currentToken][1], "leaf");
                     this.cst.endChildren();
                     this.currentToken++;
                     this.braces--;                    
@@ -96,12 +102,18 @@ module TSC {
                                 this.parseOutput.push("ERROR - missing [{]")
                             }
                         }
-                        this.parseOutput.push("VALID - Found [EOP]");    
-                        this.cst.toString();                    
+                        this.parseOutput.push("VALID - Found [EOP]");  
+                        this.cst.addNode(tokens[this.currentToken][1], "leaf");
+                        //this.cst.endChildren();  
+                        this.cst.endChildren();
+                        this.programNum++;
+                        //this.cst.toString();                    
                         this.currentToken++;
                         this.program();
+                        //this.cstTree();
                     }
                     else{
+                        this.cst.endChildren();
                         this.statementList();
                     }
                 }
@@ -111,17 +123,19 @@ module TSC {
             }
 
             //StatementList tests the tokens to see if we have valid statementLists
-            public statementList(){                
+            public statementList(){  
                 if(tokens[this.currentToken] === undefined){
                     return;
                 }
                 else if(tokens[this.currentToken][1] == '}' && tokens[this.currentToken-1][1] == '{'){
                     this.parseOutput.push("StatementList");
+                    this.cst.addNode("StatementList", "branch");
                     this.parseOutput.push("VALID - Found [ε] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.cst.endChildren();
                     this.parseBlock();
                 }
                 else if(tokens[this.currentToken][1] == '}'){
-                    
+                    this.cst.endChildren();
                     this.parseBlock();
                 }
                 else if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
@@ -129,13 +143,12 @@ module TSC {
                     || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
                     || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
                     this.parseOutput.push("StatementList");
-                    
+                    this.cst.addNode("StatementList", "branch");
                     this.statement();
                     if(tokens[this.currentToken] === undefined){
                         return;
                     }
                     else if(tokens[this.currentToken][1] != "$") {
-                        //this.currentToken++;
                         this.statementList();
                     }
                 }
@@ -143,13 +156,14 @@ module TSC {
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.parseOutput.push("Expected token(s) [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]")
                 }
-                
+                //this.cst.endChildren();
                 return;
             }
 
             //statement is used to validate the tokens that are statmenets and pass them to their specified statement
             public statement(){
                 this.parseOutput.push("Statement");
+                this.cst.addNode("Statement", "branch");
                 if(tokens[this.currentToken] === undefined){
                     return;
                 }
@@ -180,30 +194,30 @@ module TSC {
                     this.ifStatement();
                 }
                 else if(tokens[this.currentToken][1] == '{' || tokens[this.currentToken][1] == '}') {
+                    this.cst.endChildren();
                     this.parseBlock();
                 }
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
-                
-                
+                this.cst.endChildren();
+                this.cst.endChildren();
                 return;
             }
 
             
             public printStatement(){
                 this.parseOutput.push("PrintStatement");
-                
-                
-                
+                this.cst.addNode("Print", "branch");  
+                this.cst.addNode("print", "leaf");              
                 if(tokens[this.currentToken][1] == '('){
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
-                    
+                    this.cst.addNode(tokens[this.currentToken][1], "leaf");
                     this.currentToken++;
                     this.expression();
                     if(tokens[this.currentToken][1] == ')'){
                         this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                        
+                        this.cst.addNode(tokens[this.currentToken][1], "leaf");
                         this.currentToken++;
                     }
                     else{
@@ -215,25 +229,28 @@ module TSC {
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.parseOutput.push("Expected token(s): [L_PAREN]");
                 }
-                //
+                this.cst.endChildren();
                 return;
             }
             
             public expression(){
                 this.parseOutput.push("Expr");
-                
-                
+                this.cst.addNode("Expr", "branch");
+                //this.cst.addNode(tokens[this.currentToken][1], "leaf");
                 if (tokens[this.currentToken][0] == "DIGIT") {
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.cst.addNode(tokens[this.currentToken][1], "leaf");
                     this.currentToken++;
                     this.intExpr();
                 } 
                 else if (tokens[this.currentToken][0] == "DOUBLE_QUOTE") {
+                    //this.cst.addNode(tokens[this.currentToken][1], "leaf");
                     this.currentToken++;
                     this.stringExpr();
                 }
                 else if (tokens[this.currentToken][0] == "VARIABLE") {
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0]+ " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.cst.addNode(tokens[this.currentToken][1], "leaf");
                     this.currentToken++;
                 }
                 else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
@@ -242,29 +259,38 @@ module TSC {
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
-                //
+                this.cst.endChildren();
                 return;
             }
 
             public intExpr(){
-
+                this.cst.addNode("IntExpr", "branch");
                 this.parseOutput.push("IntExpr");
                 if(tokens[this.currentToken][0] == 'ADDITION_OP'){
                     this.parseOutput.push("VALID - Found [+] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.cst.addNode(tokens[this.currentToken][1], "leaf");
                     this.currentToken++;
                     this.expression();
+                    this.cst.endChildren();
+                    return;
+                }
+                else{
+                    this.cst.endChildren();
                 }
                 return; 
             }
 
             public stringExpr(){
+                this.cst.addNode("StringExpr", "branch");
                 this.parseOutput.push("StringExpr");
                 this.charList();
+                this.cst.endChildren();
                 return;
             }
 
             public charList(){
                 this.parseOutput.push("CharList with value of [" + tokens[this.currentToken][1] + "]"); 
+                this.cst.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
                 if(tokens[this.currentToken][0] == "CHAR" || tokens[this.currentToken][0] == "SPACE"){
                     this.charList();
@@ -277,9 +303,11 @@ module TSC {
             }
 
             public assignmentStatement(){
+                this.cst.addNode("AssignmentStatement", "branch");
                 this.parseOutput.push("AssignmentStatement");
                 if(tokens[this.currentToken][1] == "="){
                     this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][0] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.cst.addNode(tokens[this.currentToken][1], "leaf");
                     this.currentToken++;
                     this.expression();
                 }
@@ -287,13 +315,16 @@ module TSC {
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.parseOutput.push("Expected tokens: [ASSIGNMENT]")
                 }
+                this.cst.endChildren();
                 return;
             }
 
             public varDecl(){
+                this.cst.addNode("VarDecl", "branch");
                 this.parseOutput.push("VarDecl");
                 if(tokens[this.currentToken][0] == 'VARIABLE'){
-                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0]+ " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
+                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0]+ " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.cst.addNode(tokens[this.currentToken][1], "leaf");
                     this.currentToken++;
                 }
                 else{
@@ -301,27 +332,33 @@ module TSC {
                     this.parseOutput.push("Expected token(s): [VARIABLE]");
                     this.currentToken++;
                 }
+                this.cst.endChildren();
                 return;
             }
 
             public booleanExpr(){
+                this.cst.addNode("BooleanExpr", "branch");
                 this.parseOutput.push("BooleanExpr");
                 if (tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                     this.parseOutput.push("BoolVal");
                     this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][0] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.cst.addNode(tokens[this.currentToken][1], "leaf");
                     this.currentToken++;
                 }
                 else if(tokens[this.currentToken][0] == 'L_PAREN'){
                     this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][0] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.cst.addNode(tokens[this.currentToken][1], "leaf");
                     this.currentToken++;
                     this.expression();
                     if(tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!='){
                         this.parseOutput.push("BoolOp");
                         this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][0] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                        this.cst.addNode(tokens[this.currentToken][1], "leaf");
                         this.currentToken++;
                         this.expression();
                         if(tokens[this.currentToken][0] == 'R_PAREN'){
                             this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][0] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                            this.cst.addNode(tokens[this.currentToken][1], "leaf");
                             this.currentToken++;
                         }
                         else{
@@ -337,12 +374,13 @@ module TSC {
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
+                this.cst.endChildren();
                 return;
             }
 
             public ifStatement(){
+                this.cst.addNode("IfStatement", "branch");
                 this.parseOutput.push("IfStatement");
-
                 if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                     this.booleanExpr();
                     this.parseBlock();
@@ -352,10 +390,12 @@ module TSC {
                     this.parseOutput.push("Expected token(s): [L_PAREN, BOOL_TRUE, BOOL_FALSE]");
 
                 }
+                this.cst.endChildren();
                 return;
             }
 
             public whileStatement(){
+                this.cst.addNode("WhileStatement", "branch");
                 this.parseOutput.push("WhileStatement");
                 if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                     this.booleanExpr();
@@ -365,6 +405,7 @@ module TSC {
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.parseOutput.push("Expected token(s): [L_PAREN, BOOL_TRUE, BOOL_FALSE]");
                 }
+                this.cst.endChildren();
                 return;
             }
 

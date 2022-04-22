@@ -131,9 +131,11 @@
 			productions = parser.parse();
 
 			//let cst = new TSC.Parser();
-			let tree = new TSC.Tree();
-			//cst = parser.cst();
-			tree = tree.toString();
+			let tree = new Tree();
+			cstTree = parser.cstTree();
+			//cstTree = tree.toString();
+			console.log("CSTTREE")
+			console.log(cstTree);
 			productions = parser.parse();
 			console.log(productions); 
 			// . . . and parse!
@@ -163,11 +165,12 @@
 			else{
 				//putMessageOP("Compilation Started");
 				lexOutput();
-				cstOutput();
+				//cstOutput();
 			}
 		}
 		function lexOutput(){
-			var errors = 0;
+			var lexErrors = 0;
+			var parseErrors = 0;
 			var warnings = 0;
 			var i = 0;
 			var l = 0;
@@ -185,19 +188,19 @@
 				}
 				for(var i; i < tokens.length; i++){
 					if(tokens[i][0] == 'INVALID_CHAR'){
-						errors++;
+						lexErrors++;
 						putMessageOP("LEXER -> | ERROR: Invalid Token [ " + tokens[i][1] + " ] on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 						putMessageOP("Lexical Analysis stopped due to error.")
 						break;
 					}
 					else if(tokens[i][0] == 'missingCommentEnd'){
-						errors++;
+						lexErrors++;
 						putMessageOP("LEXER -> | ERROR: Missing Comment End");
 						putMessageOP("Lexical Analysis stopped due to error.")
 						break;
 					}
 					else if(tokens[i][0] == 'missingQuoteEnd'){
-						errors++;
+						lexErrors++;
 						putMessageOP("LEXER -> | ERROR: Missing Quote End");
 						putMessageOP("Lexical Analysis stopped due to error.")
 						break;
@@ -208,7 +211,7 @@
 					}
 					else if(tokens[i][0] == 'EOP'){
 						putMessageOP("LEXER -> | " + tokens[i][0] + " [ " + tokens[i][1] + " ] on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
-						errors = 0;
+						lexErrors = 0;
 						warnings = 0;
 						i = i+1;
 						break;
@@ -217,7 +220,7 @@
 						putMessageOP("LEXER -> | " + tokens[i][0] + " [ " + tokens[i][1] + " ] on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 					}	
 				}
-				putMessageOP("\nLexical analysis complete with " + errors + " error(s) and " + warnings + " warning(s).\n");
+				putMessageOP("\nLexical analysis complete with " + lexErrors + " error(s) and " + warnings + " warning(s).\n");
 
 					putMessageOP(" Parsing Program "+ programNum);
 					putMessageOP("---------------------------")
@@ -227,6 +230,7 @@
 							putMessageOP("PARSER -> | " + productions[l]);
 							putMessageOP("\n")
 							l++;
+							cstOutput();
 							break;
 						}
 						else if(productions[l] == 'ERROR - Found [undefined] on [ undefined , undefined ]'){
@@ -238,12 +242,14 @@
 						}
 						else if(productions[l].slice(0, 5) == 'ERROR'){
 							programNum++;
+							parseErrors++;
 							putMessageOP("PARSER -> | " + productions[l]);
 							l++;
 							putMessageOP("PARSER -> | " + productions[l]);
+							putMessageOP("\n")
+							putMessageCST("No CST due to parse error.")
 							//skip all profuctions after error until we find next program
 							for(var l; l < productions.length; l++){
-								console.log("TEST " + l);
 								if(productions[l] == 'Program'){
 									break;
 								}
@@ -254,16 +260,19 @@
 							putMessageOP("PARSER -> | " + productions[l]);
 						}
 					}
+					putMessageOP("Parsing completed with " + parseErrors + " error(s) and 0 warning(s).")
 				}
 		}    
 		function cstOutput(){
 			if(errors >= 1){
 				putMessageCST("No CST due to error.");
 			}
+			/*else if(cstTree.indexOf('[$]')){
+				putMessageCST("\n");
+			}*/
 			else{
-				for(var m = 0; m < tree.length; m++){
-					putMessageCST(tree[m]);
-				}
+				//if(cstTree.slice)
+				putMessageCST(cstTree);
 			}
 		}
     </script>
