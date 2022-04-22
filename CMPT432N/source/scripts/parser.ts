@@ -408,13 +408,5 @@ module TSC {
                 this.cst.endChildren();
                 return;
             }
-
-           /* public handleCst(){
-                this.cstDash = "";
-                for(let i = 0; i < this.cstDepth; i++){
-                    this.cstDash += "-";
-                }
-                this.cstOutput.push(this.cstDash + "" + this.cstValue);
-            }*/
     }
 }

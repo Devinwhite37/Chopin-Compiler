@@ -10,7 +10,7 @@
 
 <body style="background-image: url(source/images/IMG_2468.jpg); background-repeat: repeat; background-size: cover;" onload="init();">
 	<nav class="topbar navbar navbar-expand-lg navbar-light bg-primary sticky-top">
-		<h1 style="font-family:cursive; text-align: center; color:black; font-size: 400%; font-style: italic;">𝄞       Chopin Compiler   </h1>
+		<h1 style="font-family:cursive; text-align: center; color:black; font-size: 400%; font-style: italic;">Chopin Compiler   </h1>
 	<h1> </h1>
 	</nav>
 </div>
@@ -165,7 +165,7 @@
 			else{
 				//putMessageOP("Compilation Started");
 				lexOutput();
-				//cstOutput();
+				cstOutput();
 			}
 		}
 		function lexOutput(){
@@ -230,13 +230,14 @@
 							putMessageOP("PARSER -> | " + productions[l]);
 							putMessageOP("\n")
 							l++;
-							cstOutput();
+							this.parseErrors = 0;
 							break;
 						}
 						else if(productions[l] == 'ERROR - Found [undefined] on [ undefined , undefined ]'){
 							programNum++;
 							putMessageOP("PARSER -> | WARNING: Missing EOP [ $ ] at end of file.");
 							putMessageOP("\n")
+							this.parseErrors = 0;
 							l++;
 							break;	
 						}
@@ -248,7 +249,7 @@
 							putMessageOP("PARSER -> | " + productions[l]);
 							putMessageOP("\n")
 							putMessageCST("No CST due to parse error.")
-							//skip all profuctions after error until we find next program
+							//skip all productions after error until we find next program
 							for(var l; l < productions.length; l++){
 								if(productions[l] == 'Program'){
 									break;
