@@ -12,9 +12,6 @@
 var TSC;
 (function (TSC) {
     var Parser = /** @class */ (function () {
-        /*cstDepth: number;
-        cstDash: String;
-        cstValue: String;*/
         // Constructor for parser, passed tokens from lexer. Inits values.
         function Parser(tokens) {
             this.tokenList = tokens;
@@ -22,9 +19,6 @@ var TSC;
             this.currentToken = 0;
             this.cstOutput = [];
             this.braces = 0;
-            /*this.cstDepth = 0;
-            this.programNum = 0;
-            this.cstDash = "";*/
             this.cst = new Tree();
             this.cst.addNode("Root", "branch");
             this.programNum = 1;
@@ -33,11 +27,9 @@ var TSC;
         Parser.prototype.parse = function () {
             this.program();
             return this.parseOutput;
-            //"cst": this.cst
         };
         //function to return CST to index.html
         Parser.prototype.cstTree = function () {
-            //console.log(this.cst.toString());
             return this.cst.toString();
         };
         //most of the following can be easily understood. There are many methods
@@ -48,17 +40,13 @@ var TSC;
                 return;
             }
             else if (tokens[this.currentToken][1] == '{') {
-                //console.log(this.cst);
                 this.cst.addNode("Program " + this.programNum, "branch");
-                //console.log(this.cst);
-                //this.cstOutput.push("\n<Program "+ this.programNum + ">");
                 this.parseOutput.push("Program");
                 this.parseBlock();
             }
             else {
                 this.parseOutput.push("ERROR - Expecting [{] found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
-            //this.cst.endChildren();
         };
         //parseBlock handles open and closed curly braces followed by an EOP marker
         Parser.prototype.parseBlock = function () {
@@ -88,13 +76,10 @@ var TSC;
                     }
                     this.parseOutput.push("VALID - Found [EOP]");
                     this.cst.addNode(tokens[this.currentToken][1], "leaf");
-                    //this.cst.endChildren();  
                     this.cst.endChildren();
                     this.programNum++;
-                    //this.cst.toString();                    
                     this.currentToken++;
                     this.program();
-                    //this.cstTree();
                 }
                 else {
                     this.cst.endChildren();
@@ -139,7 +124,6 @@ var TSC;
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.parseOutput.push("Expected token(s) [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]");
             }
-            //this.cst.endChildren();
             return;
         };
         //statement is used to validate the tokens that are statmenets and pass them to their specified statement
@@ -188,7 +172,7 @@ var TSC;
         };
         Parser.prototype.printStatement = function () {
             this.parseOutput.push("PrintStatement");
-            this.cst.addNode("Print", "branch");
+            this.cst.addNode("PrintStatement", "branch");
             this.cst.addNode("print", "leaf");
             if (tokens[this.currentToken][1] == '(') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -215,7 +199,6 @@ var TSC;
         Parser.prototype.expression = function () {
             this.parseOutput.push("Expr");
             this.cst.addNode("Expr", "branch");
-            //this.cst.addNode(tokens[this.currentToken][1], "leaf");
             if (tokens[this.currentToken][0] == "DIGIT") {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.cst.addNode(tokens[this.currentToken][1], "leaf");
@@ -223,7 +206,6 @@ var TSC;
                 this.intExpr();
             }
             else if (tokens[this.currentToken][0] == "DOUBLE_QUOTE") {
-                //this.cst.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
                 this.stringExpr();
             }
@@ -238,7 +220,6 @@ var TSC;
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
             }
-            this.cst.endChildren();
             return;
         };
         Parser.prototype.intExpr = function () {
@@ -279,6 +260,7 @@ var TSC;
         };
         Parser.prototype.assignmentStatement = function () {
             this.cst.addNode("AssignmentStatement", "branch");
+            this.cst.addNode(tokens[this.currentToken][1 - 1], "leaf");
             this.parseOutput.push("AssignmentStatement");
             if (tokens[this.currentToken][1] == "=") {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -298,6 +280,7 @@ var TSC;
             this.parseOutput.push("VarDecl");
             if (tokens[this.currentToken][0] == 'VARIABLE') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                this.cst.addNode(tokens[this.currentToken - 1][1], "leaf");
                 this.cst.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
             }

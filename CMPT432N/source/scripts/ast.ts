@@ -45,6 +45,7 @@ module TSC {
                 return;
             }
             else if(tokens[this.currentToken][1] == '{'){
+                this.ast.addNode("Program "+ this.programNum, "branch");
                 this.parseBlock();
             }
             this.ast.endChildren();
@@ -112,7 +113,8 @@ module TSC {
                 this.currentToken++;
                 this.assignmentStatement();
             }
-            else if(tokens[this.currentToken][0] == 'INT_TYPE' || tokens[this.currentToken][0] == 'BOOL_TYPE' 
+            else if(tokens[this.currentToken][0] == 'INT_TYPE' 
+                || tokens[this.currentToken][0] == 'BOOL_TYPE' 
                 || tokens[this.currentToken][0] == 'STRING_TYPE'){
                 this.currentToken++;
                 this.varDecl();
@@ -126,7 +128,7 @@ module TSC {
                 this.ifStatement();
             }
             else if(tokens[this.currentToken][1] == '{' || tokens[this.currentToken][1] == '}') {
-                this.ast.endChildren();
+                //this.ast.endChildren();
                 this.parseBlock();
             }
             return;
@@ -134,7 +136,7 @@ module TSC {
 
         
         public printStatement(){
-            this.ast.addNode("Print", "branch");  
+            this.ast.addNode("PrintStatement", "branch");  
             if(tokens[this.currentToken][1] == '('){
                 this.currentToken++;
                 this.expression();
@@ -147,7 +149,6 @@ module TSC {
         }
         
         public expression(){
-            this.ast.addNode("Expr", "branch");
             if (tokens[this.currentToken][0] == "DIGIT") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
@@ -164,14 +165,11 @@ module TSC {
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
                 this.booleanExpr();
             }  
-            this.ast.endChildren();
             return;
         }
 
         public intExpr(){
-            this.ast.addNode("IntExpr", "branch");
             if(tokens[this.currentToken][0] == 'ADDITION_OP'){
-                this.ast.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
                 this.expression();
                 this.ast.endChildren();
@@ -205,8 +203,8 @@ module TSC {
 
         public assignmentStatement(){
             this.ast.addNode("AssignmentStatement", "branch");
+            this.ast.addNode(tokens[this.currentToken - 1][1], "leaf");
             if(tokens[this.currentToken][1] == "="){
-                this.ast.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
                 this.expression();
             }
@@ -217,6 +215,7 @@ module TSC {
         public varDecl(){
             this.ast.addNode("VarDecl", "branch");
             if(tokens[this.currentToken][0] == 'VARIABLE'){
+                this.ast.addNode(tokens[this.currentToken - 1 ][1], "leaf");
                 this.ast.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
             }

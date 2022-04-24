@@ -191,7 +191,7 @@ module TSC {
             
             public printStatement(){
                 this.parseOutput.push("PrintStatement");
-                this.cst.addNode("Print", "branch");  
+                this.cst.addNode("PrintStatement", "branch");  
                 this.cst.addNode("print", "leaf");              
                 if(tokens[this.currentToken][1] == '('){
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]")
@@ -240,7 +240,6 @@ module TSC {
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
-                this.cst.endChildren();
                 return;
             }
 
@@ -285,6 +284,7 @@ module TSC {
 
             public assignmentStatement(){
                 this.cst.addNode("AssignmentStatement", "branch");
+                this.cst.addNode(tokens[this.currentToken][1 - 1], "leaf");
                 this.parseOutput.push("AssignmentStatement");
                 if(tokens[this.currentToken][1] == "="){
                     this.parseOutput.push("VALID - Found ["+ tokens[this.currentToken][0] +"] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
@@ -305,6 +305,7 @@ module TSC {
                 this.parseOutput.push("VarDecl");
                 if(tokens[this.currentToken][0] == 'VARIABLE'){
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0]+ " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.cst.addNode(tokens[this.currentToken - 1 ][1], "leaf");
                     this.cst.addNode(tokens[this.currentToken][1], "leaf");
                     this.currentToken++;
                 }

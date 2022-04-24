@@ -106,6 +106,7 @@
 	        // Clear the message box.
 			document.getElementById("taOutput").value = "";
 			document.getElementById("taCST").value = "";
+			document.getElementById("taAST").value = "";
 
 	        // Set the initial values for our globals.
 	        tokens = "";
@@ -157,8 +158,8 @@
 			document.getElementById("taCST").value += msgCST + "\n";
 		}
 
-		function putMessageAST(msgCST) {
-			document.getElementById("taAST").value += msgCST + "\n";
+		function putMessageAST(msgAST) {
+			document.getElementById("taAST").value += msgAST + "\n";
 		}
 		
 		function compile(){
@@ -178,6 +179,7 @@
 		function lexOutput(){
 			var lexErrors = 0;
 			var warnings = 0;
+			var parseErrors = 0;
 			var i = 0;
 			var l = 0;
 
@@ -273,12 +275,10 @@
 				}
 		}    
 		function cstOutput(){
-			if(errors >= 1){
+			if(parseErrors >= 1){
 				putMessageCST("No CST due to error.");
 			}
-			/*else if(cstTree.indexOf('[$]')){
-				putMessageCST("\n");
-			}*/
+			
 			else{
 				//if(cstTree.slice)
 				putMessageCST(cstTree);
@@ -286,7 +286,8 @@
 		}
 
 		function astOutput(){
-			putMessageAST(astTree);
+				putMessageAST(astTree);
+			
 		}
     </script>
 </body>
