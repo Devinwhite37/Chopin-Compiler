@@ -95,6 +95,8 @@
 	<script type="text/javascript" src="source/scripts/globals.js"></script>	
 	<script type="text/javascript" src="source/scripts/parser.js"></script>	
 	<script type="text/javascript" src="source/scripts/tree.js"></script>	
+	<script type="text/javascript" src="source/scripts/ast.js"></script>	
+
 
 	<!--<script type="text/javascript" src="source/scripts/tokenizer.js"></script>	-->
 
@@ -117,28 +119,32 @@
 	        // "compile" button between the two text areas, above.  
 	        // Note the <input> element's event handler: onclick="btnCompile_click();
 			init();
-
-			let lexer = new TSC.Lexer();
-	        // Grab the tokens from the lexer . . .
-			//tokens = _Lexer.lex();
-			tokens = lexer.lex();
 			programNum = 1;
-
 			errors = 0;
+			var parseErrors = 0;
+
+			// Grab the tokens from the lexer . . .
+			let lexer = new TSC.Lexer();
+			tokens = lexer.lex();
 			console.log("HTML TOKENS:");
 			console.log(tokens);
+
+			//Grab productions from parser
 			let parser = new TSC.Parser();
 			productions = parser.parse();
-
-			//let cst = new TSC.Parser();
-			let tree = new Tree();
-			cstTree = parser.cstTree();
-			//cstTree = tree.toString();
-			console.log("CSTTREE")
-			console.log(cstTree);
-			productions = parser.parse();
+			console.log("PRODUCTIONS:");
 			console.log(productions); 
-			// . . . and parse!
+
+			//Grab CST from parser
+			cstTree = parser.cstTree();
+			console.log("CST:");
+			console.log(cstTree);
+
+			//Grab AST from ast
+			let ast = new TSC.Ast();
+			astTree = ast.astTree();
+			console.log("AST:");
+			console.log(astTree);
 			
 	        compile();
 	    }
@@ -166,11 +172,11 @@
 				//putMessageOP("Compilation Started");
 				lexOutput();
 				cstOutput();
+				astOutput();
 			}
 		}
 		function lexOutput(){
 			var lexErrors = 0;
-			var parseErrors = 0;
 			var warnings = 0;
 			var i = 0;
 			var l = 0;
@@ -181,28 +187,28 @@
 					return;
 				}
 				else{
-					putMessageOP(" ____________________________________________ ")
+					putMessageOP(" _____________________________________________ ");
 					putMessageOP("     -------- COMPILING PROGRAM " + programNum + " --------");
 					putMessageOP("\n Lexing Program "+ programNum);
-					putMessageOP("---------------------------")
+					putMessageOP("---------------------------");
 				}
 				for(var i; i < tokens.length; i++){
 					if(tokens[i][0] == 'INVALID_CHAR'){
 						lexErrors++;
 						putMessageOP("LEXER -> | ERROR: Invalid Token [ " + tokens[i][1] + " ] on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
-						putMessageOP("Lexical Analysis stopped due to error.")
+						putMessageOP("Lexical Analysis stopped due to error.");
 						break;
 					}
 					else if(tokens[i][0] == 'missingCommentEnd'){
 						lexErrors++;
 						putMessageOP("LEXER -> | ERROR: Missing Comment End");
-						putMessageOP("Lexical Analysis stopped due to error.")
+						putMessageOP("Lexical Analysis stopped due to error.");
 						break;
 					}
 					else if(tokens[i][0] == 'missingQuoteEnd'){
 						lexErrors++;
 						putMessageOP("LEXER -> | ERROR: Missing Quote End");
-						putMessageOP("Lexical Analysis stopped due to error.")
+						putMessageOP("Lexical Analysis stopped due to error.");
 						break;
 					}
 					else if(tokens[i][0] == 'missingEOP'){
@@ -247,6 +253,7 @@
 							putMessageOP("PARSER -> | " + productions[l]);
 							l++;
 							putMessageOP("PARSER -> | " + productions[l]);
+							putMessageOP("\nParsing stopped due to error.");
 							putMessageOP("\n")
 							putMessageCST("No CST due to parse error.")
 							//skip all productions after error until we find next program
@@ -261,7 +268,8 @@
 							putMessageOP("PARSER -> | " + productions[l]);
 						}
 					}
-					putMessageOP("Parsing completed with " + parseErrors + " error(s) and 0 warning(s).")
+					putMessageOP("Parsing completed with " + parseErrors + " error(s) and 0 warning(s).\n");
+
 				}
 		}    
 		function cstOutput(){
@@ -275,6 +283,10 @@
 				//if(cstTree.slice)
 				putMessageCST(cstTree);
 			}
+		}
+
+		function astOutput(){
+			putMessageAST(astTree);
 		}
     </script>
 </body>

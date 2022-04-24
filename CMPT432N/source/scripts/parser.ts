@@ -20,9 +20,6 @@ module TSC {
             cstOutput: Array<String>;
             cst: Tree;
             programNum: number;
-            /*cstDepth: number;
-            cstDash: String;
-            cstValue: String;*/
 
 
             // Constructor for parser, passed tokens from lexer. Inits values.
@@ -32,9 +29,6 @@ module TSC {
                 this.currentToken = 0;
                 this.cstOutput = [];
                 this.braces = 0;
-                /*this.cstDepth = 0;
-                this.programNum = 0;
-                this.cstDash = "";*/
                 this.cst = new Tree();
                 this.cst.addNode("Root", "branch");
                 this.programNum = 1;
@@ -44,14 +38,11 @@ module TSC {
             //function to return productions to index.html
             public parse() {
                 this.program();
-                return this.parseOutput;
-                    //"cst": this.cst
-                
+                return this.parseOutput;                
             }
 
             //function to return CST to index.html
             public cstTree(){
-                //console.log(this.cst.toString());
                 return this.cst.toString();
             }
             
@@ -63,17 +54,13 @@ module TSC {
                     return;
                 }
                 else if(tokens[this.currentToken][1] == '{'){
-                    //console.log(this.cst);
                     this.cst.addNode("Program " + this.programNum, "branch");
-                    //console.log(this.cst);
-                    //this.cstOutput.push("\n<Program "+ this.programNum + ">");
                     this.parseOutput.push("Program");
                     this.parseBlock();
                 }
                 else{
                     this.parseOutput.push("ERROR - Expecting [{] found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
-                //this.cst.endChildren();
             }
 
             //parseBlock handles open and closed curly braces followed by an EOP marker
@@ -104,13 +91,10 @@ module TSC {
                         }
                         this.parseOutput.push("VALID - Found [EOP]");  
                         this.cst.addNode(tokens[this.currentToken][1], "leaf");
-                        //this.cst.endChildren();  
                         this.cst.endChildren();
                         this.programNum++;
-                        //this.cst.toString();                    
                         this.currentToken++;
                         this.program();
-                        //this.cstTree();
                     }
                     else{
                         this.cst.endChildren();
@@ -156,7 +140,6 @@ module TSC {
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.parseOutput.push("Expected token(s) [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]")
                 }
-                //this.cst.endChildren();
                 return;
             }
 
@@ -236,7 +219,6 @@ module TSC {
             public expression(){
                 this.parseOutput.push("Expr");
                 this.cst.addNode("Expr", "branch");
-                //this.cst.addNode(tokens[this.currentToken][1], "leaf");
                 if (tokens[this.currentToken][0] == "DIGIT") {
                     this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                     this.cst.addNode(tokens[this.currentToken][1], "leaf");
@@ -244,7 +226,6 @@ module TSC {
                     this.intExpr();
                 } 
                 else if (tokens[this.currentToken][0] == "DOUBLE_QUOTE") {
-                    //this.cst.addNode(tokens[this.currentToken][1], "leaf");
                     this.currentToken++;
                     this.stringExpr();
                 }
