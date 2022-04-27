@@ -133,7 +133,7 @@
 			document.getElementById("taOutput").value = "";
 			document.getElementById("taCST").value = "";
 			document.getElementById("taAST").value = "";
-			document.getElementById("symbolTableTable").value = "";
+			//document.getElementById("symbolTableTable").value = "";
 
 
 	        // Set the initial values for our globals.
@@ -187,6 +187,11 @@
 			console.log("AST:");
 			console.log(astTree);
 			
+			let symbolTable = new TSC.Semantic();
+			st = symbolTable.symbolTableOP();
+			console.log("SYMBOLOP");
+			console.log(st);
+
 	        compile();
 	    }
     
@@ -368,8 +373,6 @@
 								break;
 							}
 						}
-						console.log(tokens[i][2]);
-						logOutput();
 						break;
 					}
 					else if(tokens[i][0] == 'missingCommentEnd'){
@@ -428,16 +431,18 @@
 							parseErrors = 0;
 							cstOutput();
 							astOutput();
+							putMessageOP("Parsing completed with " + parseErrors + " error(s) and "+ parseWarnings+" warning(s).\n");
 							break;
 						}
 						else if(productions[l] == 'ERROR - Found [undefined] on [ undefined , undefined ]'){
 							programNum++;
 							putMessageOP("PARSER -> | WARNING: Missing EOP [ $ ] at end of file.");
 							putMessageOP("\n")
-							parseWarnings = 1;
+							parseWarnings++;
 							parseErrors = 0;
 							cstOutput();
 							astOutput();
+							putMessageOP("Parsing completed with " + parseErrors + " error(s) and "+ parseWarnings+" warning(s).\n");
 							l++;
 							break;	
 						}
@@ -459,6 +464,7 @@
 								}
 							}
 							console.log(l);
+							putMessageOP("Parsing completed with " + parseErrors + " error(s) and "+ parseWarnings+" warning(s).\n");
 							break;
 						}
 						else{
@@ -466,9 +472,7 @@
 						}
 					}
 					}
-					if(lexErrors = 0){
-					putMessageOP("Parsing completed with " + parseErrors + " error(s) and "+ parseWarnings+" warning(s).\n");
-					}
+					
 				}
 		}
 
@@ -480,14 +484,14 @@
 		function astOutput(){
 			document.getElementById("taAST").value = "";
 			putMessageAST(astTree);
-			
+			semantic();
 		}
 
 		function semantic(){
 			var table = document.getElementById("symbolTableTable");
 			
-			for(var i = 1; i < 10; i++){
-				var row = table.insertRow(i);
+			for(var i = 0; i < st.length; i++){
+				var row = table.insertRow(i+1);
 				// Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
 				var program = row.insertCell(0);
 				var key = row.insertCell(1);
@@ -498,12 +502,12 @@
 
 
 				// Add some text to the new cells:
-				program.innerHTML = "test";
-				key.innerHTML = "test";
-				type.innerHTML = "test";
-				scope.innerHTML = "test";
-				line.innerHTML = "test";
-				col.innerHTML = "test";
+				program.innerHTML = st[i][0];
+				key.innerHTML = st[i][1];
+				type.innerHTML = st[i][2];
+				scope.innerHTML = st[i][3];
+				line.innerHTML = st[i][4];
+				col.innerHTML = st[i][5];
 			}
 		}
 		

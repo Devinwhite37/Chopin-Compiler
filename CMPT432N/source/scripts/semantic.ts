@@ -4,6 +4,10 @@ module TSC {
         currentToken: number; 
         scopeTree: Tree;
         programNum: number;
+        scopeNum: number;
+        quoteVal: String;
+        symbolOutput: any[][] = [];
+
 
 
         constructor(tokens){
@@ -11,12 +15,19 @@ module TSC {
             this.currentToken = 0; 
             this.scopeTree = new Tree();
             this.programNum = 1;
+            this.scopeNum = 0;
+            this.quoteVal = "";
         }
 
         public semantic(){
 
         }
         public symbolTableOP(){
+            this.parseBlockSemantic();
+            console.log("SYMBOLOP");
+            console.log(this.symbolOutput);
+
+            return this.symbolOutput;
 
         }
         public scopeTreeOP(){
@@ -37,12 +48,15 @@ module TSC {
 
         //parseBlockSemantic handles open and closed curly braces followed by an EOP marker
         public parseBlockSemantic(){
+            console.log("BLOCK SEMTNAT")
             if(tokens[this.currentToken][1] == '{'){
                 this.currentToken++;
+                this.scopeNum++;
                 this.statementListSemantic();
             }
             else if(tokens[this.currentToken][1] == '}'){
                 this.currentToken++;
+                this.scopeNum--;
                 if(tokens[this.currentToken] === undefined){
                     return;
                 }
@@ -166,9 +180,11 @@ module TSC {
         public charListSemantic(){
             this.currentToken++;
             if(tokens[this.currentToken][0] == "CHAR" || tokens[this.currentToken][0] == "SPACE"){
+                this.quoteVal += tokens[this.currentToken-1][1];
                 this.charListSemantic();
             }
             else if(tokens[this.currentToken][0] == "DOUBLE_QUOTE"){
+                this.quoteVal += tokens[this.currentToken-1][1];
                 this.currentToken++;
                 return;
             }
@@ -184,10 +200,16 @@ module TSC {
         }
 
         public varDeclSemantic(){
+            console.log(this.scopeNum)
             if(tokens[this.currentToken][0] == 'VARIABLE'){
-                this.currentToken++;
-            }
-            else{
+                this.symbolOutput.push([
+                    [this.programNum],
+                    [tokens[this.currentToken][1]],
+                    [tokens[this.currentToken - 1][1]],
+                    [this.scopeNum],
+                    [tokens[this.currentToken][2]],
+                    [tokens[this.currentToken][3]]
+                ]);
                 this.currentToken++;
             }
             return;
