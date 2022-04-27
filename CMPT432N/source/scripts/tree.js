@@ -97,7 +97,6 @@ class Tree {
             // Make the initial call to expand from the root.
             expand(this.root, 0);
             // Return the result.
-            console.log(traversalResult);
             return traversalResult;
         };
     }

@@ -140,7 +140,13 @@
 	        tokens = "";
 	        tokenIndex = 0;
 	        currentToken = ' ';
-	        errorCount = 0;        
+			errorCount = 0;   
+			lexErrors = 0; 
+			parseErrors = 0; 
+			programNum = 1;   
+			i = 0;
+			j = 0;
+			l = 0;
 	    }
     
 	    function btnCompile_click() {        
@@ -150,7 +156,11 @@
 			init();
 			programNum = 1;
 			errors = 0;
+			var lexErrors = 0;
 			var parseErrors = 0;
+			var i = 0;
+			var j = 0;
+			var l = 0;
 
 			// Grab the tokens from the lexer . . .
 			let lexer = new TSC.Lexer();
@@ -200,19 +210,16 @@
 			else{
 				//putMessageOP("Compilation Started");
 				lexOutput();
-				cstOutput();
-				astOutput();
-				semantic();
+				
+				//semantic();
 			}
 		}
 		function lexOutput(){
-			var lexErrors = 0;
+			//var lexErrors = 0;
 			var warnings = 0;
 			var parseErrors = 0;
-			var i = 0;
-			var l = 0;
-
-			for(var j = 0; j < programNum; j++){
+			//var i = 0;
+			//var l = 0;
 
 				if(tokens[i+1] === undefined){
 					return;
@@ -223,91 +230,116 @@
 					putMessageOP("\n Lexing Program "+ programNum);
 					putMessageOP("---------------------------");
 				}
-				for(var i; i < tokens.length; i++){
+				for(i; i < tokens.length; i++){
 					if(tokens[i][0] == 'INVALID_CHAR'){
 						lexErrors++;
 						putMessageOP("LEXER -> | ERROR: Invalid Token [ " + tokens[i][1] + " ] on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 						putMessageOP("Lexical Analysis stopped due to error.");
+						console.log("LEXERROR " + lexErrors);
+						programNum++;
 						break;
 					}
 					else if(tokens[i][0] == 'missingCommentEnd'){
 						lexErrors++;
 						putMessageOP("LEXER -> | ERROR: Missing Comment End");
 						putMessageOP("Lexical Analysis stopped due to error.");
+						programNum++;
 						break;
 					}
 					else if(tokens[i][0] == 'missingQuoteEnd'){
 						lexErrors++;
 						putMessageOP("LEXER -> | ERROR: Missing Quote End");
 						putMessageOP("Lexical Analysis stopped due to error.");
+						programNum++;
 						break;
 					}
 					else if(tokens[i][0] == 'missingEOP'){
 						warnings++;
 						putMessageOP("LEXER -> | WARNING: Missing EOP [ $ ] at end of file.");
+						parseOutput();
+						programNum++;
+						break;
 					}
 					else if(tokens[i][0] == 'EOP'){
 						putMessageOP("LEXER -> | " + tokens[i][0] + " [ " + tokens[i][1] + " ] on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 						lexErrors = 0;
 						warnings = 0;
-						i = i+1;
+						parseOutput();
+						i++;
+						programNum++;
 						break;
 						}
 					else{
 						putMessageOP("LEXER -> | " + tokens[i][0] + " [ " + tokens[i][1] + " ] on [ " + tokens[i][2] + " , " + tokens[i][3] + " ]");
 					}	
+					console.log(programNum);
 				}
 				putMessageOP("\nLexical analysis complete with " + lexErrors + " error(s) and " + warnings + " warning(s).\n");
+				if(lexErrors != 0) {
+					lexErrors = 0;
+					putMessageOP("Skipped parsing due to Lex error.");
+				}
+			
+		}
 
-					putMessageOP(" Parsing Program "+ programNum);
-					putMessageOP("---------------------------")
-					for(var l; l < productions.length; l++){
-						if(productions[l] == 'VALID - Found [EOP]'){
-							programNum++;
-							putMessageOP("PARSER -> | " + productions[l]);
-							putMessageOP("\n")
-							l++;
-							this.parseErrors = 0;
-							break;
-						}
-						else if(productions[l] == 'ERROR - Found [undefined] on [ undefined , undefined ]'){
-							programNum++;
-							putMessageOP("PARSER -> | WARNING: Missing EOP [ $ ] at end of file.");
-							putMessageOP("\n")
-							this.parseErrors = 0;
-							l++;
-							break;	
-						}
-						else if(productions[l].slice(0, 5) == 'ERROR'){
-							programNum++;
-							parseErrors++;
-							putMessageOP("PARSER -> | " + productions[l]);
-							l++;
-							putMessageOP("PARSER -> | " + productions[l]);
-							putMessageOP("\nParsing stopped due to error.");
-							putMessageOP("\n")
-							putMessageCST("No CST for program " + this.programNum-1 + " due to parse error.")
-							//skip all productions after error until we find next program
-							for(var l; l < productions.length; l++){
-								if(productions[l] == 'Program'){
-									break;
-								}
-							}
-							break;
-						}
-						else{
-							putMessageOP("PARSER -> | " + productions[l]);
-						}
+		function parseOutput(){
+				putMessageOP(" Parsing Program "+ programNum);
+				putMessageOP("---------------------------")
+				console.log(l);
+				for(l; l < productions.length; l++){
+					console.log("RAN");
+					if(productions[l] == 'VALID - Found [EOP]'){
+						programNum++;
+						putMessageOP("PARSER -> | " + productions[l]);
+						putMessageOP("\n")
+						l++;
+						this.parseErrors = 0;
+						cstOutput();
+						astOutput();
+						break;
 					}
-					putMessageOP("Parsing completed with " + parseErrors + " error(s) and 0 warning(s).\n");
+					else if(productions[l] == 'ERROR - Found [undefined] on [ undefined , undefined ]'){
+						programNum++;
+						putMessageOP("PARSER -> | WARNING: Missing EOP [ $ ] at end of file.");
+						putMessageOP("\n")
+						this.parseErrors = 0;
+						l++;
+						break;	
+					}
+					else if(productions[l].slice(0, 5) == 'ERROR'){
+						programNum++;
+						parseErrors++;
+						
+						putMessageOP("PARSER -> | " + productions[l]);
+						l++;
+						putMessageOP("PARSER -> | " + productions[l]);
+						putMessageOP("\nParsing stopped due to error.");
+						putMessageOP("\n")
+						putMessageCST("No CST for program " + programNum + " due to parse error.")
+						//skip all productions after error until we find next program
+						for(l; l < productions.length; l++){
+							if(productions[l] == 'Program'){
+								break;
+							}
+						}
+						break;
+					}
+					else{
+						putMessageOP("PARSER -> | " + productions[l]);
+					}
 
 				}
-		}    
+				putMessageOP("Parsing completed with " + parseErrors + " error(s) and 0 warning(s).\n");
+			lexOutput();
+		}
+
 		function cstOutput(){
-				putMessageCST(cstTree);	
+			document.getElementById("taCST").value = "";
+			putMessageCST(cstTree);	
 		}
 
 		function astOutput(){
+			document.getElementById("taAST").value = "";
 			putMessageAST(astTree);
 			
 		}

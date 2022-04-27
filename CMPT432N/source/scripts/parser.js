@@ -65,9 +65,6 @@ var TSC;
                 this.cst.endChildren();
                 this.currentToken++;
                 this.braces--;
-                console.log(this.braces);
-                console.log(tokens[this.currentToken][1]);
-                console.log(tokens[this.currentToken][1] == '{' && this.braces == 0);
                 if (tokens[this.currentToken][1] == '$') {
                     if (this.braces != 0) {
                         if (this.braces > 0) {
