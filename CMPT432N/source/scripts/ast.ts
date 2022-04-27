@@ -18,6 +18,7 @@ module TSC {
         astOutput: Array<String>;
         ast: Tree;
         programNum: number;
+        quoteVal: String;
 
 
         // Constructor for ast, passed tokens from lexer. Inits values.
@@ -28,6 +29,8 @@ module TSC {
             this.ast = new Tree();
             //this.ast.addNode("Root", "branch");
             this.programNum = 1;
+            this.quoteVal = "";
+
         }
 
         //function to return AST to index.html
@@ -60,7 +63,10 @@ module TSC {
             else if(tokens[this.currentToken][1] == '}'){
                 this.ast.endChildren();
                 this.currentToken++;
-                if(tokens[this.currentToken][1] == '$'){
+                if(tokens[this.currentToken] === undefined){
+                    return;
+                }
+                else if(tokens[this.currentToken][1] == '$'){
                     this.ast.endChildren();
                     this.programNum++;
                     this.currentToken++;
@@ -187,13 +193,15 @@ module TSC {
         }
 
         public charList(){
-            this.ast.addNode(tokens[this.currentToken][1], "leaf");
             this.currentToken++;
             if(tokens[this.currentToken][0] == "CHAR" || tokens[this.currentToken][0] == "SPACE"){
+                this.quoteVal += tokens[this.currentToken-1][1];
                 this.charList();
             }
             else if(tokens[this.currentToken][0] == "DOUBLE_QUOTE"){
+                this.quoteVal += tokens[this.currentToken-1][1];
                 this.currentToken++;
+                this.ast.addNode(this.quoteVal, "leaf");
                 return;
             }
             return;

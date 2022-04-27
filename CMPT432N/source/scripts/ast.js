@@ -5,9 +5,8 @@
  *
  * Inspiration taken from Sonar in hall of fame projects.
  *
- * parser.ts is used to read the tokens created by lexer.
- * parser will test these tokens against our grammer to
- * ensure weve made correct productions
+ * ast.ts is used to create an Abstract Syntax Tree from
+ * the tokens given to us by the lexer
  */
 var TSC;
 (function (TSC) {
@@ -20,6 +19,7 @@ var TSC;
             this.ast = new Tree();
             //this.ast.addNode("Root", "branch");
             this.programNum = 1;
+            this.quoteVal = "";
         }
         //function to return AST to index.html
         Ast.prototype.astTree = function () {
@@ -49,7 +49,10 @@ var TSC;
             else if (tokens[this.currentToken][1] == '}') {
                 this.ast.endChildren();
                 this.currentToken++;
-                if (tokens[this.currentToken][1] == '$') {
+                if (tokens[this.currentToken] === undefined) {
+                    return;
+                }
+                else if (tokens[this.currentToken][1] == '$') {
                     this.ast.endChildren();
                     this.programNum++;
                     this.currentToken++;
@@ -168,13 +171,15 @@ var TSC;
             return;
         };
         Ast.prototype.charList = function () {
-            this.ast.addNode(tokens[this.currentToken][1], "leaf");
             this.currentToken++;
             if (tokens[this.currentToken][0] == "CHAR" || tokens[this.currentToken][0] == "SPACE") {
+                this.quoteVal += tokens[this.currentToken - 1][1];
                 this.charList();
             }
             else if (tokens[this.currentToken][0] == "DOUBLE_QUOTE") {
+                this.quoteVal += tokens[this.currentToken - 1][1];
                 this.currentToken++;
+                this.ast.addNode(this.quoteVal, "leaf");
                 return;
             }
             return;

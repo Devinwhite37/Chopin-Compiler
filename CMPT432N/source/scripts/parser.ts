@@ -80,7 +80,11 @@ module TSC {
                     this.cst.endChildren();
                     this.currentToken++;
                     this.braces--;
-                    if(tokens[this.currentToken][1] == '$'){
+                    if(tokens[this.currentToken] === undefined){
+                        this.parseOutput.push("ERROR - Found [undefined] on [ undefined , undefined ]");
+                        return;
+                    }
+                    else if(tokens[this.currentToken][1] == '$'){
                         if(this.braces != 0){
                             if(this.braces > 0){
                                 this.parseOutput.push("ERROR - missing [}]")
