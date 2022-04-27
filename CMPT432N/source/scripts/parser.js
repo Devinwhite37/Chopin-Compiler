@@ -65,6 +65,9 @@ var TSC;
                 this.cst.endChildren();
                 this.currentToken++;
                 this.braces--;
+                console.log(this.braces);
+                console.log(tokens[this.currentToken][1]);
+                console.log(tokens[this.currentToken][1] == '{' && this.braces == 0);
                 if (tokens[this.currentToken][1] == '$') {
                     if (this.braces != 0) {
                         if (this.braces > 0) {
@@ -80,6 +83,10 @@ var TSC;
                     this.programNum++;
                     this.currentToken++;
                     this.program();
+                }
+                else if (tokens[this.currentToken][1] == '{' && this.braces == 0) {
+                    this.parseOutput.push("ERROR - Found [{]");
+                    this.parseOutput.push("Expected token(s): [$]");
                 }
                 else {
                     this.cst.endChildren();
@@ -122,7 +129,7 @@ var TSC;
             }
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                this.parseOutput.push("Expected token(s) [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]");
+                this.parseOutput.push("Expected token(s): [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]");
             }
             return;
         };

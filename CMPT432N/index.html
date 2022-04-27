@@ -65,7 +65,7 @@
                 </tr>
                 <tr>
 					<td><textarea class="input form-control lined" id="taSourceCode" placeholder= 'Example:
-						{print("Hello World")}$'' autofocus></textarea></td>
+						{print("hello world")}$'' autofocus></textarea></td>
                     <td><textarea class="input form-control lined" id="taOutput" placeholder="Log is currently empty" readonly></textarea></td>
                 </tr>
                 <tr>
@@ -77,21 +77,21 @@
                     <td><textarea class="input form-control lined" id="taAST" placeholder="No AST currently" readonly></textarea></td>
 				</tr>
 				<tr>
-                    <td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Scope</h3></td>
+                    <td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Scope Tree</h3></td>
                     <td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Symbol Table</h3></td>
                 </tr>
                 <tr>
                     <td><textarea class="input form-control lined" id="scope" readonly></textarea></td>
 					<td>
 						<div style = "overflow: auto;" id = "symbolTable">
-						<table id = "symbolTableTable" class = "lined">
-						<tr>
-							<td	style = "border: 1px solid black; border-collapse: collapse;"> Program </td>
-							<td	style = "border: 1px solid black; border-collapse: collapse;"> Key </td>
-							<td	style = "border: 1px solid black; border-collapse: collapse;">Type</td>
-							<td	style = "border: 1px solid black; border-collapse: collapse;">Scope</td>
-							<td	style = "border: 1px solid black; border-collapse: collapse;">Line</td>
-							<td	style = "border: 1px solid black; border-collapse: collapse;">Column</td>
+						<table style = "text-align: center" id = "symbolTableTable" class = "lined">
+						<tr class = "lined">
+							<th	style = "border: 1px solid black; text-align: center; font-size: 115%"> Program </th>
+							<th	style = "border: 1px solid black; text-align: center; font-size: 115%"> Key </th>
+							<th	style = "border: 1px solid black; text-align: center; font-size: 115%">Type</th>
+							<th	style = "border: 1px solid black; text-align: center; font-size: 115%">Scope</th>
+							<th	style = "border: 1px solid black; text-align: center; font-size: 115%">Line</th>
+							<th	style = "border: 1px solid black; text-align: center; font-size: 115%">Column</th>
 						</tr>
 					</table>
 				</div>
@@ -119,7 +119,9 @@
 	<script type="text/javascript" src="source/scripts/globals.js"></script>	
 	<script type="text/javascript" src="source/scripts/parser.js"></script>	
 	<script type="text/javascript" src="source/scripts/tree.js"></script>	
-	<script type="text/javascript" src="source/scripts/ast.js"></script>	
+	<script type="text/javascript" src="source/scripts/ast.js"></script>
+	<script type="text/javascript" src="source/scripts/semantic.js"></script>
+
 
 
 	<!--<script type="text/javascript" src="source/scripts/tokenizer.js"></script>	-->
@@ -311,14 +313,7 @@
 		}
 
 		function semantic(){
-			console.log("TEST")
-			// Find a <table> element with id="myTable":
 			var table = document.getElementById("symbolTableTable");
-			var table = document.getElementById("symbolTableTable");
-			var table = document.getElementById("symbolTableTable");
-
-
-			// Create an empty <tr> element and add it to the 1st position of the table:
 			
 			for(var i = 1; i < 10; i++){
 				var row = table.insertRow(i);

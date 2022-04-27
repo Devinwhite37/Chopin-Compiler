@@ -43,6 +43,10 @@ h1{
 	margin-right: auto;
   }
 
+ .th{
+  text-align: center
+ }
+
 #taSourceCode{
 	width:427px;
   margin: 15px;
@@ -103,7 +107,7 @@ h1{
 }
 
 #symbolTableTable{
-    width:400px;
+    width:380px;
     height: auto;
     border-radius: 10px;
     margin-top: 10px;
