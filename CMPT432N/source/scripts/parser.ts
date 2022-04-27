@@ -240,6 +240,7 @@ module TSC {
                 else{
                     this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 }
+                this.cst.endChildren();
                 return;
             }
 

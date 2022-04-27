@@ -1,4 +1,4 @@
-/* parser.ts  */
+/* ast.ts  */
 
 /**
  * parser.ts
@@ -6,9 +6,8 @@
  * 
  * Inspiration taken from Sonar in hall of fame projects.
  * 
- * parser.ts is used to read the tokens created by lexer.
- * parser will test these tokens against our grammer to 
- * ensure weve made correct productions
+ * ast.ts is used to create an Abstract Syntax Tree from 
+ * the tokens given to us by the lexer
  */
 
 module TSC {
@@ -21,13 +20,13 @@ module TSC {
         programNum: number;
 
 
-        // Constructor for parser, passed tokens from lexer. Inits values.
+        // Constructor for ast, passed tokens from lexer. Inits values.
         constructor(tokens){
             this.tokenList = tokens;
             this.currentToken = 0;
             this.astOutput = [];
             this.ast = new Tree();
-            this.ast.addNode("Root", "branch");
+            //this.ast.addNode("Root", "branch");
             this.programNum = 1;
         }
 
@@ -182,7 +181,6 @@ module TSC {
         }
 
         public stringExpr(){
-            this.ast.addNode("StringExpr", "branch");
             this.charList();
             this.ast.endChildren();
             return;
@@ -227,7 +225,6 @@ module TSC {
         }
 
         public booleanExpr(){
-            this.ast.addNode("BooleanExpr", "branch");
             if (tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;

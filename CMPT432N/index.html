@@ -54,28 +54,57 @@
         <input style="border:solid 1px black; font-family:cursive; font-weight: bold; font-size: 150%" type="button" id="btnCompile" value="~Compile~" onclick="btnCompile_click();"/>
     </div>
 
-    <div>
+	
+	
+	<div>
         <div class="source">
-			<table class = "center">
-				<tr>
-					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Input</h3></td>
-					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Log</h3></td>
+            <table class = "center">
+                <tr>
+                    <td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Input</h3></td>
+                    <td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Log</h3></td>
+                </tr>
+                <tr>
+					<td><textarea class="input form-control lined" id="taSourceCode" placeholder= 'Example:
+						{print("Hello World")}$'' autofocus></textarea></td>
+                    <td><textarea class="input form-control lined" id="taOutput" placeholder="Log is currently empty" readonly></textarea></td>
+                </tr>
+                <tr>
+                    <td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">CST</h3></td>
+                    <td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">AST</h3></td>
+                </tr>
+                <tr>
+                    <td><textarea class="input form-control lined" id="taCST" placeholder="No CST currently" readonly></textarea></td>
+                    <td><textarea class="input form-control lined" id="taAST" placeholder="No AST currently" readonly></textarea></td>
 				</tr>
 				<tr>
-					<td><textarea class="lined" id="taSourceCode" autofocus></textarea></td>
-					<td><textarea id="taOutput" readonly></textarea></td>
-				</tr>
-				<tr>
-					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">CST</h3></td>
-					<td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">AST</h3></td>
-				</tr>
-				<tr>
-					<td><textarea id="taCST" readonly></textarea></td>
-					<td><textarea id="taAST" readonly></textarea></td>
-				</tr>
-			</table>
-		</div>        
-	</div>
+                    <td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Scope</h3></td>
+                    <td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Symbol Table</h3></td>
+                </tr>
+                <tr>
+                    <td><textarea class="input form-control lined" id="scope" readonly></textarea></td>
+                    <td><table class = "input form-control lined" id="scope">
+						<tr>
+							<td	style = "border: 1px solid black; border-collapse: collapse;"> Program </td>
+							<td	style = "border: 1px solid black; border-collapse: collapse;"> Key </td>
+							<td	style = "border: 1px solid black; border-collapse: collapse;">Type</td>
+							<td	style = "border: 1px solid black; border-collapse: collapse;">Scope</td>
+							<td	style = "border: 1px solid black; border-collapse: collapse;">Line</td>
+							<td	style = "border: 1px solid black; border-collapse: collapse;">Column</td>
+						</tr>
+						
+
+					</table></td>
+                </tr>
+            </table>
+        </div>        
+    </div>
+
+
+
+
+
+
+
 	<h5 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 10px; font-weight: bold;">A Compiler by Devin H White</h5>
 	<h5 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 10px; font-weight: bold;">© 2022 Chopin Compiler</h5>
 

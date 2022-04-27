@@ -1,4 +1,4 @@
-/* parser.ts  */
+/* ast.ts  */
 /**
  * parser.ts
  * Devin White, CMPT432N
@@ -12,13 +12,13 @@
 var TSC;
 (function (TSC) {
     var Ast = /** @class */ (function () {
-        // Constructor for parser, passed tokens from lexer. Inits values.
+        // Constructor for ast, passed tokens from lexer. Inits values.
         function Ast(tokens) {
             this.tokenList = tokens;
             this.currentToken = 0;
             this.astOutput = [];
             this.ast = new Tree();
-            this.ast.addNode("Root", "branch");
+            //this.ast.addNode("Root", "branch");
             this.programNum = 1;
         }
         //function to return AST to index.html
@@ -163,7 +163,6 @@ var TSC;
             return;
         };
         Ast.prototype.stringExpr = function () {
-            this.ast.addNode("StringExpr", "branch");
             this.charList();
             this.ast.endChildren();
             return;
@@ -204,7 +203,6 @@ var TSC;
             return;
         };
         Ast.prototype.booleanExpr = function () {
-            this.ast.addNode("BooleanExpr", "branch");
             if (tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
