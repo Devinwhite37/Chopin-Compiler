@@ -9,6 +9,8 @@ module TSC {
             this.currentToken = 0; 
         }
 
-
+        public scope(){
+            
+        }
     }
 }

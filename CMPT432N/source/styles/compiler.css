@@ -45,7 +45,8 @@ h1{
 
 #taSourceCode{
 	width:427px;
-	margin: 15px;
+  margin: 15px;
+  border-radius: 10px;
     height:460px;
     font-family:Courier New; 
     color: black; 
@@ -55,7 +56,8 @@ h1{
 }
 
 #taOutput{
-	width:427px;
+  width:427px;
+  border-radius: 10px;
 	margin: 15px;
     height:460px;
     font-family:Courier New; 
@@ -65,6 +67,7 @@ h1{
     background-color: #F2F2F2;
 }
 #taCST, #taAST{
+  border-radius: 10px;
 	width:427px;
 	margin: 15px;
     height:300px;
@@ -77,6 +80,7 @@ h1{
 
 #scope{
   width:427px;
+  border-radius: 10px;
 	margin: 15px;
     height:200px;
     font-family:Courier New; 
@@ -90,6 +94,7 @@ h1{
   width:427px;
 	margin: 15px;
     height:200px;
+    border-radius: 10px;
     font-family:Courier New; 
     color: black; 
     border:solid 2px black; 
@@ -97,6 +102,19 @@ h1{
     background-color: #F2F2F2;
 }
 
+#symbolTableTable{
+    width:400px;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    font-family:Courier New; 
+    color: black; 
+    border:solid 1px black; 
+    font-weight: bold;
+    background-color: #F2F2F2;
+}
 
 /* button code found from https://getcssscan.com/css-buttons-examples*/
 #btnCompile {
