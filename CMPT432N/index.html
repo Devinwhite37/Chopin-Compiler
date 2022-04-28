@@ -346,13 +346,12 @@
 			//var lexErrors = 0;
 			var warnings = 0;
 			//var parseErrors = 0;
-			
-
+		
 			for(j; j < programNum; j++){
 				parseErrors = 0;
 				lexErrors = 0;
 				parseWarnings = 0;
-
+				warnings = 0;
 
 				if(tokens[i+1] === undefined){
 					return;
@@ -431,6 +430,7 @@
 							parseErrors = 0;
 							cstOutput();
 							astOutput();
+							stOutput();
 							putMessageOP("Parsing completed with " + parseErrors + " error(s) and "+ parseWarnings+" warning(s).\n");
 							break;
 						}
@@ -442,6 +442,7 @@
 							parseErrors = 0;
 							cstOutput();
 							astOutput();
+							stOutput();
 							putMessageOP("Parsing completed with " + parseErrors + " error(s) and "+ parseWarnings+" warning(s).\n");
 							l++;
 							break;	
@@ -477,26 +478,24 @@
 		}
 
 		function cstOutput(){
+			//outputs the CST if parser runs
 			document.getElementById("taCST").value = "";
 			putMessageCST(cstTree);	
 		}
 
 		function astOutput(){
+			//outputs the AST if parser runs
 			document.getElementById("taAST").value = "";
 			putMessageAST(astTree);
-			//run symbolTable if ast is ran
-			stOutput();
 		}
 
 		function stOutput(){
-			//deletes all non <tr> tags on button click
-				
 			var table = document.getElementById("symbolTableTable");
-			
 
 			for(var i = 0; i < st.length; i++){
+				// Creates new <tr> to add new elements too
 				var row = table.insertRow(i+1);
-				// Insert new cells (<td> elements) to the new <tr> element:
+				// Insert new <td> elements to the new <tr>
 				var program = row.insertCell(0);
 				var key = row.insertCell(1);
 				var type = row.insertCell(2);

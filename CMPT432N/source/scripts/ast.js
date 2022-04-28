@@ -191,9 +191,15 @@ var TSC;
                 this.currentToken++;
                 this.expression();
             }
-            this.ast.endChildren();
+            //this.ast.endChildren();
             return;
         };
+        /*public iD(){
+            this.ast.addNode("ID", "branch");
+            this.ast.addNode(tokens[this.currentToken][1], "leaf");
+            this.ast.endChildren();
+            return;
+        }*/
         Ast.prototype.varDecl = function () {
             this.ast.addNode("VarDecl", "branch");
             if (tokens[this.currentToken][0] == 'VARIABLE') {

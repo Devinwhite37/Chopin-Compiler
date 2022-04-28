@@ -214,9 +214,16 @@ module TSC {
                 this.currentToken++;
                 this.expression();
             }
-            this.ast.endChildren();
+            //this.ast.endChildren();
             return;
         }
+
+        /*public iD(){
+            this.ast.addNode("ID", "branch");
+            this.ast.addNode(tokens[this.currentToken][1], "leaf");
+            this.ast.endChildren();
+            return;
+        }*/
 
         public varDecl(){
             this.ast.addNode("VarDecl", "branch");

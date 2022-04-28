@@ -148,7 +148,7 @@ var TSC;
             }
             else if (tokens[this.currentToken][0] == 'VARIABLE') {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                this.currentToken++;
+                //this.currentToken++;
                 this.assignmentStatement();
             }
             else if (tokens[this.currentToken][0] == 'INT_TYPE' || tokens[this.currentToken][0] == 'BOOL_TYPE'
@@ -219,7 +219,8 @@ var TSC;
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + " - " + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                this.cst.addNode(tokens[this.currentToken][1], "leaf");
+                //this.cst.addNode(tokens[this.currentToken][1], "leaf");
+                this.iD();
                 this.currentToken++;
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
@@ -254,6 +255,12 @@ var TSC;
             this.cst.endChildren();
             return;
         };
+        Parser.prototype.iD = function () {
+            this.cst.addNode("ID", "branch");
+            this.cst.addNode(tokens[this.currentToken][1], "leaf");
+            this.cst.endChildren();
+            return;
+        };
         Parser.prototype.charList = function () {
             this.parseOutput.push("CharList with value of [" + tokens[this.currentToken][1] + "]");
             this.cst.addNode(tokens[this.currentToken][1], "leaf");
@@ -269,13 +276,17 @@ var TSC;
         };
         Parser.prototype.assignmentStatement = function () {
             this.cst.addNode("AssignmentStatement", "branch");
-            this.cst.addNode(tokens[this.currentToken][1 - 1], "leaf");
+            //this.cst.addNode(tokens[this.currentToken][1], "leaf");
             this.parseOutput.push("AssignmentStatement");
-            if (tokens[this.currentToken][1] == "=") {
-                this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                this.cst.addNode(tokens[this.currentToken][1], "leaf");
+            if (tokens[this.currentToken][0] == "VARIABLE") {
+                this.iD();
                 this.currentToken++;
-                this.expression();
+                if (tokens[this.currentToken][1] == "=") {
+                    this.parseOutput.push("VALID - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.cst.addNode(tokens[this.currentToken][1], "leaf");
+                    this.currentToken++;
+                    this.expression();
+                }
             }
             else {
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
