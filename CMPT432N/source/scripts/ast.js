@@ -80,12 +80,13 @@ var TSC;
                 || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
                 || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
                 this.statement();
-                if (tokens[this.currentToken] === undefined) {
+                this.statementList();
+                /*if(tokens[this.currentToken] === undefined){
                     return;
                 }
-                else if (tokens[this.currentToken][1] != "$") {
+                else if(tokens[this.currentToken][1] != "$") {
                     this.statementList();
-                }
+                }*/
             }
             return;
         };
@@ -116,11 +117,9 @@ var TSC;
                 this.currentToken++;
                 this.ifStatement();
             }
-            else if (tokens[this.currentToken][1] == '{' || tokens[this.currentToken][1] == '}') {
-                //this.ast.endChildren();
+            else if (tokens[this.currentToken][1] == '{') {
                 this.parseBlock();
             }
-            return;
         };
         Ast.prototype.printStatement = function () {
             this.ast.addNode("PrintStatement", "branch");
@@ -132,7 +131,7 @@ var TSC;
                 }
             }
             this.ast.endChildren();
-            return;
+            //return;
         };
         Ast.prototype.expression = function () {
             if (tokens[this.currentToken][0] == "DIGIT") {
@@ -151,19 +150,20 @@ var TSC;
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
                 this.booleanExpr();
             }
-            return;
+            //return;
         };
         Ast.prototype.intExpr = function () {
             if (tokens[this.currentToken][0] == 'ADDITION_OP') {
+                this.ast.addNode("+", "leaf");
                 this.currentToken++;
                 this.expression();
                 this.ast.endChildren();
-                return;
+                //return;
             }
             else {
                 this.ast.endChildren();
             }
-            return;
+            //return; 
         };
         Ast.prototype.stringExpr = function () {
             this.charList();

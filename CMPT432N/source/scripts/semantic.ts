@@ -38,6 +38,7 @@ module TSC {
         }
 
         public programSemantic(){
+            this.scopeNum = -1;
             if(tokens[this.currentToken] === undefined){
                 return;
             }
@@ -59,7 +60,7 @@ module TSC {
 
             if(tokens[this.currentToken][1] == '}'){
                 this.currentToken++;
-                this.scopeNum--;
+                //this.scopeNum--;
                 if(tokens[this.currentToken] === undefined){
                     return;
                 }
@@ -69,15 +70,13 @@ module TSC {
                     this.programSemantic();
                 }
             }
-            this.scopeNum--;
+            //this.scopeNum--;
         }
 
         //StatementListSemantic tests the tokens to see if we have valid statementListSemantics
         public statementListSemantic(){  
             if(tokens[this.currentToken] === undefined){
                 return;
-            }
-            else if(tokens[this.currentToken][1] == '}' && tokens[this.currentToken-1][1] == '{'){
             }
             else if(tokens[this.currentToken][1] == '}'){
             }

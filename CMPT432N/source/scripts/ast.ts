@@ -95,12 +95,13 @@ module TSC {
                 || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
                 || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
                 this.statement();
-                if(tokens[this.currentToken] === undefined){
+                this.statementList();
+                /*if(tokens[this.currentToken] === undefined){
                     return;
                 }
                 else if(tokens[this.currentToken][1] != "$") {
                     this.statementList();
-                }
+                }*/
             }
             return;
         }
@@ -132,11 +133,9 @@ module TSC {
                 this.currentToken++;
                 this.ifStatement();
             }
-            else if(tokens[this.currentToken][1] == '{' || tokens[this.currentToken][1] == '}') {
-                //this.ast.endChildren();
+            else if(tokens[this.currentToken][1] == '{') {
                 this.parseBlock();
             }
-            return;
         }
 
         
@@ -150,7 +149,7 @@ module TSC {
                 }
             }
             this.ast.endChildren();
-            return;
+            //return;
         }
         
         public expression(){
@@ -170,20 +169,21 @@ module TSC {
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
                 this.booleanExpr();
             }  
-            return;
+            //return;
         }
 
         public intExpr(){
             if(tokens[this.currentToken][0] == 'ADDITION_OP'){
+                this.ast.addNode("+", "leaf");
                 this.currentToken++;
                 this.expression();
                 this.ast.endChildren();
-                return;
+                //return;
             }
             else{
                 this.ast.endChildren();
             }
-            return; 
+            //return; 
         }
 
         public stringExpr(){

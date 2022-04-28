@@ -167,7 +167,7 @@ var TSC;
                 this.currentToken++;
                 this.ifStatement();
             }
-            else if (tokens[this.currentToken][1] == '{' || tokens[this.currentToken][1] == '}') {
+            else if (tokens[this.currentToken][1] == '{' && this.braces != 0 || tokens[this.currentToken][1] == '}') {
                 this.cst.endChildren();
                 this.parseBlock();
             }
