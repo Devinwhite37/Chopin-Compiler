@@ -48,15 +48,16 @@ module TSC {
 
         //parseBlockSemantic handles open and closed curly braces followed by an EOP marker
         public parseBlockSemantic(){
+            this.scopeNum++;
             if(tokens[this.currentToken] === undefined){
                 return;
             }            
-            if(tokens[this.currentToken][1] == '{'){
+            else if(tokens[this.currentToken][1] == '{'){
                 this.currentToken++;
-                this.scopeNum++;
-                this.statementListSemantic();
             }
-            else if(tokens[this.currentToken][1] == '}'){
+            this.statementListSemantic();
+
+            if(tokens[this.currentToken][1] == '}'){
                 this.currentToken++;
                 this.scopeNum--;
                 if(tokens[this.currentToken] === undefined){
@@ -67,10 +68,8 @@ module TSC {
                     this.currentToken++;
                     this.programSemantic();
                 }
-                else{
-                    this.statementListSemantic();
-                }
             }
+            this.scopeNum--;
         }
 
         //StatementListSemantic tests the tokens to see if we have valid statementListSemantics
@@ -79,21 +78,17 @@ module TSC {
                 return;
             }
             else if(tokens[this.currentToken][1] == '}' && tokens[this.currentToken-1][1] == '{'){
-                this.parseBlockSemantic();
             }
             else if(tokens[this.currentToken][1] == '}'){
-                this.parseBlockSemantic();
             }
             else if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
                 || tokens[this.currentToken][0] == "INT_TYPE" || tokens[this.currentToken][0] == "STRING_TYPE"
                 || tokens[this.currentToken][0] == "BOOL_TYPE" || tokens[this.currentToken][0] == "WHILE"
                 || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
                 this.statementSemantic();
+                this.statementListSemantic();
                 if(tokens[this.currentToken] === undefined){
                     return;
-                }
-                else if(tokens[this.currentToken][1] != "$") {
-                    this.statementListSemantic();
                 }
             }
             return;
@@ -126,7 +121,7 @@ module TSC {
                 this.currentToken++;
                 this.ifStatementSemantic();
             }
-            else if(tokens[this.currentToken][1] == '{' || tokens[this.currentToken][1] == '}') {
+            else if(tokens[this.currentToken][1] == '{') {
                 //this.ast.endChildren();
                 this.parseBlockSemantic();
             }
