@@ -7,7 +7,7 @@ var TSC;
             this.currentToken = 0;
             this.scopeTree = new Tree();
             this.programNum = 1;
-            this.scopeNum = 0;
+            this.scopeNum = -1;
             this.quoteVal = "";
         }
         Semantic.prototype.semantic = function () {
@@ -32,7 +32,9 @@ var TSC;
         };
         //parseBlockSemantic handles open and closed curly braces followed by an EOP marker
         Semantic.prototype.parseBlockSemantic = function () {
-            console.log("BLOCK SEMTNAT");
+            if (tokens[this.currentToken] === undefined) {
+                return;
+            }
             if (tokens[this.currentToken][1] == '{') {
                 this.currentToken++;
                 this.scopeNum++;
@@ -181,8 +183,8 @@ var TSC;
                     [tokens[this.currentToken][1]],
                     [tokens[this.currentToken - 1][1]],
                     [this.scopeNum],
-                    [tokens[this.currentToken][2]],
-                    [tokens[this.currentToken][3]]
+                    [tokens[this.currentToken][3]],
+                    [tokens[this.currentToken][2]]
                 ]);
                 this.currentToken++;
             }

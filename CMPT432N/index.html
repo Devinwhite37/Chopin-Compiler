@@ -18,9 +18,9 @@
 	<div style="margin: 0 auto; display: table;">
 		<table>
 			<tr>
-				<th><h4 style="font-family:cursive; text-align: center; color:black; font-style: italic; font-weight: bold;">Nocturne in E Flat Major</h4></th>
-				<th><h4 style="font-family:cursive; text-align: center; color:black; font-style: italic; font-weight: bold;">Nocturne in C Sharp Minor</h4></th>
-				<th><h4 style="font-family:cursive; text-align: center; color:black; font-style: italic; font-weight: bold;">Nocturne in B Flat Minor</h4></th>
+				<td><h4 style="font-family:cursive; text-align: center; color:black; font-style: italic; font-weight: bold;">Nocturne in E Flat Major</h4></td>
+				<td><h4 style="font-family:cursive; text-align: center; color:black; font-style: italic; font-weight: bold;">Nocturne in C Sharp Minor</h4></td>
+				<td><h4 style="font-family:cursive; text-align: center; color:black; font-style: italic; font-weight: bold;">Nocturne in B Flat Minor</h4></td>
 			  </tr>
 			  <tr>
 				  <td>
@@ -484,15 +484,19 @@
 		function astOutput(){
 			document.getElementById("taAST").value = "";
 			putMessageAST(astTree);
-			semantic();
+			//run symbolTable if ast is ran
+			stOutput();
 		}
 
-		function semantic(){
+		function stOutput(){
+			//deletes all non <tr> tags on button click
+				
 			var table = document.getElementById("symbolTableTable");
 			
+
 			for(var i = 0; i < st.length; i++){
 				var row = table.insertRow(i+1);
-				// Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+				// Insert new cells (<td> elements) to the new <tr> element:
 				var program = row.insertCell(0);
 				var key = row.insertCell(1);
 				var type = row.insertCell(2);
@@ -500,8 +504,6 @@
 				var line = row.insertCell(4);
 				var col = row.insertCell(5);
 
-
-				// Add some text to the new cells:
 				program.innerHTML = st[i][0];
 				key.innerHTML = st[i][1];
 				type.innerHTML = st[i][2];
