@@ -5,7 +5,7 @@ var TSC;
             this.symbolOutput = [];
             this.tokenList = tokens;
             this.currentToken = 0;
-            this.scopeTree = new Tree();
+            this.symbolTree = new SymbolTree();
             this.programNum = 1;
             this.scopeNum = -1;
             this.quoteVal = "";
@@ -19,6 +19,7 @@ var TSC;
             return this.symbolOutput;
         };
         Semantic.prototype.scopeTreeOP = function () {
+            return this.symbolTree.toString();
         };
         Semantic.prototype.scope = function () {
         };
@@ -34,6 +35,7 @@ var TSC;
         //parseBlockSemantic handles open and closed curly braces followed by an EOP marker
         Semantic.prototype.parseBlockSemantic = function () {
             this.scopeNum++;
+            this.symbolTree.addNode("ScopeLevel: " + this.scopeNum, "branch", this.scopeNum);
             if (tokens[this.currentToken] === undefined) {
                 return;
             }

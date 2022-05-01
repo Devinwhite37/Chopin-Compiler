@@ -27,7 +27,7 @@ module TSC {
             this.currentToken = 0;
             this.astOutput = [];
             this.ast = new Tree();
-            //this.ast.addNode("Root", "branch");
+            this.ast.addNode("Root", "branch");
             this.programNum = 1;
             this.quoteVal = "";
 
@@ -116,7 +116,7 @@ module TSC {
                 this.printStatement();
             }
             else if(tokens[this.currentToken][0] == 'VARIABLE'){
-                this.currentToken++;
+                //this.currentToken++;
                 this.assignmentStatement();
             }
             else if(tokens[this.currentToken][0] == 'INT_TYPE' 
@@ -163,7 +163,8 @@ module TSC {
                 this.stringExpr();
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
-                this.ast.addNode(tokens[this.currentToken][1], "leaf");
+                this.iD();
+                //this.ast.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
@@ -209,21 +210,23 @@ module TSC {
 
         public assignmentStatement(){
             this.ast.addNode("AssignmentStatement", "branch");
-            this.ast.addNode(tokens[this.currentToken - 1][1], "leaf");
-            if(tokens[this.currentToken][1] == "="){
+            if(tokens[this.currentToken][0] == "VARIABLE"){
+                this.iD();
                 this.currentToken++;
-                this.expression();
+                if(tokens[this.currentToken][1] == "="){
+                    this.currentToken++;
+                    this.expression();
+                }
             }
-            //this.ast.endChildren();
             return;
         }
 
-        /*public iD(){
-            this.ast.addNode("ID", "branch");
+        public iD(){
+            //this.ast.addNode("ID", "branch");
             this.ast.addNode(tokens[this.currentToken][1], "leaf");
-            this.ast.endChildren();
+            //this.ast.endChildren();
             return;
-        }*/
+        }
 
         public varDecl(){
             this.ast.addNode("VarDecl", "branch");

@@ -258,7 +258,7 @@ var TSC;
         Parser.prototype.iD = function () {
             this.cst.addNode("ID", "branch");
             this.cst.addNode(tokens[this.currentToken][1], "leaf");
-            this.cst.endChildren();
+            //this.cst.endChildren();
             return;
         };
         Parser.prototype.charList = function () {

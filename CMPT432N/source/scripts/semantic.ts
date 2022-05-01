@@ -2,18 +2,16 @@ module TSC {
     export class Semantic {
         tokenList: Array<Lexer>; 
         currentToken: number; 
-        scopeTree: Tree;
+        symbolTree: SymbolTree;
         programNum: number;
         scopeNum: number;
         quoteVal: String;
         symbolOutput: any[][] = [];
 
-
-
         constructor(tokens){
             this.tokenList = tokens;   
             this.currentToken = 0; 
-            this.scopeTree = new Tree();
+            this.symbolTree = new SymbolTree();
             this.programNum = 1;
             this.scopeNum = -1;
             this.quoteVal = "";
@@ -31,10 +29,7 @@ module TSC {
 
         }
         public scopeTreeOP(){
-
-        }
-        public scope(){
-
+            return this.symbolTree.toString();
         }
 
         public programSemantic(){
@@ -50,6 +45,7 @@ module TSC {
         //parseBlockSemantic handles open and closed curly braces followed by an EOP marker
         public parseBlockSemantic(){
             this.scopeNum++;
+            this.symbolTree.addNode("ScopeLevel: " + this.scopeNum, "branch", this.scopeNum);
             if(tokens[this.currentToken] === undefined){
                 return;
             }            

@@ -81,7 +81,7 @@
                     <td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Symbol Table</h3></td>
                 </tr>
                 <tr>
-                    <td><textarea class="input form-control lined" id="scope" readonly></textarea></td>
+                    <td><textarea class="input form-control lined" id="scopeTree" readonly></textarea></td>
 					<td>
 						<div style = "overflow: auto;" id = "symbolTable">
 						<table style = "text-align: center" id = "symbolTableTable" class = "lined">
@@ -121,6 +121,8 @@
 	<script type="text/javascript" src="source/scripts/tree.js"></script>	
 	<script type="text/javascript" src="source/scripts/ast.js"></script>
 	<script type="text/javascript" src="source/scripts/semantic.js"></script>
+	<script type="text/javascript" src="source/scripts/scopeTree.js"></script>	
+
 
 
 
@@ -133,6 +135,8 @@
 			document.getElementById("taOutput").value = "";
 			document.getElementById("taCST").value = "";
 			document.getElementById("taAST").value = "";
+			document.getElementById("scopeTree").value = "";
+
 			//document.getElementById("symbolTableTable").value = "";
 
 
@@ -187,10 +191,13 @@
 			console.log("AST:");
 			console.log(astTree);
 			
-			let symbolTable = new TSC.Semantic();
-			st = symbolTable.symbolTableOP();
+			let semantic = new TSC.Semantic();
+			st = semantic.symbolTableOP();
 			console.log("SYMBOLOP");
 			console.log(st);
+
+			scopeTree = semantic.scopeTreeOP();
+
 
 	        compile();
 	    }
@@ -205,6 +212,10 @@
 
 		function putMessageAST(msgAST) {
 			document.getElementById("taAST").value += msgAST + "\n";
+		}
+
+		function putMessageScopeTree(msgScopeTree){
+			document.getElementById("scopeTree").value += msgScopeTree + "\n";
 		}
 		
 		function compile(){
@@ -431,6 +442,7 @@
 							cstOutput();
 							astOutput();
 							stOutput();
+							scopeTreeOP();
 							putMessageOP("Parsing completed with " + parseErrors + " error(s) and "+ parseWarnings+" warning(s).\n");
 							break;
 						}
@@ -443,6 +455,7 @@
 							cstOutput();
 							astOutput();
 							stOutput();
+							scopeTreeOP();
 							putMessageOP("Parsing completed with " + parseErrors + " error(s) and "+ parseWarnings+" warning(s).\n");
 							l++;
 							break;	
@@ -487,6 +500,11 @@
 			//outputs the AST if parser runs
 			document.getElementById("taAST").value = "";
 			putMessageAST(astTree);
+		}
+
+		function scopeTreeOP(){
+			document.getElementById("scopeTree").value = "";
+			putMessageScopeTree(scopeTree);
 		}
 
 		function stOutput(){

@@ -281,7 +281,7 @@ module TSC {
             public iD(){
                 this.cst.addNode("ID", "branch");
                 this.cst.addNode(tokens[this.currentToken][1], "leaf");
-                this.cst.endChildren();
+                //this.cst.endChildren();
                 return;
             }
             public charList(){

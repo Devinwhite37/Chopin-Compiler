@@ -17,7 +17,7 @@ var TSC;
             this.currentToken = 0;
             this.astOutput = [];
             this.ast = new Tree();
-            //this.ast.addNode("Root", "branch");
+            this.ast.addNode("Root", "branch");
             this.programNum = 1;
             this.quoteVal = "";
         }
@@ -100,7 +100,7 @@ var TSC;
                 this.printStatement();
             }
             else if (tokens[this.currentToken][0] == 'VARIABLE') {
-                this.currentToken++;
+                //this.currentToken++;
                 this.assignmentStatement();
             }
             else if (tokens[this.currentToken][0] == 'INT_TYPE'
@@ -144,7 +144,8 @@ var TSC;
                 this.stringExpr();
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
-                this.ast.addNode(tokens[this.currentToken][1], "leaf");
+                this.iD();
+                //this.ast.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
@@ -186,20 +187,22 @@ var TSC;
         };
         Ast.prototype.assignmentStatement = function () {
             this.ast.addNode("AssignmentStatement", "branch");
-            this.ast.addNode(tokens[this.currentToken - 1][1], "leaf");
-            if (tokens[this.currentToken][1] == "=") {
+            if (tokens[this.currentToken][0] == "VARIABLE") {
+                this.iD();
                 this.currentToken++;
-                this.expression();
+                if (tokens[this.currentToken][1] == "=") {
+                    this.currentToken++;
+                    this.expression();
+                }
             }
+            return;
+        };
+        Ast.prototype.iD = function () {
+            //this.ast.addNode("ID", "branch");
+            this.ast.addNode(tokens[this.currentToken][1], "leaf");
             //this.ast.endChildren();
             return;
         };
-        /*public iD(){
-            this.ast.addNode("ID", "branch");
-            this.ast.addNode(tokens[this.currentToken][1], "leaf");
-            this.ast.endChildren();
-            return;
-        }*/
         Ast.prototype.varDecl = function () {
             this.ast.addNode("VarDecl", "branch");
             if (tokens[this.currentToken][0] == 'VARIABLE') {
