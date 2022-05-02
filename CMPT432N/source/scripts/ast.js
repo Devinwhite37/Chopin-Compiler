@@ -69,9 +69,6 @@ var TSC;
             if (tokens[this.currentToken] === undefined) {
                 return;
             }
-            else if (tokens[this.currentToken][1] == '}' && tokens[this.currentToken - 1][1] == '{') {
-                this.parseBlock();
-            }
             else if (tokens[this.currentToken][1] == '}') {
                 this.parseBlock();
             }
@@ -81,12 +78,6 @@ var TSC;
                 || tokens[this.currentToken][0] == "IF" || tokens[this.currentToken][0] == "L_BRACE") {
                 this.statement();
                 this.statementList();
-                /*if(tokens[this.currentToken] === undefined){
-                    return;
-                }
-                else if(tokens[this.currentToken][1] != "$") {
-                    this.statementList();
-                }*/
             }
             return;
         };
@@ -100,7 +91,6 @@ var TSC;
                 this.printStatement();
             }
             else if (tokens[this.currentToken][0] == 'VARIABLE') {
-                //this.currentToken++;
                 this.assignmentStatement();
             }
             else if (tokens[this.currentToken][0] == 'INT_TYPE'
@@ -131,7 +121,6 @@ var TSC;
                 }
             }
             this.ast.endChildren();
-            //return;
         };
         Ast.prototype.expression = function () {
             if (tokens[this.currentToken][0] == "DIGIT") {
@@ -145,13 +134,11 @@ var TSC;
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.iD();
-                //this.ast.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
                 this.booleanExpr();
             }
-            //return;
         };
         Ast.prototype.intExpr = function () {
             if (tokens[this.currentToken][0] == 'ADDITION_OP') {
@@ -159,12 +146,10 @@ var TSC;
                 this.currentToken++;
                 this.expression();
                 this.ast.endChildren();
-                //return;
             }
             else {
                 this.ast.endChildren();
             }
-            //return; 
         };
         Ast.prototype.stringExpr = function () {
             this.charList();
@@ -198,9 +183,7 @@ var TSC;
             return;
         };
         Ast.prototype.iD = function () {
-            //this.ast.addNode("ID", "branch");
             this.ast.addNode(tokens[this.currentToken][1], "leaf");
-            //this.ast.endChildren();
             return;
         };
         Ast.prototype.varDecl = function () {
@@ -222,15 +205,13 @@ var TSC;
                 this.currentToken++;
             }
             else if (tokens[this.currentToken][0] == 'L_PAREN') {
-                this.ast.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
                 this.expression();
                 if (tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!=') {
-                    this.ast.addNode(tokens[this.currentToken][1], "leaf");
+                    this.ast.addNode(tokens[this.currentToken][0], "leaf");
                     this.currentToken++;
                     this.expression();
                     if (tokens[this.currentToken][0] == 'R_PAREN') {
-                        this.ast.addNode(tokens[this.currentToken][1], "leaf");
                         this.currentToken++;
                     }
                 }

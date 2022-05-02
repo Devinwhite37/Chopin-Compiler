@@ -152,6 +152,7 @@
 			i = 0;
 			j = 0;
 			l = 0;
+			m = 0;
 	    }
     
 	    function btnCompile_click() {        
@@ -167,37 +168,39 @@
 			var i = 0;
 			var j = 0;
 			var l = 0;
+			var m = 0;
 
 			// Grab the tokens from the lexer . . .
 			let lexer = new TSC.Lexer();
 			tokens = lexer.lex();
-			console.log("HTML TOKENS:");
-			console.log(tokens);
+			//console.log("HTML TOKENS:");
+			//console.log(tokens);
 
 			//Grab productions from parser
 			let parser = new TSC.Parser();
 			productions = parser.parse();
-			console.log("PRODUCTIONS:");
-			console.log(productions); 
+			//console.log("PRODUCTIONS:");
+			//onsole.log(productions); 
 
 			//Grab CST from parser
 			cstTree = parser.cstTree();
-			console.log("CST:");
-			console.log(cstTree);
+			//console.log("CST:");
+			//console.log(cstTree);
 
 			//Grab AST from ast
 			let ast = new TSC.Ast();
 			astTree = ast.astTree();
-			console.log("AST:");
-			console.log(astTree);
+			//console.log("AST:");
+			//console.log(astTree);
 			
 			let semantic = new TSC.Semantic();
-			st = semantic.symbolTableOP();
-			console.log("SYMBOLOP");
-			console.log(st);
+			st = semantic.programSemantic();
+			//console.log("SYMBOLOP");
+			//console.log(st);
 
+			analysis = semantic.semantic();
+			//console.log(analysis);
 			scopeTree = semantic.scopeTreeOP();
-
 
 	        compile();
 	    }
@@ -419,8 +422,6 @@
 
 					putMessageOP(" Parsing Program "+ programNum);
 					putMessageOP("---------------------------")
-					console.log(l);
-					console.log(productions.length);
 
 					for(l; l < productions.length; l++){
 						if(lexErrors != 0){
@@ -434,7 +435,6 @@
 						}
 						else{
 						if(productions[l] == 'VALID - Found [EOP]'){
-							programNum++;
 							putMessageOP("PARSER -> | " + productions[l]);
 							putMessageOP("\n")
 							l++;
@@ -447,7 +447,6 @@
 							break;
 						}
 						else if(productions[l] == 'ERROR - Found [undefined] on [ undefined , undefined ]'){
-							programNum++;
 							putMessageOP("PARSER -> | WARNING: Missing EOP [ $ ] at end of file.");
 							putMessageOP("\n")
 							parseWarnings++;
@@ -461,7 +460,6 @@
 							break;	
 						}
 						else if(productions[l].slice(0, 5) == 'ERROR'){
-							programNum++;
 							parseErrors++;
 							putMessageOP("PARSER -> | " + productions[l]);
 							l++;
@@ -486,7 +484,19 @@
 						}
 					}
 					}
-					
+					putMessageOP(" Analyzing Program "+ programNum);
+					putMessageOP("---------------------------")	
+					for(m; m < analysis.length; m++){
+						if(analysis[m] == 'EOP'){
+							programNum++;
+							m++;
+							break
+						}
+						else{
+						putMessageOP("ANALYZER -> | " + analysis[m]);
+						}
+					}
+					putMessageOP("\nSemantic Analysis completed with 0 error(s) and 0 warning(s).")			
 				}
 		}
 

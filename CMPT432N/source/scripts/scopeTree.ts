@@ -4,10 +4,10 @@
 // By Alan G. Labouseur, based on the 2009
 // work by Michael Ardizzone and Tim Smith.
 //-----------------------------------------
-class SymbolTree {
+class ScopeTree {
     root: any;
     cur: {};
-    addNode: (name: any, kind: any, scope: any) => void;
+    addNode: (name: any, kind: any, scope: any, symbols: any) => void;
     kick: () => void;
     constructor() {
         // ----------
@@ -20,13 +20,13 @@ class SymbolTree {
         // -- Methods --
         // -- ------- --
         // Add a node: kind in {branch, leaf}.
-        this.addNode = function (name, kind, scope) {
+        this.addNode = function (name, kind, scope, symbols) {
             // Construct the node object.
             var node = {
                 name: name,
                 children: [],
                 parent: {},
-                symbols: [],
+                symbols: symbols,
                 scope: scope
             };
 

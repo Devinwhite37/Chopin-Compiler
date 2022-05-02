@@ -3,8 +3,10 @@
 //
 // By Alan G. Labouseur, based on the 2009
 // work by Michael Ardizzone and Tim Smith.
+// additional inspiration taken from Sonar  
+// in hall of fame projects
 //-----------------------------------------
-class SymbolTree {
+class ScopeTree {
     constructor() {
         // ----------
         // Attributes
@@ -16,15 +18,16 @@ class SymbolTree {
         // -- Methods --
         // -- ------- --
         // Add a node: kind in {branch, leaf}.
-        this.addNode = function (name, kind, scope) {
+        this.addNode = function (name, kind, scope, symbols) {
             // Construct the node object.
             var node = {
                 name: name,
                 children: [],
                 parent: {},
-                symbols: [],
+                symbols: symbols,
                 scope: scope
             };
+            console.log(node);
 
             // Check to see if it needs to be the root node.
             if ((this.root == null) || (!this.root)) {
