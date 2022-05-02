@@ -12,6 +12,7 @@ module TSC {
         scopeLevel: number;
         symbol: Object = {};
         symbols: Array<any>;
+        scope: number;
                 /*symbol: {
             programNum: number,
             key: String,
@@ -37,14 +38,13 @@ module TSC {
                 line: 0,
                 col: 0
             };*/
-            
+            this.scope = -1;
             this.symbols = [];
             this.scopeArray = [];
             this.scopeLevel = -1;
         }
 
         public semantic(){
-            console.log(this.semanticOutput);
             return this.semanticOutput;
         }
 
@@ -67,6 +67,7 @@ module TSC {
         public programSemantic(){
             this.scopeNum = -1;
             this.scopeLevel = -1;
+            this.scope = -1;
             if(tokens[this.currentToken] === undefined){
                 return;
             }
@@ -81,7 +82,10 @@ module TSC {
         public parseBlockSemantic(){
             this.scopeNum++;
             this.scopeLevel++;
-            this.scopeArray.push(this.scopeNum)
+            this.scopeArray.push(this.scope);
+            this.scope = this.scopeNum;
+            console.log(this.scope);
+
             //this.scopeTree.addNode("Scope: " + this.scopeNum, "branch", this.scopeNum);
             if(tokens[this.currentToken] === undefined){
                 return;
@@ -93,7 +97,6 @@ module TSC {
 
             if(tokens[this.currentToken][1] == '}'){
                 this.currentToken++;
-                this.scopeLevel--;
                 if(tokens[this.currentToken] === undefined){
                     return;
                 }
@@ -104,7 +107,10 @@ module TSC {
                     this.programSemantic();
                 }
             }
-            this.scopeNum = this.scopeArray.pop();
+            this.scopeLevel--;
+            this.scopeTree.endChildren();
+            this.scope = this.scopeArray.pop();
+            console.log(this.scope);
         }
 
         //StatementListSemantic tests the tokens to see if we have valid statementListSemantics
@@ -113,7 +119,7 @@ module TSC {
                 return;
             }
             else if(tokens[this.currentToken][1] == '}'){
-                return;
+                //return;
             }
             else if (tokens[this.currentToken][0] == 'PRINT' || tokens[this.currentToken][0] == "VARIABLE"
                 || tokens[this.currentToken][0] == "INT_TYPE" || tokens[this.currentToken][0] == "STRING_TYPE"
@@ -232,27 +238,17 @@ module TSC {
         }
 
         public varDeclSemantic(){
-            console.log(this.scopeNum)
             if(tokens[this.currentToken][0] == 'VARIABLE'){
                 //programNum = this.programNum;
-                this.symbol["type"] = tokens[this.currentToken - 1][1];
-                this.symbol["key"] = tokens[this.currentToken][1];
-                this.symbol["line"] = tokens[this.currentToken][3];
-                this.symbol["col"] = tokens[this.currentToken][2];
-                this.symbol["scope"] = this.scopeNum;
-                this.symbol["scopeLevel"] = this.scopeLevel;
-                this.symbols.push(this.symbolOutput);
-                console.log(this.symbols);
-                /*this.symbolOutput.push([
+                this.symbolOutput.push([
                     [this.programNum],
                     [tokens[this.currentToken][1]],
                     [tokens[this.currentToken - 1][1]],
-                    [this.scopeNum],
+                    [this.scope],
                     [tokens[this.currentToken][3]],
                     [tokens[this.currentToken][2]]
-                ]);*/
-                console.log(this.symbolOutput);
-                this.createSymbol(this.programNum, tokens[this.currentToken][1], tokens[this.currentToken - 1][1], this.scopeNum, tokens[this.currentToken][3], tokens[this.currentToken][2]);
+                ]);
+                this.createSymbol(this.programNum, tokens[this.currentToken][1], tokens[this.currentToken - 1][1], this.scope, tokens[this.currentToken][3], tokens[this.currentToken][2]);
                 this.semanticOutput.push("New variable declared [" + tokens[this.currentToken][1] + "] on [" + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + "] with type " + tokens[this.currentToken - 1][1]);
                 this.currentToken++;
             }
@@ -260,15 +256,15 @@ module TSC {
         }
 
         public createSymbol(programNum, key, type, scope, line, col){
-            /*this.symbol = {
-                programNum: programNum,
-                key: key,
-                type: type,
-                scope: scope,
-                line: line,
-                col: col
-            }*/
-            this.symbol["type"] = tokens[this.currentToken - 1][1];
+            this.symbol = [
+                programNum,
+                key,
+                type,
+                scope,
+                line,
+                col
+            ]
+            /*this.symbol["type"] = tokens[this.currentToken - 1][1];
             this.symbol["key"] = tokens[this.currentToken][1];
             this.symbol["line"] = tokens[this.currentToken][3];
             this.symbol["col"] = tokens[this.currentToken][2];
@@ -277,8 +273,8 @@ module TSC {
             this.symbols.push(this.symbolOutput);
             console.log(this.symbols);
             //this.symbol = {};
-            let symbol = []
-            this.scopeTree.addNode("Scope: " + this.scopeNum, "branch", this.scopeNum, this.symbols);
+            let symbol = []*/
+            this.scopeTree.addNode("Scope: " + this.scopeNum, "branch", this.scopeNum, this.symbolOutput);
 
             //symbol = [this.]
             //this.scopeTree.cur.symbols.push(this.symbols);

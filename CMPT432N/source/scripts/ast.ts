@@ -73,7 +73,7 @@ module TSC {
                     this.program();
                 }
                 else{
-                    this.ast.endChildren();
+                    //this.ast.endChildren();
                     this.statementList();
                 }
             }

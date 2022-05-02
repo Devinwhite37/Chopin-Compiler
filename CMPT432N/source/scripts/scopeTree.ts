@@ -8,7 +8,7 @@ class ScopeTree {
     root: any;
     cur: {};
     addNode: (name: any, kind: any, scope: any, symbols: any) => void;
-    kick: () => void;
+    endChildren: () => void;
     constructor() {
         // ----------
         // Attributes
@@ -51,7 +51,7 @@ class ScopeTree {
         };
 
         // Note that we're done with this branch of the tree...
-        this.kick = function () {
+        this.endChildren = function () {
             // ... by moving "up" to our parent node (if possible).
             if ((this.cur.parent !== null) && (this.cur.parent.name !== undefined)) {
                 this.cur = this.cur.parent;

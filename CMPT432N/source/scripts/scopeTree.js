@@ -27,7 +27,6 @@ class ScopeTree {
                 symbols: symbols,
                 scope: scope
             };
-            console.log(node);
 
             // Check to see if it needs to be the root node.
             if ((this.root == null) || (!this.root)) {
@@ -50,9 +49,12 @@ class ScopeTree {
         };
 
         // Note that we're done with this branch of the tree...
-        this.kick = function () {
+        this.endChildren = function () {
+            if (this.cur.parent === undefined) {
+                return;
+            }
             // ... by moving "up" to our parent node (if possible).
-            if ((this.cur.parent !== null) && (this.cur.parent.name !== undefined)) {
+            else if ((this.cur.parent !== null) && (this.cur.parent.name !== undefined)) {
                 this.cur = this.cur.parent;
             }
             else {
@@ -75,12 +77,15 @@ class ScopeTree {
                 }
 
                 // If there are no children (i.e., leaf nodes)...
-                if (!node.children || node.children.length === 0) {
+                if(node === null){
+                    return
+                }
+                else if (!node.children || node.children.length === 0) {
                     // ... note the leaf node.
                     traversalResult += "[ " + node.name + " ]";
                     traversalResult += ":";
                     node.symbols.forEach(function (symbol) {
-                        traversalResult += " " + symbol.type + " " + symbol.key + " |";
+                        traversalResult += " " + symbol[2] + " " + symbol[1] + " |";
                     });
                     traversalResult += "\n";
                 }
@@ -89,7 +94,7 @@ class ScopeTree {
                     traversalResult += "[ " + node.name + " ]";
                     traversalResult += ":";
                     node.symbols.forEach(function (symbol) {
-                        traversalResult += " " + symbol.type + " " + symbol.key + " |";
+                        traversalResult += " " + symbol[2] + " " + symbol[1] + " |";
                     });
                     traversalResult += "\n";
                     // .. recursively expand them.
@@ -101,7 +106,6 @@ class ScopeTree {
             // Make the initial call to expand from the root.
             expand(this.root, 0);
             // Return the result.
-            console.log("traversalResult" + traversalResult);
             return traversalResult;
         };
     }
