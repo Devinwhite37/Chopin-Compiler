@@ -226,6 +226,23 @@ module TSC {
 
         public varDeclSemantic(){
             this.ast.addNode("VarDecl", "branch", this.scope);
+            this.scopeTreeVars(tokens[this.currentToken - 1][1], tokens[this.currentToken][1], this.scope, tokens[this.currentToken][2]);
+            for(var j = 0; j < this.symbolOutput.length; j++){
+                var currentVar = tokens[this.currentToken][1][0];
+                var prevVars = this.symbolOutput[j][1][0][0];
+                if(this.symbolOutput[0] === undefined){
+                    //return;
+                }
+                else if(currentVar == prevVars){
+                    this.semanticOutput.push("ERROR: Variable  [" + tokens[this.currentToken][1] + "] already declared in scope in " + this.scope);
+
+                    console.log("WHAT THE FUCK IS THE PROBLEM HERE")
+                }
+                else if(this.symbolOutput[j][1][0] == tokens[this.currentToken][1]){
+                console.log(this.symbolOutput[j][1][0] == tokens[this.currentToken][0])
+                }
+            }
+            
             if(tokens[this.currentToken][0] == 'VARIABLE'){
                 this.ast.addNode(tokens[this.currentToken - 1 ][1], "leaf", this.scope);
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
@@ -237,13 +254,15 @@ module TSC {
                     [tokens[this.currentToken][3]],
                     [tokens[this.currentToken][2]]
                 ]);
+                console.log(this.symbolOutput[0][1][0]);
+                console.log(this.symbolOutput);
                 this.createSymbol(this.programNum, tokens[this.currentToken][1], tokens[this.currentToken - 1][1], this.scope, tokens[this.currentToken][3], tokens[this.currentToken][2]);
                 this.semanticOutput.push("New variable declared [" + tokens[this.currentToken][1] + "] on [" + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + "] with type " + tokens[this.currentToken - 1][1]);
                 this.currentToken++;
-                console.log(this.ast.cur);
+                //console.log(this.ast.cur);
                 //is current var
-                console.log(this.ast.cur.children[1].name);
-                for(var i = 0; i<this.ast.cur.parent.children.length;i++){
+               // console.log(this.ast.cur.children[1].name);
+                /*for(var i = 0; i<this.ast.cur.parent.children.length;i++){
                     if(this.ast.cur.parent.children[i].children[1] === undefined){
                         return;
                     }
@@ -252,17 +271,17 @@ module TSC {
                    // }
 
                     
-                }
-                console.log(this.ast.cur.parent.children.length);
+                }*/
+                //console.log(this.ast.cur.parent.children.length);
 
-                console.log(this.ast.cur.parent.children[0].children[1].name);
+               // console.log(this.ast.cur.parent.children[0].children[1].name);
             }
             this.ast.endChildren();
             return;
         }
 
         public createSymbol(programNum, key, type, scope, line, col){
-            this.symbol = {
+            /*this.symbol = {
                 programNum: programNum,
                 key: key,
                 type: type,
@@ -330,7 +349,15 @@ module TSC {
             return;
         }
 
-        public scopeTreeVars(){
+        public scopeTreeVars(name, type, scope, col){
+            this.symbol = {
+                name: name,
+                type: type,
+                scope: scope,
+                col: col
+            }
+            console.log(this.symbol);
+            return this.symbol;
 
         }
     }
