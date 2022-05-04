@@ -132,6 +132,7 @@ var TSC;
                 this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][1] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
                 this.parseOutput.push("Expected token(s): [ PRINT, ID, INT, STRING, BOOLEAN, WHILE, STRING, IF, L_BRACE, R_BRACE ]");
             }
+            this.cst.endChildren();
             return;
         };
         //statement is used to validate the tokens that are statmenets and pass them to their specified statement
@@ -287,10 +288,10 @@ var TSC;
                     this.currentToken++;
                     this.expression();
                 }
-            }
-            else {
-                this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
-                this.parseOutput.push("Expected tokens: [ASSIGNMENT]");
+                else {
+                    this.parseOutput.push("ERROR - Found [" + tokens[this.currentToken][0] + "] on [ " + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + " ]");
+                    this.parseOutput.push("Expected tokens: [ASSIGNMENT]");
+                }
             }
             this.cst.endChildren();
             return;

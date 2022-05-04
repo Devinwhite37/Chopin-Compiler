@@ -357,6 +357,7 @@
 		}*/
 
 		function logOutput(){
+			const semanticErrors = 0;
 			//var lexErrors = 0;
 			var warnings = 0;
 			//var parseErrors = 0;
@@ -420,29 +421,26 @@
 				}
 				putMessageOP("\nLexical analysis complete with " + lexErrors + " error(s) and " + warnings + " warning(s).\n");
 
-					putMessageOP(" Parsing Program "+ programNum);
-					putMessageOP("---------------------------")
+				putMessageOP(" Parsing Program "+ programNum);
+				putMessageOP("---------------------------")
 
-					for(l; l < productions.length; l++){
-						if(lexErrors != 0){
-							putMessageOP("Parsing skipped due to Lexer error.");
-							for(l; l < productions.length; l++){
-								if(productions[l] == 'Program'){
-									break;
-								}
+				for(l; l < productions.length; l++){
+					if(lexErrors != 0){
+						putMessageOP("Parsing skipped due to Lexer error.");
+						for(l; l < productions.length; l++){
+							if(productions[l] == 'Program'){
+								break;
 							}
-							break;
 						}
-						else{
+						break;
+					}
+					else{
 						if(productions[l] == 'VALID - Found [EOP]'){
 							putMessageOP("PARSER -> | " + productions[l]);
 							putMessageOP("\n")
 							l++;
 							parseErrors = 0;
 							cstOutput();
-							astOutput();
-							stOutput();
-							scopeTreeOP();
 							putMessageOP("Parsing completed with " + parseErrors + " error(s) and "+ parseWarnings+" warning(s).\n");
 							break;
 						}
@@ -452,9 +450,6 @@
 							parseWarnings++;
 							parseErrors = 0;
 							cstOutput();
-							astOutput();
-							stOutput();
-							scopeTreeOP();
 							putMessageOP("Parsing completed with " + parseErrors + " error(s) and "+ parseWarnings+" warning(s).\n");
 							l++;
 							break;	
@@ -467,8 +462,8 @@
 							putMessageOP("\nParsing stopped due to error.");
 							putMessageOP("\n")
 							treeNum = programNum-1;
-							putMessageCST("No CST for program " + treeNum + " due to parse error.");
-							putMessageAST("No AST for program " + treeNum + " due to parse error.");
+							putMessageCST("No CST for program " + programNum + " due to parse error.");
+							putMessageAST("No AST for program " + programNum + " due to parse error.");
 							//skip all productions after error until we find next program
 							for(l; l < productions.length; l++){
 								if(productions[l] == 'Program'){
@@ -483,9 +478,14 @@
 							putMessageOP("PARSER -> | " + productions[l]);
 						}
 					}
-					}
+				}
+				console.log(parseErrors);
+				if(parseErrors==0){
 					putMessageOP(" Analyzing Program "+ programNum);
-					putMessageOP("---------------------------")	
+					putMessageOP("---------------------------");
+					astOutput();
+					stOutput();
+					scopeTreeOP();
 					for(m; m < analysis.length; m++){
 						if(analysis[m] == 'EOP'){
 							programNum++;
@@ -494,10 +494,17 @@
 						}
 						else{
 						putMessageOP("ANALYZER -> | " + analysis[m]);
+
+
 						}
 					}
 					putMessageOP("\nSemantic Analysis completed with 0 error(s) and 0 warning(s).")			
 				}
+				else{
+					break;
+				}
+				
+			}
 		}
 
 		function cstOutput(){
@@ -508,8 +515,10 @@
 
 		function astOutput(){
 			//outputs the AST if parser runs
-			document.getElementById("taAST").value = "";
-			putMessageAST(astTree);
+			if(0==0){
+				document.getElementById("taAST").value = "";
+				putMessageAST(astTree);
+			}
 		}
 
 		function scopeTreeOP(){
@@ -518,25 +527,28 @@
 		}
 
 		function stOutput(){
-			var table = document.getElementById("symbolTableTable");
+			if(0==0){
 
-			for(var i = 0; i < st.length; i++){
-				// Creates new <tr> to add new elements too
-				var row = table.insertRow(i+1);
-				// Insert new <td> elements to the new <tr>
-				var program = row.insertCell(0);
-				var key = row.insertCell(1);
-				var type = row.insertCell(2);
-				var scope = row.insertCell(3);
-				var line = row.insertCell(4);
-				var col = row.insertCell(5);
+				var table = document.getElementById("symbolTableTable");
 
-				program.innerHTML = st[i][0];
-				key.innerHTML = st[i][1];
-				type.innerHTML = st[i][2];
-				scope.innerHTML = st[i][3];
-				line.innerHTML = st[i][4];
-				col.innerHTML = st[i][5];
+				for(var i = 0; i < st.length; i++){
+					// Creates new <tr> to add new elements too
+					var row = table.insertRow(i+1);
+					// Insert new <td> elements to the new <tr>
+					var program = row.insertCell(0);
+					var key = row.insertCell(1);
+					var type = row.insertCell(2);
+					var scope = row.insertCell(3);
+					var line = row.insertCell(4);
+					var col = row.insertCell(5);
+
+					program.innerHTML = st[i][0];
+					key.innerHTML = st[i][1];
+					type.innerHTML = st[i][2];
+					scope.innerHTML = st[i][3];
+					line.innerHTML = st[i][4];
+					col.innerHTML = st[i][5];
+				}
 			}
 		}
 		

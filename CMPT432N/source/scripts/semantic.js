@@ -225,14 +225,14 @@ var TSC;
             return;
         };
         Semantic.prototype.createSymbol = function (programNum, key, type, scope, line, col) {
-            this.symbol = [
-                programNum,
-                key,
-                type,
-                scope,
-                line,
-                col
-            ];
+            this.symbol = {
+                programNum: programNum,
+                key: key,
+                type: type,
+                scope: scope,
+                line: line,
+                col: col
+            };
             /*this.symbol["type"] = tokens[this.currentToken - 1][1];
             this.symbol["key"] = tokens[this.currentToken][1];
             this.symbol["line"] = tokens[this.currentToken][3];
@@ -243,9 +243,10 @@ var TSC;
             console.log(this.symbols);
             //this.symbol = {};
             let symbol = []*/
-            this.scopeTree.addNode("Scope: " + this.scopeNum, "branch", this.scopeNum, this.symbolOutput);
+            this.symbols.push(this.symbolOutput);
+            this.scopeTree.addNode("Scope: " + this.scope, "branch", this.scope);
             //symbol = [this.]
-            //this.scopeTree.cur.symbols.push(this.symbols);
+            //this.scopeTree.cur.symbols
             return (this.symbol);
         };
         Semantic.prototype.booleanExprSemantic = function () {

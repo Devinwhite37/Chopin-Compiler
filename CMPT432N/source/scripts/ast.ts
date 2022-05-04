@@ -270,5 +270,5 @@ module TSC {
             this.ast.endChildren();
             return;
         }
-}
+    }
 }

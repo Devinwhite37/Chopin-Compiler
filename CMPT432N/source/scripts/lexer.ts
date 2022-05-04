@@ -63,7 +63,7 @@ module TSC
 				//const INVALID_CHAR_QUOTE = new RegExp('^(?!.*([a-z]|[0-9]|{|}|\\(|\\)|=|\\+| |"|!|\\$|/|\\*))');
 				const CHAR = new RegExp('^(?!.*("))');
 			
-				while(1==1){
+				while(true){
 					while(sourceCode.length >=this.subStringEndIndex){
 					//ignores all text inside a comment
 					if(sourceCode.charAt(this.subStringEndIndex-1) == "/" && sourceCode.charAt(this.subStringEndIndex) == "*"){
