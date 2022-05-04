@@ -8,7 +8,7 @@
 class ScopeTree {
     root: any;
     cur: {};
-    addNode: (name: any, kind: any) => void;
+    addNode: (name: any, kind: any, scope: any) => void;
     endChildren: () => void;
     constructor() {
         // ----------
@@ -21,12 +21,13 @@ class ScopeTree {
         // -- Methods --
         // -- ------- --
         // Add a node: kind in {branch, leaf}.
-        this.addNode = function (name, kind) {
+        this.addNode = function (name, kind, scope) {
             // Construct the node object.
             var node = {
                 name: name,
                 children: [],
-                parent: {}
+                parent: {},
+                scope: scope
             };
 
             // Check to see if it needs to be the root node.
