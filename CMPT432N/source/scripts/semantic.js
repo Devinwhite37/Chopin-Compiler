@@ -14,7 +14,7 @@ var TSC;
             this.symbol = {};
             this.tokenList = tokens;
             this.currentToken = 0;
-            this.scopeTree = new ScopeTree();
+            this.ast = new ScopeTree();
             this.programNum = 1;
             this.scopeNum = -1;
             this.quoteVal = "";
@@ -32,6 +32,10 @@ var TSC;
             this.scopeArray = [];
             this.scopeLevel = -1;
         }
+        Semantic.prototype.astTree = function () {
+            this.programSemantic();
+            return this.ast.toString();
+        };
         Semantic.prototype.semantic = function () {
             return this.semanticOutput;
         };
@@ -47,7 +51,7 @@ var TSC;
 
         }*/
         Semantic.prototype.scopeTreeOP = function () {
-            return this.scopeTree.toString();
+            return this.ast.toString();
         };
         Semantic.prototype.programSemantic = function () {
             this.scopeNum = -1;
@@ -57,8 +61,10 @@ var TSC;
                 return;
             }
             else if (tokens[this.currentToken][1] == '{') {
+                this.ast.addNode("Program " + this.programNum, "branch");
                 this.parseBlockSemantic();
             }
+            this.ast.endChildren();
             return this.symbolOutput;
         };
         //parseBlockSemantic handles open and closed curly braces followed by an EOP marker
@@ -73,15 +79,18 @@ var TSC;
                 return;
             }
             else if (tokens[this.currentToken][1] == '{') {
+                this.ast.addNode("Block", "branch");
                 this.currentToken++;
             }
             this.statementListSemantic();
             if (tokens[this.currentToken][1] == '}') {
+                this.ast.endChildren();
                 this.currentToken++;
                 if (tokens[this.currentToken] === undefined) {
                     return;
                 }
                 else if (tokens[this.currentToken][1] == '$') {
+                    this.ast.endChildren();
                     this.semanticOutput.push("EOP");
                     this.programNum++;
                     this.currentToken++;
@@ -89,7 +98,6 @@ var TSC;
                 }
             }
             this.scopeLevel--;
-            this.scopeTree.endChildren();
             this.scope = this.scopeArray.pop();
             console.log(this.scope);
         };
@@ -144,9 +152,9 @@ var TSC;
                 //this.ast.endChildren();
                 this.parseBlockSemantic();
             }
-            return;
         };
         Semantic.prototype.printStatementSemantic = function () {
+            this.ast.addNode("PrintStatement", "branch");
             if (tokens[this.currentToken][1] == '(') {
                 this.currentToken++;
                 this.expressionSemantic();
@@ -154,10 +162,11 @@ var TSC;
                     this.currentToken++;
                 }
             }
-            return;
+            this.ast.endChildren();
         };
         Semantic.prototype.expressionSemantic = function () {
             if (tokens[this.currentToken][0] == "DIGIT") {
+                this.ast.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
                 this.intExprSemantic();
             }
@@ -171,20 +180,21 @@ var TSC;
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
                 this.booleanExprSemantic();
             }
-            return;
         };
         Semantic.prototype.intExprSemantic = function () {
             if (tokens[this.currentToken][0] == 'ADDITION_OP') {
+                this.ast.addNode("+", "leaf");
                 this.currentToken++;
                 this.expressionSemantic();
                 return;
             }
             else {
+                this.ast.endChildren();
             }
-            return;
         };
         Semantic.prototype.stringExprSemantic = function () {
             this.charListSemantic();
+            this.ast.endChildren();
             return;
         };
         Semantic.prototype.charListSemantic = function () {
@@ -196,20 +206,28 @@ var TSC;
             else if (tokens[this.currentToken][0] == "DOUBLE_QUOTE") {
                 this.quoteVal += tokens[this.currentToken - 1][1];
                 this.currentToken++;
+                this.ast.addNode(this.quoteVal, "leaf");
                 return;
             }
             return;
         };
         Semantic.prototype.assignmentStatementSemantic = function () {
+            this.ast.addNode("AssignmentStatement", "branch");
             if (tokens[this.currentToken][1] == "=") {
                 this.currentToken++;
                 this.expressionSemantic();
             }
             return;
         };
+        Semantic.prototype.iD = function () {
+            this.ast.addNode(tokens[this.currentToken][1], "leaf");
+            return;
+        };
         Semantic.prototype.varDeclSemantic = function () {
+            this.ast.addNode("VarDecl", "branch");
             if (tokens[this.currentToken][0] == 'VARIABLE') {
-                //programNum = this.programNum;
+                this.ast.addNode(tokens[this.currentToken - 1][1], "leaf");
+                this.ast.addNode(tokens[this.currentToken][1], "leaf");
                 this.symbolOutput.push([
                     [this.programNum],
                     [tokens[this.currentToken][1]],
@@ -222,6 +240,7 @@ var TSC;
                 this.semanticOutput.push("New variable declared [" + tokens[this.currentToken][1] + "] on [" + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + "] with type " + tokens[this.currentToken - 1][1]);
                 this.currentToken++;
             }
+            this.ast.endChildren();
             return;
         };
         Semantic.prototype.createSymbol = function (programNum, key, type, scope, line, col) {
@@ -244,19 +263,21 @@ var TSC;
             //this.symbol = {};
             let symbol = []*/
             this.symbols.push(this.symbolOutput);
-            this.scopeTree.addNode("Scope: " + this.scope, "branch", this.scope);
+            //this.ast.addNode("Scope: " + this.scope, "branch", this.scope);
             //symbol = [this.]
             //this.scopeTree.cur.symbols
             return (this.symbol);
         };
         Semantic.prototype.booleanExprSemantic = function () {
             if (tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
+                this.ast.addNode(tokens[this.currentToken][1], "leaf");
                 this.currentToken++;
             }
             else if (tokens[this.currentToken][0] == 'L_PAREN') {
                 this.currentToken++;
                 this.expressionSemantic();
                 if (tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!=') {
+                    this.ast.addNode(tokens[this.currentToken][0], "leaf");
                     this.currentToken++;
                     this.expressionSemantic();
                     if (tokens[this.currentToken][0] == 'R_PAREN') {
@@ -264,20 +285,25 @@ var TSC;
                     }
                 }
             }
+            this.ast.endChildren();
             return;
         };
         Semantic.prototype.ifStatementSemantic = function () {
+            this.ast.addNode("IfStatement", "branch");
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
                 this.parseBlockSemantic();
             }
+            this.ast.endChildren();
             return;
         };
         Semantic.prototype.whileStatementSemantic = function () {
+            this.ast.addNode("WhileStatement", "branch");
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
                 this.parseBlockSemantic();
             }
+            this.ast.endChildren();
             return;
         };
         Semantic.prototype.scopeTreeVars = function () {

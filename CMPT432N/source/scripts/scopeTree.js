@@ -1,11 +1,10 @@
 //-----------------------------------------
-// Based on treeDemo.js
+// treeDemo.js
 //
 // By Alan G. Labouseur, based on the 2009
 // work by Michael Ardizzone and Tim Smith.
-// additional inspiration taken from Sonar  
-// in hall of fame projects
 //-----------------------------------------
+
 class ScopeTree {
     constructor() {
         // ----------
@@ -18,14 +17,12 @@ class ScopeTree {
         // -- Methods --
         // -- ------- --
         // Add a node: kind in {branch, leaf}.
-        this.addNode = function (name, kind, scope) {
+        this.addNode = function (name, kind) {
             // Construct the node object.
             var node = {
                 name: name,
                 children: [],
-                parent: {},
-                symbols: [],
-                scope: scope
+                parent: {}
             };
 
             // Check to see if it needs to be the root node.
@@ -33,6 +30,7 @@ class ScopeTree {
                 // We are the root node.
                 this.root = node;
             }
+
             else {
                 // We are the children.
                 // Make our parent the CURrent node...
@@ -50,13 +48,14 @@ class ScopeTree {
 
         // Note that we're done with this branch of the tree...
         this.endChildren = function () {
+            // ... by moving "up" to our parent node (if possible).
             if (this.cur.parent === undefined) {
                 return;
             }
-            // ... by moving "up" to our parent node (if possible).
             else if ((this.cur.parent !== null) && (this.cur.parent.name !== undefined)) {
                 this.cur = this.cur.parent;
             }
+
             else {
                 // TODO: Some sort of error logging.
                 // This really should not happen, but it will, of course.
@@ -82,21 +81,13 @@ class ScopeTree {
                 }
                 else if (!node.children || node.children.length === 0) {
                     // ... note the leaf node.
-                    traversalResult += "[ " + node.name + " ]";
-                    traversalResult += ":";
-                    node.symbols.forEach(function (symbol) {
-                        traversalResult += " " + symbol[2] + " " + symbol[1] + " |";
-                    });
+                    traversalResult += "[" + node.name + "]";
                     traversalResult += "\n";
                 }
+
                 else {
                     // There are children, so note these interior/branch nodes and ...
-                    traversalResult += "[ " + node.name + " ]";
-                    traversalResult += ":";
-                    node.symbols.forEach(function (symbol) {
-                        traversalResult += " " + symbol[2] + " " + symbol[1] + " |";
-                    });
-                    traversalResult += "\n";
+                    traversalResult += "<" + node.name + "> \n";
                     // .. recursively expand them.
                     for (var i = 0; i < node.children.length; i++) {
                         expand(node.children[i], depth + 1);

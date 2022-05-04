@@ -1,13 +1,14 @@
 //-----------------------------------------
-// Based on treeDemo.js
+// treeDemo.js
 //
 // By Alan G. Labouseur, based on the 2009
 // work by Michael Ardizzone and Tim Smith.
 //-----------------------------------------
+
 class ScopeTree {
     root: any;
     cur: {};
-    addNode: (name: any, kind: any, scope: any) => void;
+    addNode: (name: any, kind: any) => void;
     endChildren: () => void;
     constructor() {
         // ----------
@@ -20,14 +21,12 @@ class ScopeTree {
         // -- Methods --
         // -- ------- --
         // Add a node: kind in {branch, leaf}.
-        this.addNode = function (name, kind, scope) {
+        this.addNode = function (name, kind) {
             // Construct the node object.
             var node = {
                 name: name,
                 children: [],
-                parent: {},
-                symbols: [],
-                scope: scope
+                parent: {}
             };
 
             // Check to see if it needs to be the root node.
@@ -35,6 +34,7 @@ class ScopeTree {
                 // We are the root node.
                 this.root = node;
             }
+
             else {
                 // We are the children.
                 // Make our parent the CURrent node...
@@ -53,9 +53,13 @@ class ScopeTree {
         // Note that we're done with this branch of the tree...
         this.endChildren = function () {
             // ... by moving "up" to our parent node (if possible).
-            if ((this.cur.parent !== null) && (this.cur.parent.name !== undefined)) {
+            if (this.cur.parent === undefined) {
+                return;
+            }
+            else if ((this.cur.parent !== null) && (this.cur.parent.name !== undefined)) {
                 this.cur = this.cur.parent;
             }
+
             else {
                 // TODO: Some sort of error logging.
                 // This really should not happen, but it will, of course.
@@ -76,23 +80,18 @@ class ScopeTree {
                 }
 
                 // If there are no children (i.e., leaf nodes)...
-                if (!node.children || node.children.length === 0) {
+                if(node === null){
+                    return
+                }
+                else if (!node.children || node.children.length === 0) {
                     // ... note the leaf node.
-                    traversalResult += "[ " + node.name + " ]";
-                    traversalResult += ":";
-                    node.symbols.forEach(function (symbol) {
-                        traversalResult += " " + symbol.type + " " + symbol.key + " |";
-                    });
+                    traversalResult += "[" + node.name + "]";
                     traversalResult += "\n";
                 }
+
                 else {
                     // There are children, so note these interior/branch nodes and ...
-                    traversalResult += "[ " + node.name + " ]";
-                    traversalResult += ":";
-                    node.symbols.forEach(function (symbol) {
-                        traversalResult += " " + symbol.type + " " + symbol.key + " |";
-                    });
-                    traversalResult += "\n";
+                    traversalResult += "<" + node.name + "> \n";
                     // .. recursively expand them.
                     for (var i = 0; i < node.children.length; i++) {
                         expand(node.children[i], depth + 1);
@@ -102,7 +101,6 @@ class ScopeTree {
             // Make the initial call to expand from the root.
             expand(this.root, 0);
             // Return the result.
-            console.log("traversalResult" + traversalResult);
             return traversalResult;
         };
     }

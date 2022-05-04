@@ -188,12 +188,13 @@
 			//console.log(cstTree);
 
 			//Grab AST from ast
-			let ast = new TSC.Ast();
-			astTree = ast.astTree();
+			//let ast = new TSC.Ast();
+			//astTree = semantic.astTree();
 			//console.log("AST:");
 			//console.log(astTree);
 			
 			let semantic = new TSC.Semantic();
+			astTree = semantic.astTree();
 			st = semantic.programSemantic();
 			//console.log("SYMBOLOP");
 			//console.log(st);
@@ -479,7 +480,6 @@
 						}
 					}
 				}
-				console.log(parseErrors);
 				if(parseErrors==0){
 					putMessageOP(" Analyzing Program "+ programNum);
 					putMessageOP("---------------------------");
