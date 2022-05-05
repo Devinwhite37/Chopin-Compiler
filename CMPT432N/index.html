@@ -197,6 +197,7 @@
 			let semantic = new TSC.Semantic();
 			astTree = semantic.astTree();
 			st = semantic.symbolTableOP();
+			//console.log("TEST");
 			console.log(st);
 			//console.log("SYMBOLOP");
 			//console.log(st);
@@ -234,7 +235,7 @@
 			else{
 				//putMessageOP("Compilation Started");
 				logOutput();
-				
+				stOutput();
 				//semantic();
 			}
 		}
@@ -491,20 +492,22 @@
 							programNum++;
 							m++;
 							astOutput();
-							stOutput();
+							//stOutput();
 							scopeTreeOP();
-							break
+							break;
 						}
 						else if(analysis[m].slice(0, 5) == 'ERROR'){
 							analysisErrors++
 							putMessageOP("ANALYZER -> | " + analysis[m]);
-							putMessageOP("Semantic Analysis stopped due to error")
+							putMessageOP("Semantic Analysis stopped due to error");
+							putMessageAST("No AST due to Semantic Analysis error");
+							break;
 						}
 						else{
 							putMessageOP("ANALYZER -> | " + analysis[m]);
 						}
 					}
-					putMessageOP("\nSemantic Analysis completed with 0 error(s) and 0 warning(s).")			
+					putMessageOP("\nSemantic Analysis completed with " + analysisErrors + " error(s) and 0 warning(s).")			
 				}
 				else{
 					break;
@@ -533,10 +536,8 @@
 		}
 
 		function stOutput(){
-			if(true){
-
+			if(analysisErrors == 0){
 				var table = document.getElementById("symbolTableTable");
-
 				for(var i = 0; i < st.length; i++){
 					// Creates new <tr> to add new elements too
 					var row = table.insertRow(i+1);
@@ -548,12 +549,12 @@
 					var line = row.insertCell(4);
 					var col = row.insertCell(5);
 
-					program.innerHTML = st[i][0];
-					key.innerHTML = st[i][1];
-					type.innerHTML = st[i][2];
-					scope.innerHTML = st[i][3];
-					line.innerHTML = st[i][4];
-					col.innerHTML = st[i][5];
+					program.innerHTML = st[i][0].programNum;
+					key.innerHTML = st[i][0].key;
+					type.innerHTML = st[i][0].type;
+					scope.innerHTML = st[i][0].scope;
+					line.innerHTML = st[i][0].line;
+					col.innerHTML = st[i][0].col;
 				}
 			}
 		}

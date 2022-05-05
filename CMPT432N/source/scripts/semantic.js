@@ -18,6 +18,8 @@ var TSC;
             this.currentVar = "";
             this.prevVars = "";
             this.prevVarScope = -1;
+            this.symbolOutput = [];
+            this.prevProgramNum = -1;
             /*this.symbolOutput =([
                 [0],
                 [0[0][0]],
@@ -77,6 +79,7 @@ var TSC;
                 }
                 else if (tokens[this.currentToken][1] == '$') {
                     this.ast.endChildren();
+                    this.areVarsInitialized();
                     this.semanticOutput.push("EOP");
                     this.programNum++;
                     this.currentToken++;
@@ -85,6 +88,15 @@ var TSC;
             }
             this.scopeLevel--;
             this.scope = this.scopeArray.pop();
+        };
+        Semantic.prototype.areVarsInitialized = function () {
+            console.log("THIS RUNS");
+            for (var j = 0; j < this.symbolOutput.length; j++) {
+                console.log("RUNE");
+                if (this.symbolOutput[j][0].initialized == false) {
+                    this.semanticOutput.push("WARNING - " + this.symbolOutput[j][0].type + " " + this.symbolOutput[j][0].key + "was declared but never initialized.");
+                }
+            }
         };
         //StatementListSemantic tests the tokens to see if we have valid statementListSemantics
         Semantic.prototype.statementListSemantic = function () {
@@ -116,7 +128,7 @@ var TSC;
                 this.printStatementSemantic();
             }
             else if (tokens[this.currentToken][0] == 'VARIABLE') {
-                this.currentToken++;
+                //this.currentToken++;
                 this.assignmentStatementSemantic();
             }
             else if (tokens[this.currentToken][0] == 'INT_TYPE'
@@ -160,6 +172,7 @@ var TSC;
                 this.stringExprSemantic();
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
+                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
                 this.currentToken++;
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
@@ -198,19 +211,31 @@ var TSC;
         };
         Semantic.prototype.assignmentStatementSemantic = function () {
             this.ast.addNode("AssignmentStatement", "branch", this.scope);
+            this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+            this.currentVar = tokens[this.currentToken][1][0];
+            this.currentToken++;
             if (tokens[this.currentToken][1] == "=") {
                 this.currentToken++;
                 this.expressionSemantic();
+                this.isVarInitialized();
             }
             return;
+        };
+        Semantic.prototype.isVarInitialized = function () {
+            for (var j = 0; j < this.symbolOutput.length; j++) {
+                if (this.symbolOutput[j][0].key == this.currentVar) {
+                    this.symbolOutput[j][0].initialized = true;
+                    console.log(this.symbolOutput);
+                }
+            }
         };
         Semantic.prototype.iD = function () {
             this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
             return;
         };
         Semantic.prototype.varDeclSemantic = function () {
+            console.log(this.ast.cur);
             this.ast.addNode("VarDecl", "branch", this.scope);
-            //this.scopeTreeVars(tokens[this.currentToken - 1][1], tokens[this.currentToken][1], this.scope, tokens[this.currentToken][2]);
             if (tokens[this.currentToken] === undefined) {
                 return;
             }
@@ -220,19 +245,22 @@ var TSC;
                 this.currentVar = tokens[this.currentToken][1][0];
                 this.isVarDeclared();
                 //checks to see if the same variable declared was in the same scope
-                if (this.currentVar == this.prevVars && this.scope == this.prevVarScope) {
+                if (this.currentVar == this.prevVars && this.scope == this.prevVarScope && this.programNum == this.prevProgramNum) {
                     this.semanticOutput.push("ERROR: Variable [" + tokens[this.currentToken][1] + "] already declared in scope in " + this.scope);
                 }
                 else {
-                    this.symbolOutput.push([
-                        [this.programNum],
-                        [tokens[this.currentToken][1]],
-                        [tokens[this.currentToken - 1][1]],
-                        [this.scope],
-                        [tokens[this.currentToken][3]],
-                        [tokens[this.currentToken][2]]
-                    ]);
-                    this.semanticOutput.push("New variable declared [" + tokens[this.currentToken][1] + "] on [" + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + "] with type " + tokens[this.currentToken - 1][1]);
+                    this.symbolOutput.push([{
+                            programNum: this.programNum,
+                            key: tokens[this.currentToken][1][0],
+                            type: tokens[this.currentToken - 1][1][0],
+                            scope: this.scope,
+                            line: tokens[this.currentToken][3][0],
+                            col: tokens[this.currentToken][2][0],
+                            initialized: false,
+                            used: false
+                        }]);
+                    //this.symbolOutput[0][0].used = true;
+                    this.semanticOutput.push("New " + tokens[this.currentToken - 1][1] + " declared [" + tokens[this.currentToken][1] + "] in scope " + this.scope + " on [" + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + "]");
                     this.currentToken++;
                 }
             }
@@ -244,40 +272,16 @@ var TSC;
                     this.prevVars = "";
                 }
                 //checks if we have ever seen current variable declared in any scope
-                else if (this.symbolOutput[j][1][0][0] == this.currentVar) {
-                    this.prevVarScope = this.symbolOutput[j][3][0];
-                    this.prevVars = this.symbolOutput[j][1][0][0];
+                else if (this.symbolOutput[j][0].key == this.currentVar) {
+                    this.prevVarScope = this.symbolOutput[j][0].scope;
+                    this.prevVars = this.symbolOutput[j][0].key;
+                    this.prevProgramNum = this.symbolOutput[j][0].programNum;
                     break;
                 }
                 else {
                     this.prevVars = "";
                 }
             }
-        };
-        Semantic.prototype.createSymbol = function (programNum, key, type, scope, line, col) {
-            /*this.symbol = {
-                programNum: programNum,
-                key: key,
-                type: type,
-                scope: scope,
-                line: line,
-                col: col
-            }
-            /*this.symbol["type"] = tokens[this.currentToken - 1][1];
-            this.symbol["key"] = tokens[this.currentToken][1];
-            this.symbol["line"] = tokens[this.currentToken][3];
-            this.symbol["col"] = tokens[this.currentToken][2];
-            this.symbol["scope"] = this.scopeNum;
-            this.symbol["scopeLevel"] = this.scopeLevel;
-            this.symbols.push(this.symbolOutput);
-            console.log(this.symbols);
-            //this.symbol = {};
-            let symbol = []*/
-            this.symbols.push(this.symbolOutput);
-            //this.ast.addNode("Scope: " + this.scope, "branch", this.scope);
-            //symbol = [this.]
-            //this.scopeTree.cur.symbols
-            return (this.symbol);
         };
         Semantic.prototype.booleanExprSemantic = function () {
             if (tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
