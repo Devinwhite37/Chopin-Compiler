@@ -55,6 +55,10 @@ module TSC {
             return this.ast.toString();
         }
 
+        public symbolTableOP(){
+            return this.symbolOutput;
+        }
+
         public programSemantic(){
             this.scopeNum = -1;
             this.scopeLevel = -1;
@@ -240,20 +244,20 @@ module TSC {
 
         public varDeclSemantic(){
             this.ast.addNode("VarDecl", "branch", this.scope);
-            this.scopeTreeVars(tokens[this.currentToken - 1][1], tokens[this.currentToken][1], this.scope, tokens[this.currentToken][2]);
-            if(tokens[this.currentToken][0] == 'VARIABLE'){
+            //this.scopeTreeVars(tokens[this.currentToken - 1][1], tokens[this.currentToken][1], this.scope, tokens[this.currentToken][2]);
+            if(tokens[this.currentToken] === undefined){
+                return;
+            }
+            else if(tokens[this.currentToken][0] == 'VARIABLE'){
                 this.ast.addNode(tokens[this.currentToken - 1 ][1], "leaf", this.scope);
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
                 this.currentVar = tokens[this.currentToken][1][0];
                 this.isVarDeclared();
-                console.log(this.currentVar);
-                console.log(this.prevVars);
-                //this.prevVars = this.symbolOutput[j][1][0][0];
+                //checks to see if the same variable declared was in the same scope
                 if(this.currentVar == this.prevVars && this.scope == this.prevVarScope){
                     this.semanticOutput.push("ERROR: Variable [" + tokens[this.currentToken][1] + "] already declared in scope in " + this.scope);
                 }
                 else{
-                    //this.isVarDeclared();
                     this.symbolOutput.push([
                         [this.programNum],
                         [tokens[this.currentToken][1]],
@@ -262,36 +266,26 @@ module TSC {
                         [tokens[this.currentToken][3]],
                         [tokens[this.currentToken][2]]
                     ]);
-                    console.log(this.symbolOutput);
-                    console.log(this.symbolOutput[0]);
                     this.semanticOutput.push("New variable declared [" + tokens[this.currentToken][1] + "] on [" + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + "] with type " + tokens[this.currentToken - 1][1]);
                         this.currentToken++;
                 }   
             }            
-            
             this.ast.endChildren();
-            return;
         }
 
         public isVarDeclared(){
-            //console.log(j);
-            //console.log(this.symbolOutput.length);
-            console.log(this.symbolOutput);
             for(var j = 0; j < this.symbolOutput.length; j++){
-                console.log("FORRAN");
                 if(this.symbolOutput[0] === undefined){
                     this.prevVars = "";
-                   // break;
                 }
+                //checks if we have ever seen current variable declared in any scope
                 else if(this.symbolOutput[j][1][0][0] == this.currentVar){
-                    console.log("U RUN?");
                     this.prevVarScope = this.symbolOutput[j][3][0];
                     this.prevVars = this.symbolOutput[j][1][0][0];
                     break;
                 }
                 else{
                     this.prevVars = "";
-                   // break;
                 }
             }
         }
@@ -372,7 +366,6 @@ module TSC {
                 scope: scope,
                 col: col
             }
-            console.log(this.symbol);
             return this.symbol;
 
         }

@@ -148,6 +148,7 @@
 			parseErrors = 0; 
 			programNum = 1; 
 			parseWarnings = 0;  
+			analysisErrors = 0;
 			i = 0;
 			j = 0;
 			l = 0;
@@ -164,6 +165,7 @@
 			var lexErrors = 0;
 			var parseErrors = 0;
 			var parseWarnings = 0;
+			var analysisErrors = 0;
 			var i = 0;
 			var j = 0;
 			var l = 0;
@@ -194,7 +196,8 @@
 			
 			let semantic = new TSC.Semantic();
 			astTree = semantic.astTree();
-			st = semantic.programSemantic();
+			st = semantic.symbolTableOP();
+			console.log(st);
 			//console.log("SYMBOLOP");
 			//console.log(st);
 
@@ -366,6 +369,7 @@
 				parseErrors = 0;
 				lexErrors = 0;
 				parseWarnings = 0;
+				analysisErrors = 0;
 				warnings = 0;
 
 				if(tokens[i+1] === undefined){
@@ -482,19 +486,22 @@
 				if(parseErrors==0){
 					putMessageOP(" Analyzing Program "+ programNum);
 					putMessageOP("---------------------------");
-					astOutput();
-					stOutput();
-					scopeTreeOP();
 					for(m; m < analysis.length; m++){
 						if(analysis[m] == 'EOP'){
 							programNum++;
 							m++;
+							astOutput();
+							stOutput();
+							scopeTreeOP();
 							break
 						}
+						else if(analysis[m].slice(0, 5) == 'ERROR'){
+							analysisErrors++
+							putMessageOP("ANALYZER -> | " + analysis[m]);
+							putMessageOP("Semantic Analysis stopped due to error")
+						}
 						else{
-						putMessageOP("ANALYZER -> | " + analysis[m]);
-
-
+							putMessageOP("ANALYZER -> | " + analysis[m]);
 						}
 					}
 					putMessageOP("\nSemantic Analysis completed with 0 error(s) and 0 warning(s).")			
@@ -526,7 +533,7 @@
 		}
 
 		function stOutput(){
-			if(0==0){
+			if(true){
 
 				var table = document.getElementById("symbolTableTable");
 
