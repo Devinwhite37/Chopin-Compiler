@@ -177,7 +177,10 @@ var TSC;
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
                 this.varVal = tokens[this.currentToken][1][0];
-                console.log(this.varVal);
+                this.wasDeclared();
+                if (this.prevDeclared == false) {
+                    this.semanticOutput.push("ERROR - Variable [" + this.varVal + "] on [" + tokens[this.currentToken][3] + " , " + tokens[this.currentToken][2] + "] has not been previously declared.");
+                }
                 this.currentToken++;
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
@@ -236,7 +239,7 @@ var TSC;
                     this.semanticOutput.push("VALID - Variable [" + this.currentVar + "] of type " + this.currentType + " matches its assignment type.");
                 }
                 else if (this.prevDeclared == false) {
-                    this.semanticOutput.push("ERROR - Variable [" + this.currentVar + "] has not been previously declared.");
+                    this.semanticOutput.push("ERROR - Variable [" + this.currentVar + "] on [" + tokens[this.currentToken - 3][3] + " , " + tokens[this.currentToken - 3][2] + "] has not been previously declared.");
                 }
                 else if (this.match == false) {
                     this.semanticOutput.push("ERROR - Variable [" + this.currentVar + "] was assigned a(n) " + this.currentType + " type, which does not match its initial declaration.");
