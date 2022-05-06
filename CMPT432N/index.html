@@ -543,7 +543,7 @@
 		}
 
 		function stOutput(){
-			if(analysisErrors == 0){
+			if(analysisErrors == 0 && parseErrors ==0 && lexErrors == 0){
 				var table = document.getElementById("symbolTableTable");
 				for(var i = 0; i < st.length; i++){
 					// Creates new <tr> to add new elements too

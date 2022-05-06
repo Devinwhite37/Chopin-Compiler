@@ -17,6 +17,9 @@ module TSC {
         prevVars: String;
         prevVarScope: number;
         prevProgramNum: number;
+        varVal: any;
+        additions: number;
+        currentType: String;
 
         constructor(tokens){
             this.tokenList = tokens;   
@@ -35,6 +38,9 @@ module TSC {
             this.prevVarScope = -1;
             this.symbolOutput = [];
             this.prevProgramNum = -1;
+            this.varVal = "";
+            this.additions = 0;
+            this.currentType = "";
             /*this.symbolOutput =([
                 [0],
                 [0[0][0]],
@@ -118,11 +124,11 @@ module TSC {
             for(var j = 0; j < this.symbolOutput.length; j++){
                 if(this.symbolOutput[j][0].initialized == false){
                     this.semanticOutput.push("WARNING - " + this.symbolOutput[j][0].type + " " + this.symbolOutput[j][0].key + " was declared but never initialized.");
+                    
                 }
-
             }
-
         }
+
         //StatementListSemantic tests the tokens to see if we have valid statementListSemantics
         public statementListSemantic(){  
             if(tokens[this.currentToken] === undefined){
@@ -202,6 +208,8 @@ module TSC {
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);  
+                this.varVal = tokens[this.currentToken][1][0];
+                console.log(this.varVal);
                 this.currentToken++;
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
@@ -209,19 +217,25 @@ module TSC {
             }  
         }
 
-        public intExprSemantic(){
+        public intExprSemantic(){   
+            this.currentType = "int";
             if(tokens[this.currentToken][0] == 'ADDITION_OP'){
-                this.ast.addNode("+", "leaf", this.scope);
+                this.additions++;
+                this.ast.addNode("ADDITION_OP", "branch", this.scope);
                 this.currentToken++;
                 this.expressionSemantic();
                 return;
             }
             else{
+                for(var i = 0; i < this.additions; i++){
+                    this.ast.endChildren();
+                }
                 this.ast.endChildren();
             }
         }
 
         public stringExprSemantic(){
+            this.currentType = "string"
             this.charListSemantic();
             this.ast.endChildren();
             return;
@@ -243,16 +257,33 @@ module TSC {
         }
 
         public assignmentStatementSemantic(){
+            this.additions = 0;
             this.ast.addNode("AssignmentStatement", "branch", this.scope);
             this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
             this.currentVar = tokens[this.currentToken][1][0];
             this.currentToken++;
+            
             if(tokens[this.currentToken][1] == "="){
                 this.currentToken++;
                 this.expressionSemantic();
                 this.isVarInitialized();
+                if(this.typeMatch() == true){
+                    this.semanticOutput.push("VALID - Variable ["+ this.currentVar+"] of type "+this.currentType+" matches its assignment type")
+                }
             }
             return;
+        }
+
+        public typeMatch(){
+            for(var j = 0; j < this.symbolOutput.length; j++){
+                if(this.symbolOutput[j][0].type == this.currentType){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+
         }
 
         public isVarInitialized(){
@@ -294,7 +325,8 @@ module TSC {
                         line: tokens[this.currentToken][3][0],
                         col: tokens[this.currentToken][2][0],
                         initialized: false,
-                        used: false
+                        used: false,
+                        value: ""
                     }]);
                     //this.symbolOutput[0][0].used = true;
                     this.semanticOutput.push("New "+ tokens[this.currentToken - 1][1]+" declared [" + tokens[this.currentToken][1] + "] in scope " + this.scope + " on [" + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + "]");
@@ -323,6 +355,7 @@ module TSC {
         }
 
         public booleanExprSemantic(){
+            this.currentType = "boolean";
             if (tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
                 this.currentToken++;

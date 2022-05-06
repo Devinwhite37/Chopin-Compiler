@@ -20,6 +20,9 @@ var TSC;
             this.prevVarScope = -1;
             this.symbolOutput = [];
             this.prevProgramNum = -1;
+            this.varVal = "";
+            this.additions = 0;
+            this.currentType = "";
             /*this.symbolOutput =([
                 [0],
                 [0[0][0]],
@@ -171,6 +174,8 @@ var TSC;
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+                this.varVal = tokens[this.currentToken][1][0];
+                console.log(this.varVal);
                 this.currentToken++;
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
@@ -178,17 +183,23 @@ var TSC;
             }
         };
         Semantic.prototype.intExprSemantic = function () {
+            this.currentType = "int";
             if (tokens[this.currentToken][0] == 'ADDITION_OP') {
-                this.ast.addNode("+", "leaf", this.scope);
+                this.additions++;
+                this.ast.addNode("ADDITION_OP", "branch", this.scope);
                 this.currentToken++;
                 this.expressionSemantic();
                 return;
             }
             else {
+                for (var i = 0; i < this.additions; i++) {
+                    this.ast.endChildren();
+                }
                 this.ast.endChildren();
             }
         };
         Semantic.prototype.stringExprSemantic = function () {
+            this.currentType = "string";
             this.charListSemantic();
             this.ast.endChildren();
             return;
@@ -208,6 +219,7 @@ var TSC;
             return;
         };
         Semantic.prototype.assignmentStatementSemantic = function () {
+            this.additions = 0;
             this.ast.addNode("AssignmentStatement", "branch", this.scope);
             this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
             this.currentVar = tokens[this.currentToken][1][0];
@@ -216,8 +228,21 @@ var TSC;
                 this.currentToken++;
                 this.expressionSemantic();
                 this.isVarInitialized();
+                if (this.typeMatch() == true) {
+                    this.semanticOutput.push("VALID - Variable [" + this.currentVar + "] of type " + this.currentType + " matches its assignment type");
+                }
             }
             return;
+        };
+        Semantic.prototype.typeMatch = function () {
+            for (var j = 0; j < this.symbolOutput.length; j++) {
+                if (this.symbolOutput[j][0].type == this.currentType) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
         };
         Semantic.prototype.isVarInitialized = function () {
             for (var j = 0; j < this.symbolOutput.length; j++) {
@@ -255,7 +280,8 @@ var TSC;
                             line: tokens[this.currentToken][3][0],
                             col: tokens[this.currentToken][2][0],
                             initialized: false,
-                            used: false
+                            used: false,
+                            value: ""
                         }]);
                     //this.symbolOutput[0][0].used = true;
                     this.semanticOutput.push("New " + tokens[this.currentToken - 1][1] + " declared [" + tokens[this.currentToken][1] + "] in scope " + this.scope + " on [" + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + "]");
@@ -282,6 +308,7 @@ var TSC;
             }
         };
         Semantic.prototype.booleanExprSemantic = function () {
+            this.currentType = "boolean";
             if (tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
                 this.currentToken++;
