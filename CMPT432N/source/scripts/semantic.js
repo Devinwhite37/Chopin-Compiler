@@ -24,6 +24,7 @@ var TSC;
             this.additions = 0;
             this.currentType = "";
             this.match = false;
+            this.prevDeclared = false;
             /*this.symbolOutput =([
                 [0],
                 [0[0][0]],
@@ -230,21 +231,31 @@ var TSC;
                 this.expressionSemantic();
                 this.isVarInitialized();
                 this.typeMatch();
-                if (this.match == true) {
-                    this.semanticOutput.push("VALID - Variable [" + this.currentVar + "] of type " + this.currentType + " matches its assignment type");
+                this.wasDeclared();
+                if (this.match == true && this.prevDeclared == true) {
+                    this.semanticOutput.push("VALID - Variable [" + this.currentVar + "] of type " + this.currentType + " matches its assignment type.");
                 }
-                else {
-                    this.semanticOutput.push("ERROR - Variable [" + this.currentVar + "] was assigned a(n) " + this.currentType + " type, which does not match its initial declaration");
+                else if (this.prevDeclared == false) {
+                    this.semanticOutput.push("ERROR - Variable [" + this.currentVar + "] has not been previously declared.");
+                }
+                else if (this.match == false) {
+                    this.semanticOutput.push("ERROR - Variable [" + this.currentVar + "] was assigned a(n) " + this.currentType + " type, which does not match its initial declaration.");
                 }
             }
             return;
         };
+        Semantic.prototype.wasDeclared = function () {
+            for (var j = 0; j < this.symbolOutput.length; j++) {
+                if (this.symbolOutput[j][0].key == this.currentVar) {
+                    this.prevDeclared = true;
+                }
+                else {
+                    this.prevDeclared = false;
+                }
+            }
+        };
         Semantic.prototype.typeMatch = function () {
             for (var j = 0; j < this.symbolOutput.length; j++) {
-                console.log(this.symbolOutput[j][0].type);
-                console.log(this.currentType);
-                console.log(this.symbolOutput[j][0].key);
-                console.log(this.currentVar);
                 if (this.symbolOutput[j][0].type == this.currentType && this.symbolOutput[j][0].key == this.currentVar) {
                     this.match = true;
                 }
