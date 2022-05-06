@@ -115,11 +115,9 @@ module TSC {
         }
 
         public areVarsInitialized(){
-            console.log("THIS RUNS");
             for(var j = 0; j < this.symbolOutput.length; j++){
-                console.log("RUNE");
                 if(this.symbolOutput[j][0].initialized == false){
-                    this.semanticOutput.push("WARNING - " + this.symbolOutput[j][0].type + " " + this.symbolOutput[j][0].key + "was declared but never initialized.");
+                    this.semanticOutput.push("WARNING - " + this.symbolOutput[j][0].type + " " + this.symbolOutput[j][0].key + " was declared but never initialized.");
                 }
 
             }
@@ -263,7 +261,6 @@ module TSC {
                     this.symbolOutput[j][0].initialized = true;
                     console.log(this.symbolOutput);
                 }
-
             }
         }
 

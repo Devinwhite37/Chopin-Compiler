@@ -149,6 +149,7 @@
 			programNum = 1; 
 			parseWarnings = 0;  
 			analysisErrors = 0;
+			analysisWarnings = 0;
 			i = 0;
 			j = 0;
 			l = 0;
@@ -166,6 +167,7 @@
 			var parseErrors = 0;
 			var parseWarnings = 0;
 			var analysisErrors = 0;
+			var analysisWarnings = 0;
 			var i = 0;
 			var j = 0;
 			var l = 0;
@@ -371,6 +373,7 @@
 				lexErrors = 0;
 				parseWarnings = 0;
 				analysisErrors = 0;
+				analysisWarnings = 0;
 				warnings = 0;
 
 				if(tokens[i+1] === undefined){
@@ -497,17 +500,21 @@
 							break;
 						}
 						else if(analysis[m].slice(0, 5) == 'ERROR'){
-							analysisErrors++
+							analysisErrors++;
 							putMessageOP("ANALYZER -> | " + analysis[m]);
 							putMessageOP("Semantic Analysis stopped due to error");
 							putMessageAST("No AST due to Semantic Analysis error");
 							break;
 						}
+						else if(analysis[m].slice(0, 7) == 'WARNING'){
+							putMessageOP("ANALYZER -> | " + analysis[m]);
+							analysisWarnings++;
+						}
 						else{
 							putMessageOP("ANALYZER -> | " + analysis[m]);
 						}
 					}
-					putMessageOP("\nSemantic Analysis completed with " + analysisErrors + " error(s) and 0 warning(s).")			
+					putMessageOP("\nSemantic Analysis completed with " + analysisErrors + " error(s) and "+analysisWarnings+" warning(s).")			
 				}
 				else{
 					break;
