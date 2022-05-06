@@ -23,6 +23,7 @@ var TSC;
             this.varVal = "";
             this.additions = 0;
             this.currentType = "";
+            this.match = false;
             /*this.symbolOutput =([
                 [0],
                 [0[0][0]],
@@ -228,19 +229,27 @@ var TSC;
                 this.currentToken++;
                 this.expressionSemantic();
                 this.isVarInitialized();
-                if (this.typeMatch() == true) {
+                this.typeMatch();
+                if (this.match == true) {
                     this.semanticOutput.push("VALID - Variable [" + this.currentVar + "] of type " + this.currentType + " matches its assignment type");
+                }
+                else {
+                    this.semanticOutput.push("ERROR - Variable [" + this.currentVar + "] was assigned a(n) " + this.currentType + " type, which does not match its initial declaration");
                 }
             }
             return;
         };
         Semantic.prototype.typeMatch = function () {
             for (var j = 0; j < this.symbolOutput.length; j++) {
-                if (this.symbolOutput[j][0].type == this.currentType) {
-                    return true;
+                console.log(this.symbolOutput[j][0].type);
+                console.log(this.currentType);
+                console.log(this.symbolOutput[j][0].key);
+                console.log(this.currentVar);
+                if (this.symbolOutput[j][0].type == this.currentType && this.symbolOutput[j][0].key == this.currentVar) {
+                    this.match = true;
                 }
                 else {
-                    return false;
+                    this.match = false;
                 }
             }
         };
@@ -284,7 +293,7 @@ var TSC;
                             value: ""
                         }]);
                     //this.symbolOutput[0][0].used = true;
-                    this.semanticOutput.push("New " + tokens[this.currentToken - 1][1] + " declared [" + tokens[this.currentToken][1] + "] in scope " + this.scope + " on [" + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + "]");
+                    this.semanticOutput.push("VALID - New " + tokens[this.currentToken - 1][1] + " declared [" + tokens[this.currentToken][1] + "] in scope " + this.scope + " on [" + tokens[this.currentToken][2] + " , " + tokens[this.currentToken][3] + "]");
                     this.currentToken++;
                 }
             }
