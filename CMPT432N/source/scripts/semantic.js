@@ -176,6 +176,13 @@ var TSC;
             this.ast.endChildren();
         };
         Semantic.prototype.isUsed = function () {
+            for (var j = 0; j < this.symbolOutput.length; j++) {
+                if (this.symbolOutput[j][0].key == this.varVal) {
+                    this.symbolOutput[j][0].used = true;
+                    this.semanticOutput.push("VALID - Variable [" + this.currentVar + "] has been used.");
+                    break;
+                }
+            }
         };
         Semantic.prototype.expressionSemantic = function () {
             if (tokens[this.currentToken][0] == "DIGIT") {
@@ -190,7 +197,7 @@ var TSC;
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
                 this.varVal = tokens[this.currentToken][1][0];
-                this.wasDeclared();
+                this.wasDeclaredExpression();
                 if (this.prevDeclared == false) {
                     this.semanticOutput.push("ERROR - Variable [" + this.varVal + "] on [" + tokens[this.currentToken][3] + " , " + tokens[this.currentToken][2] + "] has not been previously declared.");
                 }
@@ -198,6 +205,18 @@ var TSC;
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
                 this.booleanExprSemantic();
+                this.ast.endChildren();
+            }
+        };
+        Semantic.prototype.wasDeclaredExpression = function () {
+            for (var j = 0; j < this.symbolOutput.length; j++) {
+                if (this.symbolOutput[j][0].key == this.varVal) {
+                    this.prevDeclared = true;
+                    break;
+                }
+                else {
+                    this.prevDeclared = false;
+                }
             }
         };
         Semantic.prototype.intExprSemantic = function () {
@@ -264,6 +283,7 @@ var TSC;
             for (var j = 0; j < this.symbolOutput.length; j++) {
                 if (this.symbolOutput[j][0].key == this.currentVar) {
                     this.prevDeclared = true;
+                    break;
                 }
                 else {
                     this.prevDeclared = false;
@@ -272,8 +292,12 @@ var TSC;
         };
         Semantic.prototype.typeMatch = function () {
             for (var j = 0; j < this.symbolOutput.length; j++) {
+                console.log(this.currentVar);
+                console.log(this.symbolOutput[j][0].type);
+                console.log(this.symbolOutput[j][0].key);
                 if (this.symbolOutput[j][0].type == this.currentType && this.symbolOutput[j][0].key == this.currentVar) {
                     this.match = true;
+                    break;
                 }
                 else {
                     this.match = false;
@@ -361,7 +385,6 @@ var TSC;
                     }
                 }
             }
-            this.ast.endChildren();
             return;
         };
         Semantic.prototype.ifStatementSemantic = function () {
@@ -369,6 +392,7 @@ var TSC;
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
                 this.parseBlockSemantic();
+                this.isUsed();
             }
             this.ast.endChildren();
             return;
@@ -378,6 +402,7 @@ var TSC;
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
                 this.parseBlockSemantic();
+                this.isUsed();
             }
             this.ast.endChildren();
             return;

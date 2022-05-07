@@ -131,7 +131,7 @@ module TSC {
                     this.semanticOutput.push("WARNING - " + this.symbolOutput[j][0].type + " " + this.symbolOutput[j][0].key + " was initialized but never used.");
                 }
                 else if(this.symbolOutput[j][0].used == false){
-                    
+
                 }
             }
         }
@@ -213,7 +213,13 @@ module TSC {
         }
         
         public isUsed(){
-            
+            for(var j = 0; j < this.symbolOutput.length; j++){
+                if(this.symbolOutput[j][0].key == this.varVal){
+                    this.symbolOutput[j][0].used = true;
+                    this.semanticOutput.push("VALID - Variable ["+ this.currentVar+"] has been used.")
+                    break;
+                }
+            }
         }
 
         public expressionSemantic(){
@@ -229,7 +235,7 @@ module TSC {
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);  
                 this.varVal = tokens[this.currentToken][1][0];
-                this.wasDeclared();
+                this.wasDeclaredExpression();
                 if(this.prevDeclared == false){
                     this.semanticOutput.push("ERROR - Variable ["+ this.varVal+ "] on [" + tokens[this.currentToken][3] + " , "+ tokens[this.currentToken][2] +"] has not been previously declared.")
                 }                
@@ -237,7 +243,20 @@ module TSC {
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
                 this.booleanExprSemantic();
+                this.ast.endChildren();
             }  
+        }
+
+        public wasDeclaredExpression(){
+            for(var j = 0; j < this.symbolOutput.length; j++){
+                if(this.symbolOutput[j][0].key == this.varVal){
+                    this.prevDeclared = true;
+                    break;
+                }
+                else{
+                    this.prevDeclared = false;
+                }
+            }
         }
 
         public intExprSemantic(){   
@@ -299,7 +318,7 @@ module TSC {
                     this.semanticOutput.push("ERROR - Variable ["+ this.currentVar+ "] on [" + tokens[this.currentToken-3][3] + " , "+ tokens[this.currentToken-3][2] +"] has not been previously declared.")
                 }
                 else if(this.match == false){
-                    this.semanticOutput.push("ERROR - Variable ["+ this.currentVar+"] was assigned a(n) " + this.currentType + " type, which does not match its initial declaration.");
+                    this.semanticOutput.push("ERROR - Variable [" + this.currentVar + "] was assigned a(n) " + this.currentType + " type, which does not match its initial declaration.");
                 }
 
             }
@@ -310,18 +329,22 @@ module TSC {
             for(var j = 0; j < this.symbolOutput.length; j++){
                 if(this.symbolOutput[j][0].key == this.currentVar){
                     this.prevDeclared = true;
+                    break;
                 }
                 else{
                     this.prevDeclared = false;
                 }
             }
-
         }
 
         public typeMatch(){
             for(var j = 0; j < this.symbolOutput.length; j++){
+                console.log(this.currentVar);
+                console.log(this.symbolOutput[j][0].type);
+                console.log(this.symbolOutput[j][0].key);
                 if(this.symbolOutput[j][0].type == this.currentType && this.symbolOutput[j][0].key == this.currentVar){
                     this.match = true;
+                    break;
                 }
                 else{
                     this.match = false;
@@ -415,7 +438,6 @@ module TSC {
                     }
                 }
             }
-            this.ast.endChildren();
             return;
         }
 
@@ -424,6 +446,7 @@ module TSC {
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
                 this.parseBlockSemantic();
+                this.isUsed();
             }
             this.ast.endChildren();
             return;
@@ -434,6 +457,7 @@ module TSC {
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
                 this.parseBlockSemantic();
+                this.isUsed();
             }
             this.ast.endChildren();
             return;
