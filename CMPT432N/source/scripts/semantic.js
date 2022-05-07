@@ -85,6 +85,7 @@ var TSC;
                 else if (tokens[this.currentToken][1] == '$') {
                     this.ast.endChildren();
                     this.areVarsInitialized();
+                    this.areVarsUsed();
                     this.semanticOutput.push("EOP");
                     this.programNum++;
                     this.currentToken++;
@@ -93,6 +94,15 @@ var TSC;
             }
             this.scopeLevel--;
             this.scope = this.scopeArray.pop();
+        };
+        Semantic.prototype.areVarsUsed = function () {
+            for (var j = 0; j < this.symbolOutput.length; j++) {
+                if (this.symbolOutput[j][0].used == false && this.symbolOutput[j][0].initialized == true) {
+                    this.semanticOutput.push("WARNING - " + this.symbolOutput[j][0].type + " " + this.symbolOutput[j][0].key + " was initialized but never used.");
+                }
+                else if (this.symbolOutput[j][0].used == false) {
+                }
+            }
         };
         Semantic.prototype.areVarsInitialized = function () {
             for (var j = 0; j < this.symbolOutput.length; j++) {
@@ -158,11 +168,14 @@ var TSC;
             if (tokens[this.currentToken][1] == '(') {
                 this.currentToken++;
                 this.expressionSemantic();
+                this.isUsed();
                 if (tokens[this.currentToken][1] == ')') {
                     this.currentToken++;
                 }
             }
             this.ast.endChildren();
+        };
+        Semantic.prototype.isUsed = function () {
         };
         Semantic.prototype.expressionSemantic = function () {
             if (tokens[this.currentToken][0] == "DIGIT") {

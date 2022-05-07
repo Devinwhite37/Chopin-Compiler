@@ -114,6 +114,7 @@ module TSC {
                 else if(tokens[this.currentToken][1] == '$'){
                     this.ast.endChildren();
                     this.areVarsInitialized();
+                    this.areVarsUsed();
                     this.semanticOutput.push("EOP");
                     this.programNum++;
                     this.currentToken++;
@@ -122,6 +123,17 @@ module TSC {
             }
             this.scopeLevel--;
             this.scope = this.scopeArray.pop();
+        }
+
+        public areVarsUsed(){
+            for(var j = 0; j < this.symbolOutput.length; j++){
+                if(this.symbolOutput[j][0].used == false && this.symbolOutput[j][0].initialized == true){
+                    this.semanticOutput.push("WARNING - " + this.symbolOutput[j][0].type + " " + this.symbolOutput[j][0].key + " was initialized but never used.");
+                }
+                else if(this.symbolOutput[j][0].used == false){
+                    
+                }
+            }
         }
 
         public areVarsInitialized(){
@@ -192,6 +204,7 @@ module TSC {
             if(tokens[this.currentToken][1] == '('){
                 this.currentToken++;
                 this.expressionSemantic();
+                this.isUsed();
                 if(tokens[this.currentToken][1] == ')'){
                     this.currentToken++;
                 }
@@ -199,6 +212,10 @@ module TSC {
             this.ast.endChildren();
         }
         
+        public isUsed(){
+            
+        }
+
         public expressionSemantic(){
             if (tokens[this.currentToken][0] == "DIGIT") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
