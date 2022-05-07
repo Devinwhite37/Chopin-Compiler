@@ -22,6 +22,7 @@ module TSC {
         currentType: String;
         match: boolean;
         prevDeclared: boolean;
+        symbolTableOutput: any[] = [];
 
         constructor(tokens){
             this.tokenList = tokens;   
@@ -69,7 +70,8 @@ module TSC {
         }
 
         public symbolTableOP(){
-            return this.symbolOutput;
+            console.log(this.symbolTableOutput)
+            return this.symbolTableOutput;
         }
 
         public programSemantic(){
@@ -77,6 +79,8 @@ module TSC {
             this.scopeLevel = -1;
             this.scope = -1;
             this.symbolOutput = [];
+            this.ast.endChildren();
+            this.ast.endChildren();
             if(tokens[this.currentToken] === undefined){
                 return;
             }
@@ -86,11 +90,11 @@ module TSC {
             }
             this.ast.endChildren();
             return this.symbolOutput;
-
         }
 
         //parseBlockSemantic handles open and closed curly braces followed by an EOP marker
         public parseBlockSemantic(){
+            //console.log(this.ast.cur.children.length)
             this.scopeNum++;
             this.scopeLevel++;
             this.scopeArray.push(this.scope);
@@ -113,6 +117,7 @@ module TSC {
                     return;
                 }
                 else if(tokens[this.currentToken][1] == '$'){
+                    this.ast.endChildren();
                     this.ast.endChildren();
                     this.areVarsInitialized();
                     this.areVarsUsed();
@@ -392,7 +397,22 @@ module TSC {
                     this.semanticOutput.push("ERROR: Variable [" + tokens[this.currentToken][1] + "] already declared in scope in " + this.scope);
                 }
                 else{
+                    //first array is set back to an empty array at the start of each
+                    //program so it doesnt print errors for previous programs
                     this.symbolOutput.push([{
+                        programNum: this.programNum,
+                        key: tokens[this.currentToken][1][0],
+                        type: tokens[this.currentToken - 1][1][0],
+                        scope: this.scope,
+                        line: tokens[this.currentToken][3][0],
+                        col: tokens[this.currentToken][2][0],
+                        initialized: false,
+                        used: false,
+                        value: ""
+                    }]);
+                    //this second array is not set back to an empty array so we can print 
+                    //the symbols in the symbol table
+                    this.symbolTableOutput.push([{
                         programNum: this.programNum,
                         key: tokens[this.currentToken][1][0],
                         type: tokens[this.currentToken - 1][1][0],

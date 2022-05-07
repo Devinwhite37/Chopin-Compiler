@@ -205,7 +205,7 @@
 			//console.log(st);
 
 			analysis = semantic.semantic();
-			console.log(analysis);
+			//console.log(analysis);
 			scopeTree = semantic.scopeTreeOP();
 
 	        compile();
@@ -544,9 +544,13 @@
 		}
 
 		function stOutput(){
-			if(analysisErrors == 0 && parseErrors ==0 && lexErrors == 0){
+			console.log(analysisErrors);
+			console.log(parseErrors);
+			console.log(lexErrors);
+			if(analysisErrors == 0 && parseErrors == 0 && lexErrors == 0){
 				var table = document.getElementById("symbolTableTable");
 				for(var i = 0; i < st.length; i++){
+					console.log("SHOULD RUN")
 					// Creates new <tr> to add new elements too
 					var row = table.insertRow(i+1);
 					// Insert new <td> elements to the new <tr>

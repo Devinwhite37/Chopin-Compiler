@@ -36,6 +36,9 @@ var TSC;
         //which define portions of our grammar and add productions to parseOutput
         //Program tests to see if the first character is valid. if not send an error
         Parser.prototype.program = function () {
+            for (var i = 0; i < 10; i++) {
+                this.cst.endChildren();
+            }
             if (tokens[this.currentToken] === undefined) {
                 return;
             }

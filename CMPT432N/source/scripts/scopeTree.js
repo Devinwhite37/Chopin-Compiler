@@ -70,6 +70,7 @@ class ScopeTree {
 
             // Recursive function to handle the expansion of the nodes.
             function expand(node, depth) {
+                //console.log(depth);
                 // Space out based on the current depth so
                 // this looks at least a little tree-like.
                 for (var i = 0; i < depth; i++) {
@@ -94,6 +95,7 @@ class ScopeTree {
                         expand(node.children[i], depth + 1);
                     }
                 }
+                return depth;
             }
             // Make the initial call to expand from the root.
             expand(this.root, 0);
