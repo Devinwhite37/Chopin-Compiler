@@ -76,6 +76,7 @@ module TSC {
             this.scopeNum = -1;
             this.scopeLevel = -1;
             this.scope = -1;
+            this.symbolOutput = [];
             if(tokens[this.currentToken] === undefined){
                 return;
             }
@@ -200,6 +201,7 @@ module TSC {
 
         
         public printStatementSemantic(){
+            this.additions = 0;
             this.ast.addNode("PrintStatement", "branch", this.scope);  
             if(tokens[this.currentToken][1] == '('){
                 this.currentToken++;
@@ -216,7 +218,7 @@ module TSC {
             for(var j = 0; j < this.symbolOutput.length; j++){
                 if(this.symbolOutput[j][0].key == this.varVal){
                     this.symbolOutput[j][0].used = true;
-                    this.semanticOutput.push("VALID - Variable ["+ this.currentVar+"] has been used.")
+                    this.semanticOutput.push("VALID - Variable ["+ this.varVal+"] has been used on [" + tokens[this.currentToken][3] + " , "+ tokens[this.currentToken][2] +"].")
                     break;
                 }
             }
@@ -234,6 +236,9 @@ module TSC {
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);  
+                for(var i = 0; i < this.additions; i++){
+                    this.ast.endChildren();
+                }
                 this.varVal = tokens[this.currentToken][1][0];
                 this.wasDeclaredExpression();
                 if(this.prevDeclared == false){
@@ -272,14 +277,15 @@ module TSC {
                 for(var i = 0; i < this.additions; i++){
                     this.ast.endChildren();
                 }
-                this.ast.endChildren();
             }
+            this.ast.endChildren();
         }
 
         public stringExprSemantic(){
             this.currentType = "string"
+            this.quoteVal = "";
             this.charListSemantic();
-            this.ast.endChildren();
+            //this.ast.endChildren();
             return;
         }
 
@@ -292,9 +298,18 @@ module TSC {
             else if(tokens[this.currentToken][0] == "DOUBLE_QUOTE"){
                 this.quoteVal += tokens[this.currentToken-1][1];
                 this.currentToken++;
-                this.ast.addNode(this.quoteVal, "leaf", this.scope);
+
+                if(this.quoteVal === ""){
+                    console.log("u run?")
+                    this.ast.addNode("ε", "leaf", this.scope);
+
+                }
+                else{
+                    this.ast.addNode(this.quoteVal, "leaf", this.scope);
+                }
                 return;
             }
+           // console.log(tokens[this.currentToken-1][1]);
             return;
         }
 
@@ -304,7 +319,6 @@ module TSC {
             this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
             this.currentVar = tokens[this.currentToken][1][0];
             this.currentToken++;
-            
             if(tokens[this.currentToken][1] == "="){
                 this.currentToken++;
                 this.expressionSemantic();
@@ -312,13 +326,13 @@ module TSC {
                 this.typeMatch();
                 this.wasDeclared();
                 if(this.match == true && this.prevDeclared == true){
-                    this.semanticOutput.push("VALID - Variable ["+ this.currentVar+"] of type "+this.currentType+" matches its assignment type.")
+                    this.semanticOutput.push("VALID - Variable ["+ this.currentVar+"] of type "+this.currentType+" matches its assignment type on [" + tokens[this.currentToken-3][3] + " , "+ tokens[this.currentToken-3][2] +"]")
                 }
                 else if(this.prevDeclared == false){
                     this.semanticOutput.push("ERROR - Variable ["+ this.currentVar+ "] on [" + tokens[this.currentToken-3][3] + " , "+ tokens[this.currentToken-3][2] +"] has not been previously declared.")
                 }
                 else if(this.match == false){
-                    this.semanticOutput.push("ERROR - Variable [" + this.currentVar + "] was assigned a(n) " + this.currentType + " type, which does not match its initial declaration.");
+                    this.semanticOutput.push("ERROR - Variable [" + this.currentVar + "] was assigned a(n) " + this.currentType + " type on [" + tokens[this.currentToken-3][3] + " , "+ tokens[this.currentToken-3][2] +"] which does not match its initial declaration.");
                 }
 
             }
@@ -339,9 +353,6 @@ module TSC {
 
         public typeMatch(){
             for(var j = 0; j < this.symbolOutput.length; j++){
-                console.log(this.currentVar);
-                console.log(this.symbolOutput[j][0].type);
-                console.log(this.symbolOutput[j][0].key);
                 if(this.symbolOutput[j][0].type == this.currentType && this.symbolOutput[j][0].key == this.currentVar){
                     this.match = true;
                     break;
@@ -356,7 +367,6 @@ module TSC {
             for(var j = 0; j < this.symbolOutput.length; j++){
                 if(this.symbolOutput[j][0].key == this.currentVar){
                     this.symbolOutput[j][0].initialized = true;
-                    console.log(this.symbolOutput);
                 }
             }
         }
@@ -367,7 +377,6 @@ module TSC {
         }
 
         public varDeclSemantic(){
-            console.log(this.ast.cur);
             this.ast.addNode("VarDecl", "branch", this.scope);
             if(tokens[this.currentToken] === undefined){
                 return;
@@ -463,7 +472,7 @@ module TSC {
             return;
         }
 
-        public scopeTreeVars(name, type, scope, col){
+        /*public scopeTreeVars(name, type, scope, col){
             this.symbol = {
                 name: name,
                 type: type,
@@ -472,6 +481,6 @@ module TSC {
             }
             return this.symbol;
 
-        }
+        }*/
     }
 }

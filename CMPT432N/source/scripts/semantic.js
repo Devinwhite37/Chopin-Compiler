@@ -51,6 +51,7 @@ var TSC;
             this.scopeNum = -1;
             this.scopeLevel = -1;
             this.scope = -1;
+            this.symbolOutput = [];
             if (tokens[this.currentToken] === undefined) {
                 return;
             }
@@ -164,6 +165,7 @@ var TSC;
             }
         };
         Semantic.prototype.printStatementSemantic = function () {
+            this.additions = 0;
             this.ast.addNode("PrintStatement", "branch", this.scope);
             if (tokens[this.currentToken][1] == '(') {
                 this.currentToken++;
@@ -179,7 +181,7 @@ var TSC;
             for (var j = 0; j < this.symbolOutput.length; j++) {
                 if (this.symbolOutput[j][0].key == this.varVal) {
                     this.symbolOutput[j][0].used = true;
-                    this.semanticOutput.push("VALID - Variable [" + this.currentVar + "] has been used.");
+                    this.semanticOutput.push("VALID - Variable [" + this.varVal + "] has been used on [" + tokens[this.currentToken][3] + " , " + tokens[this.currentToken][2] + "].");
                     break;
                 }
             }
@@ -196,6 +198,9 @@ var TSC;
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+                for (var i = 0; i < this.additions; i++) {
+                    this.ast.endChildren();
+                }
                 this.varVal = tokens[this.currentToken][1][0];
                 this.wasDeclaredExpression();
                 if (this.prevDeclared == false) {
@@ -232,13 +237,14 @@ var TSC;
                 for (var i = 0; i < this.additions; i++) {
                     this.ast.endChildren();
                 }
-                this.ast.endChildren();
             }
+            this.ast.endChildren();
         };
         Semantic.prototype.stringExprSemantic = function () {
             this.currentType = "string";
+            this.quoteVal = "";
             this.charListSemantic();
-            this.ast.endChildren();
+            //this.ast.endChildren();
             return;
         };
         Semantic.prototype.charListSemantic = function () {
@@ -250,9 +256,16 @@ var TSC;
             else if (tokens[this.currentToken][0] == "DOUBLE_QUOTE") {
                 this.quoteVal += tokens[this.currentToken - 1][1];
                 this.currentToken++;
-                this.ast.addNode(this.quoteVal, "leaf", this.scope);
+                if (this.quoteVal === "") {
+                    console.log("u run?");
+                    this.ast.addNode("ε", "leaf", this.scope);
+                }
+                else {
+                    this.ast.addNode(this.quoteVal, "leaf", this.scope);
+                }
                 return;
             }
+            // console.log(tokens[this.currentToken-1][1]);
             return;
         };
         Semantic.prototype.assignmentStatementSemantic = function () {
@@ -268,13 +281,13 @@ var TSC;
                 this.typeMatch();
                 this.wasDeclared();
                 if (this.match == true && this.prevDeclared == true) {
-                    this.semanticOutput.push("VALID - Variable [" + this.currentVar + "] of type " + this.currentType + " matches its assignment type.");
+                    this.semanticOutput.push("VALID - Variable [" + this.currentVar + "] of type " + this.currentType + " matches its assignment type on [" + tokens[this.currentToken - 3][3] + " , " + tokens[this.currentToken - 3][2] + "]");
                 }
                 else if (this.prevDeclared == false) {
                     this.semanticOutput.push("ERROR - Variable [" + this.currentVar + "] on [" + tokens[this.currentToken - 3][3] + " , " + tokens[this.currentToken - 3][2] + "] has not been previously declared.");
                 }
                 else if (this.match == false) {
-                    this.semanticOutput.push("ERROR - Variable [" + this.currentVar + "] was assigned a(n) " + this.currentType + " type, which does not match its initial declaration.");
+                    this.semanticOutput.push("ERROR - Variable [" + this.currentVar + "] was assigned a(n) " + this.currentType + " type on [" + tokens[this.currentToken - 3][3] + " , " + tokens[this.currentToken - 3][2] + "] which does not match its initial declaration.");
                 }
             }
             return;
@@ -292,9 +305,6 @@ var TSC;
         };
         Semantic.prototype.typeMatch = function () {
             for (var j = 0; j < this.symbolOutput.length; j++) {
-                console.log(this.currentVar);
-                console.log(this.symbolOutput[j][0].type);
-                console.log(this.symbolOutput[j][0].key);
                 if (this.symbolOutput[j][0].type == this.currentType && this.symbolOutput[j][0].key == this.currentVar) {
                     this.match = true;
                     break;
@@ -308,7 +318,6 @@ var TSC;
             for (var j = 0; j < this.symbolOutput.length; j++) {
                 if (this.symbolOutput[j][0].key == this.currentVar) {
                     this.symbolOutput[j][0].initialized = true;
-                    console.log(this.symbolOutput);
                 }
             }
         };
@@ -317,7 +326,6 @@ var TSC;
             return;
         };
         Semantic.prototype.varDeclSemantic = function () {
-            console.log(this.ast.cur);
             this.ast.addNode("VarDecl", "branch", this.scope);
             if (tokens[this.currentToken] === undefined) {
                 return;
@@ -406,15 +414,6 @@ var TSC;
             }
             this.ast.endChildren();
             return;
-        };
-        Semantic.prototype.scopeTreeVars = function (name, type, scope, col) {
-            this.symbol = {
-                name: name,
-                type: type,
-                scope: scope,
-                col: col
-            };
-            return this.symbol;
         };
         return Semantic;
     }());

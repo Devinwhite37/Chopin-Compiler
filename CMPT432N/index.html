@@ -205,7 +205,7 @@
 			//console.log(st);
 
 			analysis = semantic.semantic();
-			//console.log(analysis);
+			console.log(analysis);
 			scopeTree = semantic.scopeTreeOP();
 
 	        compile();
@@ -374,6 +374,7 @@
 				parseWarnings = 0;
 				analysisErrors = 0;
 				analysisWarnings = 0;
+				console.log(analysisWarnings);
 				warnings = 0;
 
 				if(tokens[i+1] === undefined){
