@@ -46,6 +46,7 @@ module TSC {
             this.currentType = "";
             this.match = false;
             this.prevDeclared = false;
+            this.ast.addNode("Root", "branch", this.scope);
             /*this.symbolOutput =([
                 [0],
                 [0[0][0]],
@@ -454,15 +455,19 @@ module TSC {
             if (tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
                 this.currentToken++;
+                this.currentType = "boolean";
             }
             else if(tokens[this.currentToken][0] == 'L_PAREN'){
                 this.currentToken++;
                 this.expressionSemantic();
+                this.currentType = "boolean";
                 if(tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!='){
                     this.ast.addNode(tokens[this.currentToken][0], "leaf", this.scope);
                     this.currentToken++;
                     this.expressionSemantic();
+                    this.currentType = "boolean";
                     if(tokens[this.currentToken][0] == 'R_PAREN'){
+                        this.currentType = "boolean";
                         this.currentToken++;
                     }
                 }
