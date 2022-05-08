@@ -181,6 +181,7 @@ var TSC;
             }
             this.ast.endChildren();
         };
+        //marks a variable as used
         Semantic.prototype.isUsed = function () {
             for (var j = 0; j < this.symbolOutput.length; j++) {
                 if (this.symbolOutput[j][0].key == this.varVal) {
@@ -221,6 +222,7 @@ var TSC;
                 this.ast.endChildren();
             }
         };
+        //sets current type to the type of the variable that is being looked at
         Semantic.prototype.getVarsType = function () {
             for (var j = 0; j < this.symbolOutput.length; j++) {
                 if (this.symbolOutput[j][0].key == this.varVal && this.scope <= this.prevVarScope) {
@@ -229,6 +231,7 @@ var TSC;
                 }
             }
         };
+        //looks to see if the vaiable that is being used was declared
         Semantic.prototype.wasDeclaredExpression = function () {
             for (var j = 0; j < this.symbolOutput.length; j++) {
                 if (this.symbolOutput[j][0].key == this.varVal && this.symbolOutput[j][0].scope <= this.scope) {
