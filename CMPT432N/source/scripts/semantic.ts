@@ -199,7 +199,6 @@ module TSC {
             }
         }
 
-        
         public printStatementSemantic(){
             this.additions = 0;
             this.ast.addNode("PrintStatement", "branch", this.scope);  
@@ -497,7 +496,6 @@ module TSC {
             this.ast.endChildren();
             return;
         }
-
         public whileStatementSemantic(){
             this.ast.addNode("WhileStatement", "branch", this.scope);
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
