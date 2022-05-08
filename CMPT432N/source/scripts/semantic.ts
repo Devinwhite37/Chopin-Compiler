@@ -215,6 +215,7 @@ module TSC {
             this.ast.endChildren();
         }
         
+        //marks a variable as used
         public isUsed(){
             for(var j = 0; j < this.symbolOutput.length; j++){
                 if(this.symbolOutput[j][0].key == this.varVal){
@@ -257,6 +258,7 @@ module TSC {
             }  
         }
 
+        //sets current type to the type of the variable that is being looked at
         public getVarsType(){
             for(var j = 0; j < this.symbolOutput.length; j++){
                 if(this.symbolOutput[j][0].key == this.varVal && this.scope <= this.prevVarScope){
@@ -266,6 +268,7 @@ module TSC {
             }
         }
 
+        //looks to see if the vaiable that is being used was declared
         public wasDeclaredExpression(){
             for(var j = 0; j < this.symbolOutput.length; j++){
                 if(this.symbolOutput[j][0].key == this.varVal && this.symbolOutput[j][0].scope <= this.scope){
