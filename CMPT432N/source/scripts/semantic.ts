@@ -445,6 +445,7 @@ module TSC {
             this.ast.endChildren();
         }
 
+        //checks to see if the variable we are looking at has been declared before
         public isVarDeclared(){
             for(var j = 0; j < this.symbolOutput.length; j++){
                 if(this.symbolOutput[0] === undefined){

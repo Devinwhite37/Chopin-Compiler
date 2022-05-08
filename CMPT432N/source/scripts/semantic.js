@@ -394,6 +394,7 @@ var TSC;
             }
             this.ast.endChildren();
         };
+        //checks to see if the variable we are looking at has been declared before
         Semantic.prototype.isVarDeclared = function () {
             for (var j = 0; j < this.symbolOutput.length; j++) {
                 if (this.symbolOutput[0] === undefined) {
