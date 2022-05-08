@@ -126,6 +126,7 @@ module TSC {
             this.scope = this.scopeArray.pop();
         }
 
+        //looks to see if the key is marked as used
         public areVarsUsed(){
             for(var j = 0; j < this.symbolOutput.length; j++){
                 if(this.symbolOutput[j][0].used == false && this.symbolOutput[j][0].initialized == true){
@@ -137,6 +138,7 @@ module TSC {
             }
         }
 
+        //checks to see if the key has been maked as initialized
         public areVarsInitialized(){
             for(var j = 0; j < this.symbolOutput.length; j++){
                 if(this.symbolOutput[j][0].initialized == false){

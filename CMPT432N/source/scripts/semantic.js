@@ -97,6 +97,7 @@ var TSC;
             this.scopeLevel--;
             this.scope = this.scopeArray.pop();
         };
+        //looks to see if the key is marked as used
         Semantic.prototype.areVarsUsed = function () {
             for (var j = 0; j < this.symbolOutput.length; j++) {
                 if (this.symbolOutput[j][0].used == false && this.symbolOutput[j][0].initialized == true) {
@@ -107,6 +108,7 @@ var TSC;
                 }
             }
         };
+        //checks to see if the key has been maked as initialized
         Semantic.prototype.areVarsInitialized = function () {
             for (var j = 0; j < this.symbolOutput.length; j++) {
                 if (this.symbolOutput[j][0].initialized == false) {
