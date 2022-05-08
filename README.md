@@ -9,4 +9,4 @@ Chopin Compiler gives you some of Chopins finest pieces to play as you compile.
 
 
 ## About
-Each portion of this project can be found as a seperate branch, including a lexer and parser(to date). More deatailed information about each section can be found at https://www.labouseur.com/courses/compilers/
+Each portion of this project can be found as a seperate branch, including a lexer, parser, and semantic analyzer(to date). More deatailed information about each section can be found at https://www.labouseur.com/courses/compilers/
