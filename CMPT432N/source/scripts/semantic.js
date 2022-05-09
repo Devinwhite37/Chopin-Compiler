@@ -209,10 +209,10 @@ var TSC;
                 this.wasDeclaredExpression();
                 this.getVarsType();
                 if (this.prevDeclared == false) {
-                    this.semanticOutput.push("ERROR1 - Variable [" + this.varVal + "] on [" + tokens[this.currentToken][3] + " , " + tokens[this.currentToken][2] + "] has not been previously declared.");
+                    this.semanticOutput.push("ERROR - Variable [" + this.varVal + "] on [" + tokens[this.currentToken][3] + " , " + tokens[this.currentToken][2] + "] has not been previously declared.");
                 }
                 else if (this.prevDeclared == true && this.scope < this.prevVarScope) {
-                    this.semanticOutput.push("ERROR2 - Variable [" + this.varVal + "] on [" + tokens[this.currentToken][3] + " , " + tokens[this.currentToken][2] + "] has not been previously declared.");
+                    this.semanticOutput.push("ERROR - Variable [" + this.varVal + "] on [" + tokens[this.currentToken][3] + " , " + tokens[this.currentToken][2] + "] has not been previously declared.");
                 }
                 this.currentToken++;
             }

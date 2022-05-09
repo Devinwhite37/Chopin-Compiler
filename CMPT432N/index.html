@@ -211,8 +211,6 @@
 			console.log(codeOP);
 
 			analysis = semantic.semantic();
-			//console.log(analysis);
-			//scopeTree = semantic.scopeTreeOP();
 
 	        compile();
 	    }
@@ -504,8 +502,6 @@
 							programNum++;
 							m++;
 							astOutput();
-							//stOutput();
-							scopeTreeOP();
 							break;
 						}
 						else if(analysis[m].slice(0, 5) == 'ERROR'){
@@ -527,8 +523,7 @@
 				}
 				else{
 					break;
-				}
-				
+				}		
 			}
 		}
 
@@ -542,7 +537,6 @@
 			//outputs the AST if parser runs
 				document.getElementById("taAST").value = "";
 				putMessageAST(astTree);
-			
 		}
 
 		function codeGenOutput(){
@@ -550,7 +544,6 @@
 			for(var i = 0; i < codeOP.length; i++){
 				if(codeOP[i].slice(0, 7) == 'Program'){
 					putMessageCodeGen(codeOP[i] + ":\n");
-
 				}
 				else{
 					putMessageCodeGen(codeOP[i] + " ");
