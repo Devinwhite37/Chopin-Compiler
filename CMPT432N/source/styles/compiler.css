@@ -48,7 +48,7 @@ h1{
  }
 
 #taSourceCode{
-	width:427px;
+	width:445px;
   margin: 15px;
   border-radius: 10px;
     height:460px;
@@ -60,7 +60,7 @@ h1{
 }
 
 #taOutput{
-  width:427px;
+  width:445px;
   border-radius: 10px;
 	margin: 15px;
     height:460px;
@@ -72,7 +72,7 @@ h1{
 }
 #taCST, #taAST{
   border-radius: 10px;
-	width:427px;
+	width:445px;
 	margin: 15px;
     height:300px;
     font-family:Courier New; 
@@ -82,11 +82,11 @@ h1{
     background-color: #F2F2F2;
 }
 
-#scopeTree{
-  width:427px;
+#taCodeGen{
+  width:445px;
   border-radius: 10px;
 	margin: 15px;
-    height:200px;
+    height:300px;
     font-family:Courier New; 
     color: black; 
     border:solid 2px black; 
@@ -95,9 +95,9 @@ h1{
 }
 
 #symbolTable{
-  width:427px;
+  width:445px;
 	margin: 15px;
-    height:200px;
+    height:300px;
     border-radius: 10px;
     font-family:Courier New; 
     color: black; 
@@ -107,7 +107,7 @@ h1{
 }
 
 #symbolTableTable{
-    width:380px;
+    width:400px;
     height: auto;
     border-radius: 10px;
     margin-top: 10px;

@@ -314,7 +314,7 @@ var TSC;
         };
         Semantic.prototype.wasDeclared = function () {
             for (var j = 0; j < this.symbolOutput.length; j++) {
-                if (this.symbolOutput[j][0].key == this.currentVar && this.prevVarScope == this.scope) {
+                if (this.symbolOutput[j][0].key == this.currentVar && this.prevVarScope <= this.scope) {
                     this.prevDeclared = true;
                     break;
                 }

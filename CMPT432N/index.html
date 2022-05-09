@@ -77,11 +77,11 @@
                     <td><textarea class="input form-control lined" id="taAST" placeholder="No AST currently" readonly></textarea></td>
 				</tr>
 				<tr>
-                    <td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Scope Tree</h3></td>
+                    <td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Code</h3></td>
                     <td><h3 style = "font-family: 'Courier New', Courier, monospace; color: black; margin-left: 20px; font-weight: bold;">Symbol Table</h3></td>
                 </tr>
                 <tr>
-                    <td><textarea class="input form-control lined" id="scopeTree" readonly></textarea></td>
+                    <td><textarea class="input form-control lined" id="taCodeGen" placeholder="No code currently"readonly></textarea></td>
 					<td>
 						<div style = "overflow: auto;" id = "symbolTable">
 						<table style = "text-align: center" id = "symbolTableTable" class = "lined">
@@ -121,6 +121,8 @@
 	<script type="text/javascript" src="source/scripts/tree.js"></script>	
 	<script type="text/javascript" src="source/scripts/semantic.js"></script>
 	<script type="text/javascript" src="source/scripts/scopeTree.js"></script>	
+	<script type="text/javascript" src="source/scripts/codeGen.js"></script>	
+
 
 
 
@@ -134,7 +136,7 @@
 			document.getElementById("taOutput").value = "";
 			document.getElementById("taCST").value = "";
 			document.getElementById("taAST").value = "";
-			document.getElementById("scopeTree").value = "";
+			document.getElementById("taCodeGen").value = "";
 
 			//document.getElementById("symbolTableTable").value = "";
 
@@ -204,9 +206,13 @@
 			//console.log("SYMBOLOP");
 			//console.log(st);
 
+			let codeGen = new TSC.CodeGen();
+			codeOP = codeGen.codeOutput();
+			console.log(codeOP);
+
 			analysis = semantic.semantic();
 			//console.log(analysis);
-			scopeTree = semantic.scopeTreeOP();
+			//scopeTree = semantic.scopeTreeOP();
 
 	        compile();
 	    }
@@ -223,8 +229,8 @@
 			document.getElementById("taAST").value += msgAST + "\n";
 		}
 
-		function putMessageScopeTree(msgScopeTree){
-			document.getElementById("scopeTree").value += msgScopeTree + "\n";
+		function putMessageCodeGen(msgCodeGen){
+			document.getElementById("taCodeGen").value += msgCodeGen + "";
 		}
 		
 		function compile(){
@@ -232,12 +238,14 @@
 				putMessageOP("Well that's random. Try compiling some code next time.");
 				putMessageCST("No CST to show.");
 				putMessageAST("No AST to show.");
+				putMessageCodeGen("No code generated.");
 
 			}
 			else{
 				//putMessageOP("Compilation Started");
 				logOutput();
 				stOutput();
+				codeGenOutput();
 				//semantic();
 			}
 		}
@@ -532,15 +540,22 @@
 
 		function astOutput(){
 			//outputs the AST if parser runs
-			if(0==0){
 				document.getElementById("taAST").value = "";
 				putMessageAST(astTree);
-			}
+			
 		}
 
-		function scopeTreeOP(){
-			document.getElementById("scopeTree").value = "";
-			putMessageScopeTree(scopeTree);
+		function codeGenOutput(){
+			document.getElementById("taCodeGen").value = "";
+			for(var i = 0; i < codeOP.length; i++){
+				if(codeOP[i].slice(0, 7) == 'Program'){
+					putMessageCodeGen(codeOP[i] + ":\n");
+
+				}
+				else{
+					putMessageCodeGen(codeOP[i] + " ");
+				}
+			}
 		}
 
 		function stOutput(){
