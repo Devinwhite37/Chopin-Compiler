@@ -201,15 +201,17 @@
 			let semantic = new TSC.Semantic();
 			astTree = semantic.astTree();
 			st = semantic.symbolTableOP();
+			astRes = semantic.astRes();
 			//console.log("TEST");
-			console.log(st);
 			//console.log("SYMBOLOP");
 			//console.log(st)
 
 			analysis = semantic.semantic();
 			let codeGen = new TSC.CodeGen();
+			var res = codeGen.codeGenOutput(astRes);
+
 			codeOP = codeGen.codeOutput();
-			console.log(codeOP);
+			codeGenOP = codeGen.codeGenOutput();
 	        compile();
 	    }
     
@@ -238,11 +240,8 @@
 
 			}
 			else{
-				//putMessageOP("Compilation Started");
 				logOutput();
 				stOutput();
-				//codeGenOutput();
-				//semantic();
 			}
 		}
 		/*function logOutput(){
@@ -378,7 +377,6 @@
 				parseWarnings = 0;
 				analysisErrors = 0;
 				analysisWarnings = 0;
-				console.log(analysisWarnings);
 				warnings = 0;
 
 				if(tokens[i+1] === undefined){
@@ -483,7 +481,6 @@
 									break;
 								}
 							}
-							console.log(l);
 							putMessageOP("Parsing completed with " + parseErrors + " error(s) and "+ parseWarnings+" warning(s).\n");
 							break;
 						}
@@ -523,7 +520,9 @@
 				}
 				putMessageOP("Code Generating Program " + programNum);
 				putMessageOP("---------------------------");
-				console.log(programNum);
+				for(var o = 0; o < codeGenOP.length; o++){
+					putMessageOP("CodeGen -> | " + codeGenOP[o]);
+				}
 				codeGenOutput();
 				programNum++;
 			}
@@ -542,7 +541,6 @@
 		}
 
 		function codeGenOutput(){
-			console.log(programNum);
 			document.getElementById("taCodeGen").value = "";
 			putMessageCodeGen("Program " + programNum + ":\n");
 			for(var i = 0; i < codeOP.length; i++){				

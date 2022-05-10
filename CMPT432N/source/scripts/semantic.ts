@@ -23,9 +23,10 @@ module TSC {
         match: boolean;
         prevDeclared: boolean;
         symbolTableOutput: any[] = [];
+        tokens: any;
 
-        constructor(tokens){
-            this.tokenList = tokens;   
+        constructor(){
+            this.tokenList = this.tokens;
             this.currentToken = 0; 
             this.ast = new ScopeTree();
             this.programNum = 1;
@@ -53,13 +54,13 @@ module TSC {
             this.programSemantic();
             return this.ast.toString();
         }
+
+        public astRes(){
+            return this.ast;
+        }
         
         public semantic(){
             return this.semanticOutput;
-        }
-
-        public scopeTreeOP(){
-            return this.ast.toString();
         }
 
         public symbolTableOP(){

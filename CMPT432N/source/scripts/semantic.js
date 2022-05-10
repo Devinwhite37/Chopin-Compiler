@@ -1,11 +1,12 @@
 var TSC;
 (function (TSC) {
     var Semantic = /** @class */ (function () {
-        function Semantic(tokens) {
+        function Semantic() {
             this.symbolOutput = [];
             this.symbol = {};
             this.symbolTableOutput = [];
-            this.tokenList = tokens;
+            this.tokenList = this.tokens;
+            console.log(this.tokenList);
             this.currentToken = 0;
             this.ast = new ScopeTree();
             this.programNum = 1;
@@ -32,11 +33,11 @@ var TSC;
             this.programSemantic();
             return this.ast.toString();
         };
+        Semantic.prototype.astRes = function () {
+            return this.ast;
+        };
         Semantic.prototype.semantic = function () {
             return this.semanticOutput;
-        };
-        Semantic.prototype.scopeTreeOP = function () {
-            return this.ast.toString();
         };
         Semantic.prototype.symbolTableOP = function () {
             return this.symbolTableOutput;

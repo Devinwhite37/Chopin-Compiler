@@ -6,7 +6,7 @@
 //-----------------------------------------
 
 class ScopeTree {
-    constructor() {
+    constructor(tree) {
         // ----------
         // Attributes
         // ----------
