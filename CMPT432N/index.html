@@ -204,14 +204,12 @@
 			//console.log("TEST");
 			console.log(st);
 			//console.log("SYMBOLOP");
-			//console.log(st);
+			//console.log(st)
 
+			analysis = semantic.semantic();
 			let codeGen = new TSC.CodeGen();
 			codeOP = codeGen.codeOutput();
 			console.log(codeOP);
-
-			analysis = semantic.semantic();
-
 	        compile();
 	    }
     
@@ -243,7 +241,7 @@
 				//putMessageOP("Compilation Started");
 				logOutput();
 				stOutput();
-				codeGenOutput();
+				//codeGenOutput();
 				//semantic();
 			}
 		}
@@ -499,7 +497,6 @@
 					putMessageOP("---------------------------");
 					for(m; m < analysis.length; m++){
 						if(analysis[m] == 'EOP'){
-							programNum++;
 							m++;
 							astOutput();
 							break;
@@ -519,11 +516,16 @@
 							putMessageOP("ANALYZER -> | " + analysis[m]);
 						}
 					}
-					putMessageOP("\nSemantic Analysis completed with " + analysisErrors + " error(s) and "+analysisWarnings+" warning(s).")			
+					putMessageOP("\nSemantic Analysis completed with " + analysisErrors + " error(s) and "+analysisWarnings+" warning(s).\n")			
 				}
 				else{
 					break;
-				}		
+				}
+				putMessageOP("Code Generating Program " + programNum);
+				putMessageOP("---------------------------");
+				console.log(programNum);
+				codeGenOutput();
+				programNum++;
 			}
 		}
 
@@ -540,14 +542,11 @@
 		}
 
 		function codeGenOutput(){
+			console.log(programNum);
 			document.getElementById("taCodeGen").value = "";
-			for(var i = 0; i < codeOP.length; i++){
-				if(codeOP[i].slice(0, 7) == 'Program'){
-					putMessageCodeGen(codeOP[i] + ":\n");
-				}
-				else{
-					putMessageCodeGen(codeOP[i] + " ");
-				}
+			putMessageCodeGen("Program " + programNum + ":\n");
+			for(var i = 0; i < codeOP.length; i++){				
+				putMessageCodeGen(codeOP[i] + " ");
 			}
 		}
 
@@ -555,7 +554,6 @@
 			if(analysisErrors == 0 && parseErrors == 0 && lexErrors == 0){
 				var table = document.getElementById("symbolTableTable");
 				for(var i = 0; i < st.length; i++){
-					console.log("SHOULD RUN")
 					// Creates new <tr> to add new elements too
 					var row = table.insertRow(i+1);
 					// Insert new <td> elements to the new <tr>
