@@ -9,6 +9,7 @@ module TSC {
         tree: any;
         heapStart: number;
         staticTable: any[] = [];
+        staticId: number;
 
         constructor(){
             //this.ast = new Semantic(astRes);
@@ -17,6 +18,7 @@ module TSC {
             this.hexLocation = 0;
             this.heapStart = 245;
             this.staticTable = [];
+            this.staticId = 0;
             //this.tree = {};
             //this.astG = new Semantic();
             //this.createdCode.push("Program 1");
@@ -98,14 +100,18 @@ module TSC {
             }
             else if(node.name == 'VarDecl'){
                 //let tName = node.children[1].name[0];
+
                 this.staticTable.push([{
                     key: node.children[1].name[0],
                     type: node.children[0].name[0],
                     scope: node.children[1].scope,
                     location: ""
                 }]);
-                
-                console.log(this.staticTable);
+
+                this.setHex("8D");
+                this.setHex("T" + this.staticId);
+                this.setHex("00");
+                this.staticId++;
             }
             //this.traverse(node.parent.children[1]);
         }

@@ -9,6 +9,7 @@ var TSC;
             this.hexLocation = 0;
             this.heapStart = 245;
             this.staticTable = [];
+            this.staticId = 0;
             //this.tree = {};
             //this.astG = new Semantic();
             //this.createdCode.push("Program 1");
@@ -91,7 +92,10 @@ var TSC;
                         scope: node.children[1].scope,
                         location: ""
                     }]);
-                console.log(this.staticTable);
+                this.setHex("8D");
+                this.setHex("T" + this.staticId);
+                this.setHex("00");
+                this.staticId++;
             }
             //this.traverse(node.parent.children[1]);
         };
