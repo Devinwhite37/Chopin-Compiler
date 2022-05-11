@@ -100,6 +100,7 @@ var TSC;
                 //tests if the value in print is a string
                 else if (node.children[0].value == 'string') {
                     this.setHex("A0");
+                    ///console.log(node.children[1].name);
                     var hexVal = this.heapString(node.children[0].name);
                     this.setHex(hexVal);
                     this.setHex("A2");
@@ -129,6 +130,11 @@ var TSC;
                 if (DIGIT.test(node.children[1].name[0])) {
                     this.setHex("A9");
                     this.setHex("0" + node.children[1].name[0]);
+                }
+                else if (node.children[1].value == 'string') {
+                    var hexVal = this.heapString(node.children[1].name);
+                    this.setHex("A9");
+                    this.setHex(hexVal);
                 }
                 var variable = node.children[0].name[0];
                 var scope = node.children[0].scope;
