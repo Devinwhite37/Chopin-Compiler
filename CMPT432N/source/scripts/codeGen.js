@@ -81,7 +81,21 @@ var TSC;
                     var scope = node.children[0].scope;
                     var staticVal = this.findVariable(variable, scope);
                     this.setHex(staticVal);
+                    console.log(staticVal);
                     this.setHex("00");
+                    for (var j = 0; j < this.staticTable.length; j++) {
+                        if (this.staticTable[j][0].value == staticVal) {
+                            if (this.staticTable[j][0].type == 'string' || this.staticTable[j][0].type == 'boolean') {
+                                // load x regis with 2
+                                this.setHex("A2");
+                                this.setHex("02");
+                            }
+                            else if (this.staticTable[j][0].type == 'int') {
+                                this.setHex("A2");
+                                this.setHex("01");
+                            }
+                        }
+                    }
                 }
                 //tests if the value in print is a string
                 else if (node.children[0].value == 'string') {
@@ -150,7 +164,6 @@ var TSC;
                     console.log(patchVal);
                     for (var j = 0; j < this.staticTable.length; j++) {
                         if (this.staticTable[j][0].value == patchVal)
-                            //console.log(this.staticTable[j][0].byteNum);
                             var memAddr = this.staticTable[j][0].byteNum;
                         console.log(memAddr);
                         this.createdCode[i] = memAddr;
@@ -162,7 +175,6 @@ var TSC;
             for (var i = 0; i < this.staticTable.length; i++) {
                 //var staticObject = itr.next();
                 if (this.staticTable[i][0].key == variable && this.staticTable[i][0].scope == scope) {
-                    // when finding appropriate variable, return its temp address
                     return this.staticTable[i][0].value;
                 }
             }

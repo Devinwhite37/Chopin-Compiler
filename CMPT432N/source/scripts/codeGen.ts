@@ -98,16 +98,21 @@ module TSC {
                     var scope = node.children[0].scope;
                     var staticVal = this.findVariable(variable, scope);
                     this.setHex(staticVal);
+                    console.log(staticVal);
                     this.setHex("00");
                     for(var j = 0; j < this.staticTable.length; j++){
-                        if (this.staticTable. == TSC.VariableType.String || this.staticMap.get(tempAddr)["type"] == TSC.VariableType.Boolean) {
-                        // load x regis with 2
-                        this.setCode("A2");
-                        this.setCode("02");
-
+                        if (this.staticTable[j][0].value == staticVal) {
+                            if(this.staticTable[j][0].type == 'string' || this.staticTable[j][0].type == 'boolean'){
+                                // load x regis with 2
+                                this.setHex("A2");
+                                this.setHex("02");
+                            }
+                            else if(this.staticTable[j][0].type == 'int'){
+                                this.setHex("A2");
+                                this.setHex("01");
+                            }
+                        }
                     }
-
-
                 }
                 //tests if the value in print is a string
                 else if(node.children[0].value == 'string'){
