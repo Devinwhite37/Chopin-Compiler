@@ -36,6 +36,7 @@ var TSC;
             else {
                 this.traverse(ast.root);
             }
+            this.backPatch();
             return this.codeGenLog;
         };
         CodeGen.prototype.codeOutput = function () {
@@ -48,7 +49,7 @@ var TSC;
         };
         CodeGen.prototype.traverse = function (node) {
             var DIGIT = new RegExp('[0-9]');
-            var STRING = new RegExp('[a-z]');
+            //const STRING = new RegExp('[a-z]');
             console.log(node);
             console.log(node.name);
             if (node.name == 'Root') {
@@ -71,20 +72,23 @@ var TSC;
                     this.setHex("A2");
                     this.setHex("01");
                 }
-                // tests if the value in print is a string
-                else if (node.children[0].name[0] == ['a'] || node.children[0].name[0] == 'b' || node.children[0].name[0] == 'c' || node.children[0].name[0] == 'd' || node.children[0].name[0] == 'e' || node.children[0].name[0] == 'f' || node.children[0].name[0] == 'g' || node.children[0].name[0] == 'h' || node.children[0].name[0] == 'i' || node.children[0].name[0] == 'j' || node.children[0].name[0] == 'k' || node.children[0].name[0] == 'l' || node.children[0].name[0] == 'm' || node.children[0].name[0] == 'n' || node.children[0].name[0] == 'o' || node.children[0].name[0] == 'p' || node.children[0].name[0] == 'q' || node.children[0].name[0] == 'r' || node.children[0].name[0] == 's' || node.children[0].name[0] == 't' || node.children[0].name[0] == 'u' || node.children[0].name[0] == 'v' || node.children[0].name[0] == 'w' || node.children[0].name[0] == 'x' || node.children[0].name[0] == 'y' || node.children[0].name[0] == 'z') {
-                    console.log("works!");
+                // tests if the value in print is a variable
+                else if (node.children[0].value == 'variable') {
+                    this.setHex("AC");
+                    var variable = node.children[0].name[0];
+                    var scope = node.children[0].scope;
+                    var staticVal = this.findVariable(variable, scope);
+                    this.setHex(staticVal);
+                    this.setHex("00");
                 }
-                else if (STRING.test(node.children[0].name)) {
+                //tests if the value in print is a string
+                else if (node.children[0].value == 'string') {
                     this.setHex("A0");
-                    console.log(node.children[0].name);
-                    console.log(node.children[0].name[0]);
                     var hexVal = this.heapString(node.children[0].name);
                     this.setHex(hexVal);
                     this.setHex("A2");
                     this.setHex("02");
                 }
-                //tests if the value in print is a variable
                 this.setHex("FF");
             }
             else if (node.name == 'VarDecl') {
@@ -103,18 +107,26 @@ var TSC;
                 this.staticId++;
             }
             else if (node.name == 'AssignmentStatement') {
+                this.codeGenLog.push("Generating op code for AssignmentStatement:");
                 if (DIGIT.test(node.children[1].name[0])) {
                     this.setHex("A9");
                     this.setHex("0" + node.children[1].name[0]);
                 }
                 var variable = node.children[0].name[0];
-                var scope = node.children[1].scope;
+                var scope = node.children[0].scope;
                 var staticVal = this.findVariable(variable, scope);
                 this.setHex("8D");
                 this.setHex(staticVal);
                 this.setHex("00");
             }
             //this.traverse(node.parent.children[1]);
+        };
+        CodeGen.prototype.backPatch = function () {
+            for (var i = 0; i < this.createdCode.length; i++) {
+                if (this.createdCode[i].slice(0, 0) == "T") {
+                    console.log("works");
+                }
+            }
         };
         CodeGen.prototype.findVariable = function (variable, scope) {
             for (var i = 0; i < this.staticTable.length; i++) {
