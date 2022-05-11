@@ -6,7 +6,6 @@ var TSC;
             this.symbol = {};
             this.symbolTableOutput = [];
             this.tokenList = this.tokens;
-            console.log(this.tokenList);
             this.currentToken = 0;
             this.ast = new ScopeTree();
             this.programNum = 1;
@@ -204,6 +203,7 @@ var TSC;
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
                 for (var i = 0; i < this.additions; i++) {
+                    console.log("shouldnt run");
                     this.ast.endChildren();
                 }
                 this.varVal = tokens[this.currentToken][1][0];
@@ -219,7 +219,7 @@ var TSC;
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
                 this.booleanExprSemantic();
-                this.ast.endChildren();
+                //this.ast.endChildren();
             }
         };
         Semantic.prototype.getVarsType = function () {
@@ -256,10 +256,11 @@ var TSC;
             }
             else {
                 for (var i = 0; i < this.additions; i++) {
+                    console.log("shouldnt run");
                     this.ast.endChildren();
                 }
             }
-            this.ast.endChildren();
+            //this.ast.endChildren();
         };
         Semantic.prototype.stringExprSemantic = function () {
             this.currentType = "string";
@@ -296,6 +297,7 @@ var TSC;
             if (tokens[this.currentToken][1] == "=") {
                 this.currentToken++;
                 this.expressionSemantic();
+                this.ast.endChildren();
                 this.isVarInitialized();
                 this.typeMatch();
                 this.wasDeclared();
@@ -438,6 +440,7 @@ var TSC;
             return;
         };
         Semantic.prototype.ifStatementSemantic = function () {
+            this.additions = 0;
             this.ast.addNode("IfStatement", "branch", this.scope);
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
@@ -448,6 +451,7 @@ var TSC;
             return;
         };
         Semantic.prototype.whileStatementSemantic = function () {
+            this.additions = 0;
             this.ast.addNode("WhileStatement", "branch", this.scope);
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();

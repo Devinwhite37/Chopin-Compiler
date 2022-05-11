@@ -239,6 +239,7 @@ module TSC {
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);  
                 for(var i = 0; i < this.additions; i++){
+                    console.log("shouldnt run");
                     this.ast.endChildren();
                 }
                 this.varVal = tokens[this.currentToken][1][0];
@@ -254,7 +255,7 @@ module TSC {
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
                 this.booleanExprSemantic();
-                this.ast.endChildren();
+                //this.ast.endChildren();
             }  
         }
 
@@ -294,10 +295,11 @@ module TSC {
             }
             else{
                 for(var i = 0; i < this.additions; i++){
+                    console.log("shouldnt run");
                     this.ast.endChildren();
                 }
             }
-            this.ast.endChildren();
+            //this.ast.endChildren();
         }
 
         public stringExprSemantic(){
@@ -339,6 +341,7 @@ module TSC {
             if(tokens[this.currentToken][1] == "="){
                 this.currentToken++;
                 this.expressionSemantic();
+                this.ast.endChildren();
                 this.isVarInitialized();
                 this.typeMatch();
                 this.wasDeclared();
@@ -491,6 +494,7 @@ module TSC {
         }
 
         public ifStatementSemantic(){
+            this.additions = 0;
             this.ast.addNode("IfStatement", "branch", this.scope);
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
@@ -501,6 +505,7 @@ module TSC {
             return;
         }
         public whileStatementSemantic(){
+            this.additions = 0;
             this.ast.addNode("WhileStatement", "branch", this.scope);
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();

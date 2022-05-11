@@ -14,8 +14,8 @@ var TSC;
                 this.createdCode.push("00");
             }
             //console.log(this.symbolList);
-            this.codeGenOP.push("Added string [true] to heap, address 246");
-            this.codeGenOP.push("Added string [false] to heap, address 251");
+            this.codeGenOP.push("Added string [true] to heap, address 245");
+            this.codeGenOP.push("Added string [false] to heap, address 250");
             this.createdCode[254] = "e".charCodeAt(0).toString(16).toUpperCase();
             this.createdCode[253] = "s".charCodeAt(0).toString(16).toUpperCase();
             this.createdCode[252] = "l".charCodeAt(0).toString(16).toUpperCase();
@@ -79,6 +79,9 @@ var TSC;
                 }
                 this.setHex("FF");
             }
+            else if (node.name == 'VarDecl') {
+            }
+            //this.traverse(node.parent.children[1]);
         };
         CodeGen.prototype.heapString = function (string) {
             var stringLength = string.length;
