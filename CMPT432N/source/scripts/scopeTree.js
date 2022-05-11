@@ -17,13 +17,14 @@ class ScopeTree {
         // -- Methods --
         // -- ------- --
         // Add a node: kind in {branch, leaf}.
-        this.addNode = function (name, kind, scope) {
+        this.addNode = function (name, kind, scope, value) {
             // Construct the node object.
             var node = {
                 name: name,
                 children: [],
                 parent: {},
-                scope: scope
+                scope: scope,
+                value: value
             };
 
             // Check to see if it needs to be the root node.

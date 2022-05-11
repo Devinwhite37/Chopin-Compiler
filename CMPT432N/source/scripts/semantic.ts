@@ -47,7 +47,7 @@ module TSC {
             this.currentType = "";
             this.match = false;
             this.prevDeclared = false;
-            this.ast.addNode("Root", "branch", this.scope);
+            this.ast.addNode("Root", "branch", this.scope, "");
         }
 
         public astTree(){
@@ -78,7 +78,7 @@ module TSC {
                 return;
             }
             else if(tokens[this.currentToken][1] == '{'){
-                this.ast.addNode("Program "+ this.programNum, "branch", this.scope);
+                this.ast.addNode("Program "+ this.programNum, "branch", this.scope, "");
                 this.parseBlockSemantic();
             }
             this.ast.endChildren();
@@ -97,7 +97,7 @@ module TSC {
                 return;
             }            
             else if(tokens[this.currentToken][1] == '{'){
-                this.ast.addNode("Block", "branch", this.scope);
+                this.ast.addNode("Block", "branch", this.scope, "");
                 this.currentToken++;
             }
             this.statementListSemantic();
@@ -203,7 +203,7 @@ module TSC {
 
         public printStatementSemantic(){
             this.additions = 0;
-            this.ast.addNode("PrintStatement", "branch", this.scope);  
+            this.ast.addNode("PrintStatement", "branch", this.scope, "");  
             if(tokens[this.currentToken][1] == '('){
                 this.currentToken++;
                 this.expressionSemantic();
@@ -227,7 +227,7 @@ module TSC {
 
         public expressionSemantic(){
             if (tokens[this.currentToken][0] == "DIGIT") {
-                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "digit");
                 this.currentToken++;
                 this.intExprSemantic();
             } 
@@ -236,7 +236,7 @@ module TSC {
                 this.stringExprSemantic();
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
-                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);  
+                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "variable");  
                 for(var i = 0; i < this.additions; i++){
                     this.ast.endChildren();
                 }
@@ -283,7 +283,7 @@ module TSC {
             this.currentType = "int";
             if(tokens[this.currentToken][0] == 'ADDITION_OP'){
                 this.additions++;
-                this.ast.addNode("ADDITION_OP", "branch", this.scope);
+                this.ast.addNode("ADDITION_OP", "branch", this.scope, "addition");
                 this.currentToken++;
                 this.varVal = tokens[this.currentToken][1][0];
                 this.isUsed();
@@ -317,11 +317,11 @@ module TSC {
                 this.currentToken++;
 
                 if(this.quoteVal === ""){
-                    this.ast.addNode("ε", "leaf", this.scope);
+                    this.ast.addNode("ε", "leaf", this.scope, "");
 
                 }
                 else{
-                    this.ast.addNode(this.quoteVal, "leaf", this.scope);
+                    this.ast.addNode(this.quoteVal, "leaf", this.scope, "string");
                 }
                 return;
             }
@@ -330,8 +330,8 @@ module TSC {
 
         public assignmentStatementSemantic(){
             this.additions = 0;
-            this.ast.addNode("AssignmentStatement", "branch", this.scope);
-            this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+            this.ast.addNode("AssignmentStatement", "branch", this.scope, "");
+            this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "");
             this.currentVar = tokens[this.currentToken][1][0];
             this.currentToken++;
             if(tokens[this.currentToken][1] == "="){
@@ -389,18 +389,18 @@ module TSC {
         }
 
         public iD(){
-            this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+            this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "id");
             return;
         }
 
         public varDeclSemantic(){
-            this.ast.addNode("VarDecl", "branch", this.scope);
+            this.ast.addNode("VarDecl", "branch", this.scope, "");
             if(tokens[this.currentToken] === undefined){
                 return;
             }
             else if(tokens[this.currentToken][0] == 'VARIABLE'){
-                this.ast.addNode(tokens[this.currentToken - 1 ][1], "leaf", this.scope);
-                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+                this.ast.addNode(tokens[this.currentToken - 1 ][1], "leaf", this.scope, "");
+                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "");
                 this.currentVar = tokens[this.currentToken][1][0];
                 this.isVarDeclared();
 
@@ -465,7 +465,7 @@ module TSC {
         public booleanExprSemantic(){
             this.currentType = "boolean";
             if (tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
-                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "");
                 this.currentToken++;
                 this.currentType = "boolean";
             }
@@ -474,7 +474,7 @@ module TSC {
                 this.expressionSemantic();
                 this.currentType = "boolean";
                 if(tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!='){
-                    this.ast.addNode(tokens[this.currentToken][0], "leaf", this.scope);
+                    this.ast.addNode(tokens[this.currentToken][0], "leaf", this.scope, "");
                     this.currentToken++;
                     this.expressionSemantic();
                     this.currentType = "boolean";
@@ -489,7 +489,7 @@ module TSC {
 
         public ifStatementSemantic(){
             this.additions = 0;
-            this.ast.addNode("IfStatement", "branch", this.scope);
+            this.ast.addNode("IfStatement", "branch", this.scope, "");
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
                 this.isUsed();
@@ -500,7 +500,7 @@ module TSC {
         }
         public whileStatementSemantic(){
             this.additions = 0;
-            this.ast.addNode("WhileStatement", "branch", this.scope);
+            this.ast.addNode("WhileStatement", "branch", this.scope, "");
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
                 this.isUsed();

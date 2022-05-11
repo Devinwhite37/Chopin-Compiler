@@ -26,7 +26,7 @@ var TSC;
             this.currentType = "";
             this.match = false;
             this.prevDeclared = false;
-            this.ast.addNode("Root", "branch", this.scope);
+            this.ast.addNode("Root", "branch", this.scope, "");
         }
         Semantic.prototype.astTree = function () {
             this.programSemantic();
@@ -52,7 +52,7 @@ var TSC;
                 return;
             }
             else if (tokens[this.currentToken][1] == '{') {
-                this.ast.addNode("Program " + this.programNum, "branch", this.scope);
+                this.ast.addNode("Program " + this.programNum, "branch", this.scope, "");
                 this.parseBlockSemantic();
             }
             this.ast.endChildren();
@@ -69,7 +69,7 @@ var TSC;
                 return;
             }
             else if (tokens[this.currentToken][1] == '{') {
-                this.ast.addNode("Block", "branch", this.scope);
+                this.ast.addNode("Block", "branch", this.scope, "");
                 this.currentToken++;
             }
             this.statementListSemantic();
@@ -169,7 +169,7 @@ var TSC;
         };
         Semantic.prototype.printStatementSemantic = function () {
             this.additions = 0;
-            this.ast.addNode("PrintStatement", "branch", this.scope);
+            this.ast.addNode("PrintStatement", "branch", this.scope, "");
             if (tokens[this.currentToken][1] == '(') {
                 this.currentToken++;
                 this.expressionSemantic();
@@ -191,7 +191,7 @@ var TSC;
         };
         Semantic.prototype.expressionSemantic = function () {
             if (tokens[this.currentToken][0] == "DIGIT") {
-                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "digit");
                 this.currentToken++;
                 this.intExprSemantic();
             }
@@ -200,7 +200,7 @@ var TSC;
                 this.stringExprSemantic();
             }
             else if (tokens[this.currentToken][0] == "VARIABLE") {
-                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "variable");
                 for (var i = 0; i < this.additions; i++) {
                     this.ast.endChildren();
                 }
@@ -244,7 +244,7 @@ var TSC;
             this.currentType = "int";
             if (tokens[this.currentToken][0] == 'ADDITION_OP') {
                 this.additions++;
-                this.ast.addNode("ADDITION_OP", "branch", this.scope);
+                this.ast.addNode("ADDITION_OP", "branch", this.scope, "addition");
                 this.currentToken++;
                 this.varVal = tokens[this.currentToken][1][0];
                 this.isUsed();
@@ -275,10 +275,10 @@ var TSC;
                 this.quoteVal += tokens[this.currentToken - 1][1];
                 this.currentToken++;
                 if (this.quoteVal === "") {
-                    this.ast.addNode("ε", "leaf", this.scope);
+                    this.ast.addNode("ε", "leaf", this.scope, "");
                 }
                 else {
-                    this.ast.addNode(this.quoteVal, "leaf", this.scope);
+                    this.ast.addNode(this.quoteVal, "leaf", this.scope, "string");
                 }
                 return;
             }
@@ -286,8 +286,8 @@ var TSC;
         };
         Semantic.prototype.assignmentStatementSemantic = function () {
             this.additions = 0;
-            this.ast.addNode("AssignmentStatement", "branch", this.scope);
-            this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+            this.ast.addNode("AssignmentStatement", "branch", this.scope, "");
+            this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "");
             this.currentVar = tokens[this.currentToken][1][0];
             this.currentToken++;
             if (tokens[this.currentToken][1] == "=") {
@@ -340,17 +340,17 @@ var TSC;
             }
         };
         Semantic.prototype.iD = function () {
-            this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+            this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "id");
             return;
         };
         Semantic.prototype.varDeclSemantic = function () {
-            this.ast.addNode("VarDecl", "branch", this.scope);
+            this.ast.addNode("VarDecl", "branch", this.scope, "");
             if (tokens[this.currentToken] === undefined) {
                 return;
             }
             else if (tokens[this.currentToken][0] == 'VARIABLE') {
-                this.ast.addNode(tokens[this.currentToken - 1][1], "leaf", this.scope);
-                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+                this.ast.addNode(tokens[this.currentToken - 1][1], "leaf", this.scope, "");
+                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "");
                 this.currentVar = tokens[this.currentToken][1][0];
                 this.isVarDeclared();
                 //checks to see if the same variable declared was in the same scope
@@ -412,7 +412,7 @@ var TSC;
         Semantic.prototype.booleanExprSemantic = function () {
             this.currentType = "boolean";
             if (tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
-                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);
+                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "");
                 this.currentToken++;
                 this.currentType = "boolean";
             }
@@ -421,7 +421,7 @@ var TSC;
                 this.expressionSemantic();
                 this.currentType = "boolean";
                 if (tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!=') {
-                    this.ast.addNode(tokens[this.currentToken][0], "leaf", this.scope);
+                    this.ast.addNode(tokens[this.currentToken][0], "leaf", this.scope, "");
                     this.currentToken++;
                     this.expressionSemantic();
                     this.currentType = "boolean";
@@ -435,7 +435,7 @@ var TSC;
         };
         Semantic.prototype.ifStatementSemantic = function () {
             this.additions = 0;
-            this.ast.addNode("IfStatement", "branch", this.scope);
+            this.ast.addNode("IfStatement", "branch", this.scope, "");
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
                 this.isUsed();
@@ -446,7 +446,7 @@ var TSC;
         };
         Semantic.prototype.whileStatementSemantic = function () {
             this.additions = 0;
-            this.ast.addNode("WhileStatement", "branch", this.scope);
+            this.ast.addNode("WhileStatement", "branch", this.scope, "");
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
                 this.isUsed();

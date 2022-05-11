@@ -54,7 +54,7 @@ module TSC {
 
         public setHex(curHex){
             this.createdCode[this.hexLocation] = curHex;
-            this.codeGenLog.push("Adding " + curHex + " to [" + this.hexLocation + "]");
+            this.codeGenLog.push("Adding " + curHex + " at byte [" + this.hexLocation + "]");
             this.hexLocation++;
 
         }
@@ -87,7 +87,10 @@ module TSC {
                     this.setHex("01");
                 }
                 // tests if the value in print is a string
-                else if(STRING.test(node.children[0].name[0])){
+                else if(node.children[0].name[0] == ['a'] || node.children[0].name[0] == 'b' || node.children[0].name[0] == 'c' || node.children[0].name[0] == 'd' || node.children[0].name[0] == 'e' || node.children[0].name[0] == 'f' || node.children[0].name[0] == 'g' || node.children[0].name[0] == 'h' || node.children[0].name[0] == 'i' || node.children[0].name[0] == 'j' || node.children[0].name[0] == 'k' || node.children[0].name[0] == 'l' || node.children[0].name[0] == 'm' || node.children[0].name[0] == 'n' || node.children[0].name[0] == 'o' || node.children[0].name[0] == 'p' || node.children[0].name[0] == 'q' || node.children[0].name[0] == 'r' || node.children[0].name[0] == 's' || node.children[0].name[0] == 't' || node.children[0].name[0] == 'u' || node.children[0].name[0] == 'v' || node.children[0].name[0] == 'w' || node.children[0].name[0] == 'x' || node.children[0].name[0] == 'y' || node.children[0].name[0] == 'z'){
+                    console.log("works!")
+                }
+                else if(STRING.test(node.children[0].name)){
                     this.setHex("A0");
                     console.log(node.children[0].name);
                     console.log(node.children[0].name[0]);
@@ -97,23 +100,24 @@ module TSC {
                     this.setHex("02");
                 }
                 //tests if the value in print is a variable
-                else if(STRING.test(node.children[0].name[0])){
-
-                }
+                
                 this.setHex("FF");
             }
             else if(node.name == 'VarDecl'){
-                //let tName = node.children[1].name[0];
+                this.codeGenLog.push("Generating op code for VarDecl:")
+
+                let staticValue = "T" + this.staticId;
 
                 this.staticTable.push([{
                     key: node.children[1].name[0],
                     type: node.children[0].name[0],
                     scope: node.children[1].scope,
-                    location: ""
+                    value: staticValue
                 }]);
 
+                console.log(this.staticTable[0][0].key)
                 this.setHex("8D");
-                this.setHex("T" + this.staticId);
+                this.setHex(staticValue);
                 this.setHex("00");
                 this.staticId++;
             }
@@ -122,9 +126,26 @@ module TSC {
                     this.setHex("A9");
                     this.setHex("0" + node.children[1].name[0]);
                 }
+                var variable = node.children[0].name[0];
+                var scope = node.children[1].scope;
+                var staticVal = this.findVariable(variable, scope);
+                this.setHex("8D");
+                this.setHex(staticVal);
+                this.setHex("00");
             }
 
             //this.traverse(node.parent.children[1]);
+        }
+
+        public findVariable(variable, scope){
+            for (var i = 0; i < this.staticTable.length; i++) {
+                //var staticObject = itr.next();
+                if (this.staticTable[i][0].key == variable && this.staticTable[i][0].scope == scope) {
+                    // when finding appropriate variable, return its temp address
+                    return this.staticTable[i][0].value;
+                }
+            }
+
         }
 
         public heapString(string){
