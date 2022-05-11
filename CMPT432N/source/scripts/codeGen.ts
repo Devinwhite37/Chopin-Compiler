@@ -81,7 +81,10 @@ module TSC {
                 // tests if the value in print is a string
                 else if(STRING.test(node.children[0].name)){
                     this.setHex("A0");
-                    this.heapString(node.children[0].name)
+                    let hexVal = this.heapString(node.children[0].name);
+                    this.setHex(hexVal);
+                    this.setHex("A2");
+                    this.setHex("02");
                 }
                 //tests if the value in print is a variable
                 else if(STRING.test(node.children[0].name[0])){
@@ -91,7 +94,15 @@ module TSC {
             }
         }
         public heapString(string){
+            var stringLength = string.length;
             console.log(string);
+            this.heapStart = this.heapStart - (stringLength + 1);
+            var hexVal = this.heapStart;
+            // put in characters converted to hex strings into heap
+            for (var i = this.heapStart; i < this.heapStart + stringLength; i++) {
+                this.createdCode[i] = string.charCodeAt(i - this.heapStart).toString(16).toUpperCase();
+            }
+            return hexVal.toString(16).toUpperCase();
 
         }
     }
