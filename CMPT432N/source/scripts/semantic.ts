@@ -119,7 +119,6 @@ module TSC {
                     this.semanticOutput.push("EOP");
                     this.programNum++;
                     this.currentToken++;
-                    console.log(this.symbolOutput);
                     this.programSemantic();
                 }
             }
@@ -239,7 +238,6 @@ module TSC {
             else if (tokens[this.currentToken][0] == "VARIABLE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope);  
                 for(var i = 0; i < this.additions; i++){
-                    console.log("shouldnt run");
                     this.ast.endChildren();
                 }
                 this.varVal = tokens[this.currentToken][1][0];
@@ -272,7 +270,6 @@ module TSC {
             for(var j = 0; j < this.symbolOutput.length; j++){
                 if(this.symbolOutput[j][0].key == this.varVal && this.symbolOutput[j][0].scope <= this.scope){
                     this.prevDeclared = true;
-                    console.log(this.symbolOutput[j][0])
                     this.prevVarScope = this.symbolOutput[j][0].scope;
                     break;
                 }
@@ -295,7 +292,6 @@ module TSC {
             }
             else{
                 for(var i = 0; i < this.additions; i++){
-                    console.log("shouldnt run");
                     this.ast.endChildren();
                 }
             }
@@ -345,8 +341,6 @@ module TSC {
                 this.isVarInitialized();
                 this.typeMatch();
                 this.wasDeclared();
-                console.log(this.scope);
-                console.log(this.prevVarScope);
                 if(this.match == true && this.prevDeclared == true){
                     this.semanticOutput.push("VALID - Variable ["+ this.currentVar+"] of type "+this.currentType+" matches its assignment type on [" + tokens[this.currentToken-3][3] + " , "+ tokens[this.currentToken-3][2] +"]")
                 }

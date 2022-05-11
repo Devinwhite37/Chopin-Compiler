@@ -8,6 +8,7 @@ module TSC {
         ast: Semantic;
         tree: any;
         heapStart: number;
+        staticTable: any[] = [];
 
         constructor(){
             //this.ast = new Semantic(astRes);
@@ -15,6 +16,7 @@ module TSC {
             this.codeGenOP = [];
             this.hexLocation = 0;
             this.heapStart = 245;
+            this.staticTable = [];
             //this.tree = {};
             //this.astG = new Semantic();
             //this.createdCode.push("Program 1");
@@ -24,15 +26,15 @@ module TSC {
             //console.log(this.symbolList);
             this.codeGenOP.push("Added string [true] to heap, address 245");
             this.codeGenOP.push("Added string [false] to heap, address 250");
-            this.createdCode[254] = "e".charCodeAt(0).toString(16).toUpperCase();
-            this.createdCode[253] = "s".charCodeAt(0).toString(16).toUpperCase();
-            this.createdCode[252] = "l".charCodeAt(0).toString(16).toUpperCase();
-            this.createdCode[251] = "a".charCodeAt(0).toString(16).toUpperCase();
-            this.createdCode[250] = "f".charCodeAt(0).toString(16).toUpperCase();
-            this.createdCode[248] = "e".charCodeAt(0).toString(16).toUpperCase();
-            this.createdCode[247] = "u".charCodeAt(0).toString(16).toUpperCase();
-            this.createdCode[246] = "r".charCodeAt(0).toString(16).toUpperCase();
             this.createdCode[245] = "t".charCodeAt(0).toString(16).toUpperCase();
+            this.createdCode[246] = "r".charCodeAt(0).toString(16).toUpperCase();
+            this.createdCode[247] = "u".charCodeAt(0).toString(16).toUpperCase();
+            this.createdCode[248] = "e".charCodeAt(0).toString(16).toUpperCase();
+            this.createdCode[250] = "f".charCodeAt(0).toString(16).toUpperCase();
+            this.createdCode[251] = "a".charCodeAt(0).toString(16).toUpperCase();
+            this.createdCode[252] = "l".charCodeAt(0).toString(16).toUpperCase();
+            this.createdCode[253] = "s".charCodeAt(0).toString(16).toUpperCase();
+            this.createdCode[254] = "e".charCodeAt(0).toString(16).toUpperCase();
             this.setHex("A9");
             this.setHex("00");
         }
@@ -55,7 +57,7 @@ module TSC {
             this.hexLocation++;
         }
 
-        public traverse(node){
+        public traverse(node: any){
             const DIGIT = new RegExp('[0-9]');
             const STRING = new RegExp('[a-z]');
 
@@ -68,7 +70,9 @@ module TSC {
                 this.traverse(node.children[0]);
             }
             else if(node.name == 'Block'){
-                this.traverse(node.children[0]);
+                for(var i=0; i<node.children.length; i++){
+                    this.traverse(node.children[i]);
+                }
             }
             else if(node.name == 'PrintStatement'){
                 //tests if the value in the print is a digit
@@ -93,21 +97,28 @@ module TSC {
                 this.setHex("FF");
             }
             else if(node.name == 'VarDecl'){
-
+                //let tName = node.children[1].name[0];
+                this.staticTable.push([{
+                    key: node.children[1].name[0],
+                    type: node.children[0].name[0],
+                    scope: node.children[1].scope,
+                    location: ""
+                }]);
+                
+                console.log(this.staticTable);
             }
             //this.traverse(node.parent.children[1]);
         }
+
         public heapString(string){
             var stringLength = string.length;
             console.log(string);
             this.heapStart = this.heapStart - (stringLength + 1);
             var hexVal = this.heapStart;
-            // put in characters converted to hex strings into heap
             for (var i = this.heapStart; i < this.heapStart + stringLength; i++) {
                 this.createdCode[i] = string.charCodeAt(i - this.heapStart).toString(16).toUpperCase();
             }
             return hexVal.toString(16).toUpperCase();
-
         }
     }
 }
