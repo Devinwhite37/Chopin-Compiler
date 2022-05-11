@@ -117,6 +117,10 @@ var TSC;
                     this.setHex("A2");
                     this.setHex("02");
                 }
+                else if (node.children[1].name[0] == 'BOOL_EQUAL') {
+                }
+                else if (node.children[1].name[0] == 'BOOL_NOTEQUAL') {
+                }
                 this.setHex("FF");
             }
             else if (node.name == 'VarDecl') {
@@ -146,6 +150,16 @@ var TSC;
                     var hexVal = this.heapString(node.children[1].name);
                     this.setHex("A9");
                     this.setHex(hexVal);
+                }
+                else if (node.children[1].value == 'boolean') {
+                    if (node.children[1].name[0] == 'true') {
+                        this.setHex("A9");
+                        this.setHex((245).toString(16).toUpperCase());
+                    }
+                    else if (node.children[1].name[0] == "false") {
+                        this.setHex("A9");
+                        this.setHex((250).toString(16).toUpperCase());
+                    }
                 }
                 var variable = node.children[0].name[0];
                 var scope = node.children[0].scope;
@@ -180,10 +194,13 @@ var TSC;
                     var patchVal = this.createdCode[i];
                     console.log(patchVal);
                     for (var j = 0; j < this.staticTable.length; j++) {
-                        if (this.staticTable[j][0].value == patchVal)
+                        if (this.staticTable[j][0].value == patchVal) {
                             var memAddr = this.staticTable[j][0].byteNum;
-                        console.log(memAddr);
-                        this.createdCode[i] = memAddr;
+                            console.log(memAddr);
+                            console.log(this.createdCode[i]);
+                            this.createdCode[i] = memAddr;
+                            this.codeGenLog.push("BackPatching " + patchVal + " with " + memAddr);
+                        }
                     }
                 }
             }
