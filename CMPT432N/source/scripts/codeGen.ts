@@ -3,17 +3,19 @@ module TSC {
         createdCode: Array<any>;
         symbolList: Array<Semantic>;
         codeGenOP: Array<String>;
-        curLocation: number;
+        hexLocation: number;
         astG: Array<Semantic>;
         ast: Semantic;
         tree: any;
+        heapStart: number;
 
         constructor(){
             //this.ast = new Semantic(astRes);
             this.createdCode = [];
             this.codeGenOP = [];
-            this.curLocation = 0;
-            this.tree = {};
+            this.hexLocation = 0;
+            this.heapStart = 245;
+            //this.tree = {};
             //this.astG = new Semantic();
             //this.createdCode.push("Program 1");
             for(var i=0; i<256; i++){
@@ -31,27 +33,66 @@ module TSC {
             this.createdCode[247] = "u".charCodeAt(0).toString(16).toUpperCase();
             this.createdCode[246] = "r".charCodeAt(0).toString(16).toUpperCase();
             this.createdCode[245] = "t".charCodeAt(0).toString(16).toUpperCase();
+            this.setHex("A9");
+            this.setHex("00");
         }
 
         public codeGenOutput(astRes){
             let ast: ScopeTree = astRes;
-            console.log(ast);
-            console.log(this.ast);
-            console.log(this.tree);
-            //this.astG.astRes = this.ast;
-            console.log(this.ast);
+            if(ast === undefined){
+            }else{
+                this.traverse(ast.root);
+            }
             return this.codeGenOP;
         }
 
         public codeOutput(){
-            this.setHex("A9");
-            this.setHex("00");
             return this.createdCode;
-
         }
 
         public setHex(curHex){
-            this.createdCode[this.curLocation++] = curHex;
+            this.createdCode[this.hexLocation] = curHex;
+            this.hexLocation++;
+        }
+
+        public traverse(node){
+            const DIGIT = new RegExp('[0-9]');
+            const STRING = new RegExp('[a-z]');
+
+            console.log(node);
+            console.log(node.name);
+            if(node.name == 'Root'){
+                this.traverse(node.children[0]);
+            }
+            else if(node.name.slice(0,7) == 'Program'){
+                this.traverse(node.children[0]);
+            }
+            else if(node.name == 'Block'){
+                this.traverse(node.children[0]);
+            }
+            else if(node.name == 'PrintStatement'){
+                //tests if the value in the print is a digit
+                if(DIGIT.test(node.children[0].name[0])){
+                    this.setHex("A0");
+                    this.setHex("0" + node.children[0].name[0]);
+                    this.setHex("A2");
+                    this.setHex("01");
+                }
+                // tests if the value in print is a string
+                else if(STRING.test(node.children[0].name)){
+                    this.setHex("A0");
+                    this.heapString(node.children[0].name)
+                }
+                //tests if the value in print is a variable
+                else if(STRING.test(node.children[0].name[0])){
+
+                }
+                this.setHex("FF");
+            }
+        }
+        public heapString(string){
+            console.log(string);
+
         }
     }
 }
