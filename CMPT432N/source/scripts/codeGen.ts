@@ -2,7 +2,7 @@ module TSC {
     export class CodeGen {
         createdCode: Array<any>;
         symbolList: Array<Semantic>;
-        codeGenOP: Array<String>;
+        codeGenLog: Array<String>;
         hexLocation: number;
         astG: Array<Semantic>;
         ast: Semantic;
@@ -14,7 +14,7 @@ module TSC {
         constructor(){
             //this.ast = new Semantic(astRes);
             this.createdCode = [];
-            this.codeGenOP = [];
+            this.codeGenLog = [];
             this.hexLocation = 0;
             this.heapStart = 245;
             this.staticTable = [];
@@ -26,8 +26,8 @@ module TSC {
                 this.createdCode.push("00");
             }
             //console.log(this.symbolList);
-            this.codeGenOP.push("Added string [true] to heap, address 245");
-            this.codeGenOP.push("Added string [false] to heap, address 250");
+            this.codeGenLog.push("Added string [true] to heap, address 245");
+            this.codeGenLog.push("Added string [false] to heap, address 250");
             this.createdCode[245] = "t".charCodeAt(0).toString(16).toUpperCase();
             this.createdCode[246] = "r".charCodeAt(0).toString(16).toUpperCase();
             this.createdCode[247] = "u".charCodeAt(0).toString(16).toUpperCase();
@@ -37,8 +37,6 @@ module TSC {
             this.createdCode[252] = "l".charCodeAt(0).toString(16).toUpperCase();
             this.createdCode[253] = "s".charCodeAt(0).toString(16).toUpperCase();
             this.createdCode[254] = "e".charCodeAt(0).toString(16).toUpperCase();
-            this.setHex("A9");
-            this.setHex("00");
         }
 
         public codeGenOutput(astRes){
@@ -47,7 +45,7 @@ module TSC {
             }else{
                 this.traverse(ast.root);
             }
-            return this.codeGenOP;
+            return this.codeGenLog;
         }
 
         public codeOutput(){
@@ -56,7 +54,9 @@ module TSC {
 
         public setHex(curHex){
             this.createdCode[this.hexLocation] = curHex;
+            this.codeGenLog.push("Adding " + curHex + " to [" + this.hexLocation + "]");
             this.hexLocation++;
+
         }
 
         public traverse(node: any){
@@ -77,7 +77,9 @@ module TSC {
                 }
             }
             else if(node.name == 'PrintStatement'){
+                this.codeGenLog.push("Generating op code for PrintStatement:")
                 //tests if the value in the print is a digit
+                
                 if(DIGIT.test(node.children[0].name[0])){
                     this.setHex("A0");
                     this.setHex("0" + node.children[0].name[0]);
@@ -85,8 +87,10 @@ module TSC {
                     this.setHex("01");
                 }
                 // tests if the value in print is a string
-                else if(STRING.test(node.children[0].name)){
+                else if(STRING.test(node.children[0].name[0])){
                     this.setHex("A0");
+                    console.log(node.children[0].name);
+                    console.log(node.children[0].name[0]);
                     let hexVal = this.heapString(node.children[0].name);
                     this.setHex(hexVal);
                     this.setHex("A2");
@@ -113,16 +117,24 @@ module TSC {
                 this.setHex("00");
                 this.staticId++;
             }
+            else if(node.name == 'AssignmentStatement'){
+                if(DIGIT.test(node.children[1].name[0])){
+                    this.setHex("A9");
+                    this.setHex("0" + node.children[1].name[0]);
+                }
+            }
+
             //this.traverse(node.parent.children[1]);
         }
 
         public heapString(string){
             var stringLength = string.length;
-            console.log(string);
             this.heapStart = this.heapStart - (stringLength + 1);
             var hexVal = this.heapStart;
             for (var i = this.heapStart; i < this.heapStart + stringLength; i++) {
                 this.createdCode[i] = string.charCodeAt(i - this.heapStart).toString(16).toUpperCase();
+                this.codeGenLog.push("Adding " + this.createdCode[i] + " at byte [" + i + "]");
+
             }
             return hexVal.toString(16).toUpperCase();
         }
