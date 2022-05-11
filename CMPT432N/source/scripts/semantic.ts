@@ -465,7 +465,7 @@ module TSC {
         public booleanExprSemantic(){
             this.currentType = "boolean";
             if (tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
-                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "");
+                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "boolean");
                 this.currentToken++;
                 this.currentType = "boolean";
             }

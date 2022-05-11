@@ -106,6 +106,17 @@ var TSC;
                     this.setHex("A2");
                     this.setHex("02");
                 }
+                else if (node.children[0].value == 'boolean') {
+                    this.setHex("A0");
+                    if (node.children[0].name[0] == 'true') {
+                        this.setHex((245).toString(16).toUpperCase());
+                    }
+                    else if (node.children[0].name[0] == "false") {
+                        this.setHex((250).toString(16).toUpperCase());
+                    }
+                    this.setHex("A2");
+                    this.setHex("02");
+                }
                 this.setHex("FF");
             }
             else if (node.name == 'VarDecl') {
