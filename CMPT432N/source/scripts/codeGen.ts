@@ -10,8 +10,10 @@ module TSC {
         heapStart: number;
         staticTable: any[] = [];
         staticId: number;
+        staticAreaLocation: number;
 
         constructor(){
+            this.staticAreaLocation = 0;
             //this.ast = new Semantic(astRes);
             this.createdCode = [];
             this.codeGenLog = [];
@@ -45,7 +47,9 @@ module TSC {
             }else{
                 this.traverse(ast.root);
             }
+            this.staticArea();
             this.backPatch();
+
             return this.codeGenLog;
         }
 
@@ -95,6 +99,13 @@ module TSC {
                     var staticVal = this.findVariable(variable, scope);
                     this.setHex(staticVal);
                     this.setHex("00");
+                    for(var j = 0; j < this.staticTable.length; j++){
+                        if (this.staticTable. == TSC.VariableType.String || this.staticMap.get(tempAddr)["type"] == TSC.VariableType.Boolean) {
+                        // load x regis with 2
+                        this.setCode("A2");
+                        this.setCode("02");
+
+                    }
 
 
                 }
@@ -111,12 +122,9 @@ module TSC {
             }
             else if(node.name == 'VarDecl'){
                 this.codeGenLog.push("Generating op code for VarDecl:")
-
+                this.setHex("A9");
+                this.setHex("00");
                 let staticValue = "T" + this.staticId;
-
-               
-
-                console.log(this.staticTable[0][0].key)
                 this.setHex("8D");
                 this.setHex(staticValue);
                 this.staticTable.push([{
@@ -146,25 +154,50 @@ module TSC {
 
             //this.traverse(node.parent.children[1]);
         }
+
+        public staticArea(){
+            this.staticAreaLocation = this.hexLocation + 1;
+            var staticVarsLength = this.staticTable.length;
+
+            for (var i = 0; i < this.staticTable.length; i++) {
+                var newAddressVal = this.staticAreaLocation.toString(16).toUpperCase();
+                if(newAddressVal.length < 2){
+                    newAddressVal = "0" + newAddressVal;
+                }
+                //for(var j = 0; j < this.staticTable.length; j++){
+                   // if(this.staticTable[i][0].)
+                    this.staticTable[i][0].byteNum = newAddressVal;
+                    this.staticAreaLocation++;
+                //}
+            }
+            console.log(this.staticTable);
+
+        }
+        
         public backPatch(){
             for (var i = 0; i < this.createdCode.length; i++) {
-                if(this.createdCode[i].charAt(0,0) == "T"){
+                //console.log(this.createdCode[i].slice(0, 1));
+                if(this.createdCode[i] === undefined){}
+                else if(this.createdCode[i].charAt(0) == "T"){
                     var patchVal = this.createdCode[i];
-
+                    console.log(patchVal);
+                    for(var j = 0; j < this.staticTable.length; j++){
+                        if(this.staticTable[j][0].value == patchVal)
+                            var memAddr = this.staticTable[j][0].byteNum;
+                            console.log(memAddr);
+                            this.createdCode[i] = memAddr;
+                    }
                 }
             }
-
         }
 
         public findVariable(variable, scope){
             for (var i = 0; i < this.staticTable.length; i++) {
                 //var staticObject = itr.next();
                 if (this.staticTable[i][0].key == variable && this.staticTable[i][0].scope == scope) {
-                    // when finding appropriate variable, return its temp address
                     return this.staticTable[i][0].value;
                 }
             }
-
         }
 
         public heapString(string){
