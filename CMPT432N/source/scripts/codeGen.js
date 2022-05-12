@@ -170,6 +170,14 @@ var TSC;
                         this.setHex((250).toString(16).toUpperCase());
                     }
                 }
+                else if (node.children[1].value == 'variable') {
+                    this.setHex("AD");
+                    var variable = node.children[1].name[0];
+                    var scope = node.children[1].scope;
+                    var staticVal = this.findVariable(variable, scope);
+                    this.setHex(staticVal);
+                    this.setHex("00");
+                }
                 var variable = node.children[0].name[0];
                 var scope = node.children[0].scope;
                 var staticVal = this.findVariable(variable, scope);
@@ -182,16 +190,18 @@ var TSC;
         CodeGen.prototype.additionOp = function (node) {
             console.log("node:");
             console.log(node);
-            if (node[1] === undefined) { }
-            else if (node[1].name == 'ADDITION_OP') {
-                this.additionOp(node[1].children);
-            }
             if (node[0].value == 'digit') {
                 this.setHex("A9");
                 this.setHex("0" + node[0].name[0]);
                 this.setHex("8D");
                 this.setHex("00");
                 this.setHex("00");
+            }
+            if (node[1] === undefined) {
+                return;
+            }
+            else if (node[1].name == 'ADDITION_OP') {
+                this.additionOp(node[1].children);
             }
             if (node[0].value == 'digit') {
                 this.setHex("A9");
