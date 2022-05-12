@@ -126,9 +126,39 @@ var TSC;
                     this.setHex("A2");
                     this.setHex("01");
                 }
-                else if (node.children[1].name[0] == 'BOOL_EQUAL') {
-                }
-                else if (node.children[1].name[0] == 'BOOL_NOTEQUAL') {
+                else if (node.children[1].name[0] == 'BOOL_EQUAL' || node.children[1].name[0] == 'BOOL_NOTEQUAL') {
+                    var address = this.handleBoolEqual(node.children);
+                    this.setHex("EC");
+                    this.setHex(address);
+                    this.setHex("00");
+                    this.setHex("D0");
+                    this.setHex("0A");
+                    this.setHex("A0");
+                    //points to static location of saved true and false values
+                    if (node.children[1].name[0] == 'BOOL_EQUAL') {
+                        this.setHex("F5");
+                    }
+                    else {
+                        this.setHex("FA");
+                    }
+                    this.setHex("AE");
+                    this.setHex("FF");
+                    this.setHex("00");
+                    this.setHex("EC");
+                    this.setHex("FE");
+                    this.setHex("00");
+                    this.setHex("D0");
+                    this.setHex("02");
+                    this.setHex("A0");
+                    //points to static location of saved true and false values
+                    if (node.children[1].name[0] == 'BOOL_EQUAL') {
+                        this.setHex("FA");
+                    }
+                    else {
+                        this.setHex("F%");
+                    }
+                    this.setHex("A2");
+                    this.setHex("02");
                 }
                 this.setHex("FF");
             }
@@ -186,6 +216,22 @@ var TSC;
                 this.setHex("00");
             }
             //this.traverse(node.parent.children[1]);
+        };
+        CodeGen.prototype.handleBoolEqual = function (node) {
+            console.log(node);
+            if (node[0].value == 'digit') {
+                this.setHex("A2");
+                this.setHex("0" + node[0].name);
+            }
+            if (node[2].value == 'digit') {
+                this.setHex("A9");
+                this.setHex("0" + node[2].name);
+                var temp = "00";
+                this.setHex("8D");
+                this.setHex(temp);
+                this.setHex("00");
+                return temp;
+            }
         };
         CodeGen.prototype.additionOp = function (node) {
             console.log("node:");
