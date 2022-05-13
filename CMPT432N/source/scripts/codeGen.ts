@@ -175,6 +175,8 @@ module TSC {
                 }      
                 this.setHex("FF");
             }
+
+
             else if(node.name == 'VarDecl'){
                 this.codeGenLog.push("Generating op code for VarDecl:")
                 this.setHex("A9");
@@ -192,6 +194,8 @@ module TSC {
                 this.setHex("00");
                 this.staticId++;
             }
+
+
             else if(node.name == 'AssignmentStatement'){
                 this.codeGenLog.push("Generating op code for AssignmentStatement:")
                 if(node.children[1].value == 'digit'){
@@ -222,7 +226,11 @@ module TSC {
                     this.setHex(staticVal);
                     this.setHex("00");
                 }
-                var variable = node.children[0].name[0];
+                else if(node.children[1].value == 'addition'){
+                    //console.log(node.children[1].children);
+                    this.additionOp(node.children[1].children);
+                }
+                    var variable = node.children[0].name[0];
                 var scope = node.children[0].scope;
                 var staticVal = this.findVariable(variable, scope);
                 this.setHex("8D");
@@ -314,6 +322,7 @@ module TSC {
         }
 
         public additionOp(node){
+            console.log(node);
             var temp = "00";
             if(node[1].value == 'digit'){
                 this.setHex("A9");

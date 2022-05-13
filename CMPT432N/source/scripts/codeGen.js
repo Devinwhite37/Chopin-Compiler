@@ -210,6 +210,10 @@ var TSC;
                     this.setHex(staticVal);
                     this.setHex("00");
                 }
+                else if (node.children[1].value == 'addition') {
+                    //console.log(node.children[1].children);
+                    this.additionOp(node.children[1].children);
+                }
                 var variable = node.children[0].name[0];
                 var scope = node.children[0].scope;
                 var staticVal = this.findVariable(variable, scope);
@@ -298,6 +302,7 @@ var TSC;
             }
         };
         CodeGen.prototype.additionOp = function (node) {
+            console.log(node);
             var temp = "00";
             if (node[1].value == 'digit') {
                 this.setHex("A9");

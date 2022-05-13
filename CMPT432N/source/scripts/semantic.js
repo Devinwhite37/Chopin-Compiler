@@ -246,12 +246,15 @@ var TSC;
                 this.ast.addNode("ADDITION_OP", "branch", this.scope, "addition");
                 this.ast.addNode(tokens[this.currentToken - 1][1], "leaf", this.scope, "digit");
                 this.currentToken++;
-                if (tokens[this.currentToken][0] != 'DIGIT') {
+                if (tokens[this.currentToken][0] == 'VARIABLE') {
                     this.varVal = tokens[this.currentToken][1][0];
                     this.getVarsType();
-                    if (this.currentType != 'digit') {
+                    if (this.currentType != 'int') {
                         this.semanticOutput.push("ERROR - Cannot add a [" + this.currentType + "] to a digit.");
                     }
+                }
+                if (tokens[this.currentToken][0] == 'BOOL_TRUE' || tokens[this.currentToken][0] == 'BOOL_FALSE') {
+                    this.semanticOutput.push("ERROR - Cannot add [" + tokens[this.currentToken][1] + "] to a digit.");
                 }
                 if (tokens[this.currentToken][0] == 'DIGIT' && tokens[this.currentToken + 1][0] != 'ADDITION_OP') {
                     this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "digit");
