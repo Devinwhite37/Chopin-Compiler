@@ -226,6 +226,7 @@ module TSC {
         }
 
         public expressionSemantic(){
+            console.log(tokens[this.currentToken][0]);
             if (tokens[this.currentToken][0] == "DIGIT") {
                 this.intExprSemantic();
             } 
@@ -489,11 +490,18 @@ module TSC {
             else if(tokens[this.currentToken][0] == 'L_PAREN'){
                 this.currentToken++;
                 this.expressionSemantic();
+                if(tokens[this.currentToken+1][0] =="DIGIT"){
+                    this.ast.addNode(tokens[this.currentToken+1][1], "leaf", this.scope, "digit");
+                }
                 this.currentType = "boolean";
                 if(tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!='){
                     this.ast.addNode(tokens[this.currentToken][0], "leaf", this.scope, "");
                     this.currentToken++;
                     this.expressionSemantic();
+                    console.log(tokens[this.currentToken-1][0]);
+                    if(tokens[this.currentToken-1][0] =="DIGIT"){
+                        this.ast.addNode(tokens[this.currentToken-1][1], "leaf", this.scope, "digit");
+                    }
                     this.currentType = "boolean";
                     if(tokens[this.currentToken][0] == 'R_PAREN'){
                         this.currentType = "boolean";

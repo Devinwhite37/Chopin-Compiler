@@ -91,7 +91,7 @@ module TSC {
                     this.setHex("AC");
                     var variable = node.children[0].name[0];
                     var scope = node.children[0].scope;
-                    var staticVal = this.findVariable(variable, scope);
+                    var staticVal = this.findVariable(variable, scope, node);
                     this.setHex(staticVal);
                     this.setHex("00");
                     for(var j = 0; j < this.staticTable.length; j++){
@@ -222,7 +222,7 @@ module TSC {
                     
                     var variable = node.children[1].name[0];
                     var scope = node.children[1].scope;
-                    var staticVal = this.findVariable(variable, scope);
+                    var staticVal = this.findVariable(variable, scope, node);
                     this.setHex(staticVal);
                     this.setHex("00");
                 }
@@ -232,12 +232,11 @@ module TSC {
                 }
                     var variable = node.children[0].name[0];
                 var scope = node.children[0].scope;
-                var staticVal = this.findVariable(variable, scope);
+                var staticVal = this.findVariable(variable, scope, node);
                 this.setHex("8D");
                 this.setHex(staticVal);
                 this.setHex("00");
             }
-            //this.traverse(node.parent.children[1]);
         }
 
         public handleBoolEquality(node){
@@ -267,7 +266,7 @@ module TSC {
                 this.setHex("AE");
                 var variable = node[0].name;
                 var scope = node[0].scope;
-                var address = this.findVariable(variable, scope);
+                var address = this.findVariable(variable, scope, node);
                 this.setHex(address);
                 this.setHex("00");
             }
@@ -314,11 +313,9 @@ module TSC {
             else if(node[2].value == 'variable'){
                 var variable = node[2].name;
                 var scope = node[2].scope;
-                var temp: string = this.findVariable(variable, scope);
+                var temp: string = this.findVariable(variable, scope, node);
                 return temp;
             }
-            
-
         }
 
         public additionOp(node){
@@ -334,7 +331,7 @@ module TSC {
             else if(node[1].value == 'variable'){
                 var variable = node[1].name[0];
                 var scope = node[1].scope;
-                var staticVal = this.findVariable(variable, scope);
+                var staticVal = this.findVariable(variable, scope, node);
                 this.setHex("AD");
                 this.setHex(staticVal);
                 this.setHex("00");
@@ -392,12 +389,14 @@ module TSC {
             }
         }
 
-        public findVariable(variable, scope){
+        public findVariable(variable, scope, node){
+           // console.log(node);
             for (var i = 0; i < this.staticTable.length; i++) {
-                //var staticObject = itr.next();
-                if (this.staticTable[i][0].key == variable && this.staticTable[i][0].scope == scope) {
-                    return this.staticTable[i][0].value;
-                }
+                    if (this.staticTable[i][0].key == variable && this.staticTable[i][0].scope <= scope) {
+                        return this.staticTable[i][0].value;
+                        break;
+                    }
+                
             }
         }
 
