@@ -52,7 +52,7 @@ var TSC;
             this.hexLocation++;
         };
         CodeGen.prototype.traverse = function (node) {
-            var DIGIT = new RegExp('[0-9]');
+            //const DIGIT = new RegExp('[0-9]');
             //const STRING = new RegExp('[a-z]');
             console.log(node);
             console.log(node.name);
@@ -68,7 +68,7 @@ var TSC;
                 }
             }
             else if (node.name == 'PrintStatement') {
-                console.log(node.children[0].value);
+                console.log(node.children[0].value == 'addition');
                 this.codeGenLog.push("Generating op code for PrintStatement:");
                 // tests if the value in print is a variable
                 if (node.children[0].value == 'variable') {
@@ -122,15 +122,15 @@ var TSC;
                     this.setHex("01");
                 }
                 //tests for additions in print statement
-                if (node.children[1] === undefined) { }
-                else if (node.children[1].name == "ADDITION_OP") {
-                    this.additionOp(node.children);
+                else if (node.children[0].value == "addition") {
+                    this.additionOp(node.children[0].children);
                     this.setHex("AC");
                     this.setHex("00");
                     this.setHex("00");
                     this.setHex("A2");
                     this.setHex("01");
                 }
+                if (node.children[1] === undefined) { }
                 //tests if there is a test for equality or inequality in print
                 else if (node.children[1].name[0] == 'BOOL_EQUAL' || node.children[1].name[0] == 'BOOL_NOTEQUAL') {
                     var address = this.handleBoolEquality(node.children);
@@ -306,13 +306,10 @@ var TSC;
             }
         };
         CodeGen.prototype.additionOp = function (node) {
-            console.log("node:");
-            console.log(node[0]);
             var temp = "00";
-            if (node[1] === undefined) { }
-            if (node[0].value == 'digit') {
+            if (node[1].value == 'digit') {
                 this.setHex("A9");
-                this.setHex("0" + node[0].name[0]);
+                this.setHex("0" + node[1].name[0]);
                 this.setHex("8D");
                 this.setHex(temp);
                 this.setHex("00");
