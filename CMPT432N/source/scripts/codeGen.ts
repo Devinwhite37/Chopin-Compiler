@@ -9,6 +9,7 @@ module TSC {
         tree: any;
         heapStart: number;
         staticTable: any[] = [];
+        heapTable: any[] = [];
         staticId: number;
         staticAreaLocation: number;
 
@@ -20,6 +21,7 @@ module TSC {
             this.hexLocation = 0;
             this.heapStart = 245;
             this.staticTable = [];
+            this.heapTable = [];
             this.staticId = 0;
             //this.tree = {};
             //this.astG = new Semantic();
@@ -108,11 +110,10 @@ module TSC {
                     }
                 }
                 //tests if the value in print is a string
-                else if(node.children[0].value == 'string'){
+                else if(node.children[0].value == 'string' && node.children[1] === undefined){
                     this.setHex("A0");
                     ///console.log(node.children[1].name);
-                    let hexVal = this.heapString(node.children[0].name);
-                    
+                    let hexVal = this.setHeapString(node.children[0].name);
                     this.setHex(hexVal);
                     this.setHex("A2");
                     this.setHex("02");
@@ -148,7 +149,7 @@ module TSC {
                 }
                 //tests if there is a test for equality or inequality in print
                 else if(node.children[1].name[0] == 'BOOL_EQUAL' || node.children[1].name[0] == 'BOOL_NOTEQUAL'){
-                    var address = this.handleBoolEqual(node.children);
+                    var address = this.handleBoolEquality(node.children);
                     this.setHex("EC");
                     this.setHex(address);
                     this.setHex("00");
@@ -171,7 +172,7 @@ module TSC {
                     //points to static location of saved true and false values
                     if(node.children[1].name[0] == 'BOOL_EQUAL'){
                         this.setHex("FA");
-                    }else{this.setHex("F%");}
+                    }else{this.setHex("F5");}
                     this.setHex("A2");
                     this.setHex("02");
                 }      
@@ -196,13 +197,12 @@ module TSC {
             }
             else if(node.name == 'AssignmentStatement'){
                 this.codeGenLog.push("Generating op code for AssignmentStatement:")
-
                 if(node.children[1].value == 'digit'){
                     this.setHex("A9");
                     this.setHex("0" + node.children[1].name[0]);
                 }
                 else if(node.children[1].value == 'string'){
-                    let hexVal = this.heapString(node.children[1].name);
+                    let hexVal = this.setHeapString(node.children[1].name);
                     this.setHex("A9");
                     this.setHex(hexVal);
                 }
@@ -235,15 +235,33 @@ module TSC {
             //this.traverse(node.parent.children[1]);
         }
 
-        public handleBoolEqual(node){
+        public handleBoolEquality(node){
             console.log(node);
             if(node[0].value == 'digit'){
                 this.setHex("A2");
                 this.setHex("0" + node[0].name);
             }
+            else if(node[0].value == 'string'){
+                var variable = node[0].name;
+                console.log(variable);
+                var staticVal = this.setHeapString(variable);
+                this.setHex("A2");
+                this.setHex(staticVal);
+            }
             if(node[2].value == 'digit'){
                 this.setHex("A9");
                 this.setHex("0" + node[2].name);
+                var temp = "00";
+                this.setHex("8D");
+                this.setHex(temp);
+                this.setHex("00");
+                return temp;
+            }
+            else if(node[2].value == 'string'){
+                var variable = node[2].name;
+                var staticVal = this.setHeapString(variable);
+                this.setHex("A9");
+                this.setHex(staticVal);
                 var temp = "00";
                 this.setHex("8D");
                 this.setHex(temp);
@@ -284,7 +302,7 @@ module TSC {
 
         public staticArea(){
             this.staticAreaLocation = this.hexLocation + 1;
-            var staticVarsLength = this.staticTable.length;
+            //var staticVarsLength = this.staticTable.length;
 
             for (var i = 0; i < this.staticTable.length; i++) {
                 var newAddressVal = this.staticAreaLocation.toString(16).toUpperCase();
@@ -327,15 +345,25 @@ module TSC {
             }
         }
 
-        public heapString(string){
+        public setHeapString(string){
             var stringLength = string.length;
             this.heapStart = this.heapStart - (stringLength + 1);
             var hexVal = this.heapStart;
+            console.log(string);
+            for (var j = 0; j < this.heapTable.length; j++) {
+                if(this.heapTable[j][0].value == string){
+                    return this.heapTable[j][0].pointer;
+                }
+            }
             for (var i = this.heapStart; i < this.heapStart + stringLength; i++) {
                 this.createdCode[i] = string.charCodeAt(i - this.heapStart).toString(16).toUpperCase();
                 this.codeGenLog.push("Adding " + this.createdCode[i] + " at byte [" + i + "]");
-
             }
+            this.heapTable.push([{
+                pointer: this.heapStart.toString(16).toUpperCase(),
+                value: string
+            }]);
+            console.log(this.heapTable);
             return hexVal.toString(16).toUpperCase();
         }
     }
