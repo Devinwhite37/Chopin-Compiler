@@ -132,6 +132,7 @@ var TSC;
                 //tests if there is a test for equality or inequality in print
                 else if (node.children[1].name[0] == 'BOOL_EQUAL' || node.children[1].name[0] == 'BOOL_NOTEQUAL') {
                     var address = this.handleBoolEquality(node.children);
+                    console.log(node.children);
                     this.setHex("EC");
                     this.setHex(address);
                     this.setHex("00");
@@ -234,6 +235,18 @@ var TSC;
                 this.setHex("A2");
                 this.setHex(staticVal);
             }
+            else if (node[0].value == 'boolean') {
+                if (node[0].name == "true") {
+                    // load address of true 
+                    this.setHex("A2");
+                    this.setHex((245).toString(16).toUpperCase());
+                }
+                else if (node[0].name == "false") {
+                    // load address of false
+                    this.setHex("A2");
+                    this.setHex((250).toString(16).toUpperCase());
+                }
+            }
             if (node[2].value == 'digit') {
                 this.setHex("A9");
                 this.setHex("0" + node[2].name);
@@ -253,6 +266,26 @@ var TSC;
                 this.setHex(temp);
                 this.setHex("00");
                 return temp;
+            }
+            else if (node[2].value == 'boolean') {
+                if (node[2].name == "true") {
+                    this.setHex("A9");
+                    this.setHex((245).toString(16).toUpperCase());
+                    var temp = "00";
+                    this.setHex("8D");
+                    this.setHex(temp);
+                    this.setHex("00");
+                    return temp;
+                }
+                else if (node[2].name == "false") {
+                    this.setHex("A9");
+                    this.setHex((250).toString(16).toUpperCase());
+                    var temp = "00";
+                    this.setHex("8D");
+                    this.setHex(temp);
+                    this.setHex("00");
+                    return temp;
+                }
             }
         };
         CodeGen.prototype.additionOp = function (node) {
@@ -326,12 +359,6 @@ var TSC;
             var stringLength = string.length;
             this.heapStart = this.heapStart - (stringLength + 1);
             var hexVal = this.heapStart;
-            if (this.heapTable[0] === undefined) {
-            }
-            else {
-                console.log(this.heapTable[0][0].value);
-                //console.log(this.heapTable[1][0].value);
-            }
             console.log(string);
             for (var j = 0; j < this.heapTable.length; j++) {
                 if (this.heapTable[j][0].value == string) {
