@@ -200,6 +200,7 @@
 			
 			let semantic = new TSC.Semantic();
 			astTree = semantic.astTree();
+			console.log(astTree);
 			st = semantic.symbolTableOP();
 			astRes = semantic.astRes();
 			//console.log("TEST");
@@ -537,6 +538,7 @@
 		function astOutput(){
 			//outputs the AST if parser runs
 				document.getElementById("taAST").value = "";
+				console.log(astTree);
 				putMessageAST(astTree);
 		}
 

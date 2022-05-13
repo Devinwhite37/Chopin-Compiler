@@ -340,6 +340,11 @@ module TSC {
             if(tokens[this.currentToken][1] == "="){
                 this.currentToken++;
                 this.expressionSemantic();
+                console.log(tokens[this.currentToken][0]);
+                if(tokens[this.currentToken-1][0] == 'DIGIT'){
+                    //this.currentToken--;
+                    this.ast.addNode(tokens[this.currentToken-1][1], "leaf", this.scope, "digit");
+                }
                 this.ast.endChildren();
                 this.isVarInitialized();
                 this.typeMatch();

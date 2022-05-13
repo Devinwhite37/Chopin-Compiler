@@ -68,7 +68,6 @@ var TSC;
                 }
             }
             else if (node.name == 'PrintStatement') {
-                console.log(node.children[0].value == 'addition');
                 this.codeGenLog.push("Generating op code for PrintStatement:");
                 // tests if the value in print is a variable
                 if (node.children[0].value == 'variable') {
@@ -76,8 +75,6 @@ var TSC;
                     var variable = node.children[0].name[0];
                     var scope = node.children[0].scope;
                     var staticVal = this.findVariable(variable, scope);
-                    console.log(staticVal);
-                    console.log(scope);
                     this.setHex(staticVal);
                     this.setHex("00");
                     for (var j = 0; j < this.staticTable.length; j++) {
@@ -96,7 +93,6 @@ var TSC;
                 //tests if the value in print is a string
                 else if (node.children[0].value == 'string' && node.children[1] === undefined) {
                     this.setHex("A0");
-                    ///console.log(node.children[1].name);
                     var hexVal = this.setHeapString(node.children[0].name);
                     this.setHex(hexVal);
                     this.setHex("A2");
@@ -134,7 +130,6 @@ var TSC;
                 //tests if there is a test for equality or inequality in print
                 else if (node.children[1].name[0] == 'BOOL_EQUAL' || node.children[1].name[0] == 'BOOL_NOTEQUAL') {
                     var address = this.handleBoolEquality(node.children);
-                    console.log(node.children);
                     this.setHex("EC");
                     this.setHex(address);
                     this.setHex("00");
@@ -225,14 +220,12 @@ var TSC;
             //this.traverse(node.parent.children[1]);
         };
         CodeGen.prototype.handleBoolEquality = function (node) {
-            console.log(node);
             if (node[0].value == 'digit') {
                 this.setHex("A2");
                 this.setHex("0" + node[0].name);
             }
             else if (node[0].value == 'string') {
                 var variable = node[0].name;
-                console.log(variable);
                 var staticVal = this.setHeapString(variable);
                 this.setHex("A2");
                 this.setHex(staticVal);
@@ -301,7 +294,6 @@ var TSC;
                 var variable = node[2].name;
                 var scope = node[2].scope;
                 var temp = this.findVariable(variable, scope);
-                console.log(temp);
                 return temp;
             }
         };
@@ -310,6 +302,17 @@ var TSC;
             if (node[1].value == 'digit') {
                 this.setHex("A9");
                 this.setHex("0" + node[1].name[0]);
+                this.setHex("8D");
+                this.setHex(temp);
+                this.setHex("00");
+            }
+            else if (node[1].value == 'variable') {
+                var variable = node[1].name[0];
+                var scope = node[1].scope;
+                var staticVal = this.findVariable(variable, scope);
+                this.setHex("AD");
+                this.setHex(staticVal);
+                this.setHex("00");
                 this.setHex("8D");
                 this.setHex(temp);
                 this.setHex("00");
@@ -346,7 +349,6 @@ var TSC;
         };
         CodeGen.prototype.backPatch = function () {
             for (var i = 0; i < this.createdCode.length; i++) {
-                //console.log(this.createdCode[i].slice(0, 1));
                 if (this.createdCode[i] === undefined) { }
                 else if (this.createdCode[i].charAt(0) == "T") {
                     var patchVal = this.createdCode[i];
@@ -361,7 +363,6 @@ var TSC;
             }
         };
         CodeGen.prototype.findVariable = function (variable, scope) {
-            console.log(variable);
             for (var i = 0; i < this.staticTable.length; i++) {
                 //var staticObject = itr.next();
                 if (this.staticTable[i][0].key == variable && this.staticTable[i][0].scope == scope) {
@@ -373,7 +374,6 @@ var TSC;
             var stringLength = string.length;
             this.heapStart = this.heapStart - (stringLength + 1);
             var hexVal = this.heapStart;
-            console.log(string);
             for (var j = 0; j < this.heapTable.length; j++) {
                 if (this.heapTable[j][0].value == string) {
                     return this.heapTable[j][0].pointer;
@@ -387,7 +387,6 @@ var TSC;
                     pointer: this.heapStart.toString(16).toUpperCase(),
                     value: string
                 }]);
-            console.log(this.heapTable);
             return hexVal.toString(16).toUpperCase();
         };
         return CodeGen;
