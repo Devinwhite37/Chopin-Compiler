@@ -4,6 +4,7 @@ var TSC;
         function CodeGen() {
             this.staticTable = [];
             this.heapTable = [];
+            this.jumpTable = [];
             this.staticAreaLocation = 0;
             //this.ast = new Semantic(astRes);
             this.createdCode = [];
@@ -12,7 +13,9 @@ var TSC;
             this.heapStart = 245;
             this.staticTable = [];
             this.heapTable = [];
+            this.jumpTable = [];
             this.staticId = 0;
+            this.jumpLocation = 0;
             //this.tree = {};
             //this.astG = new Semantic();
             //this.createdCode.push("Program 1");
@@ -221,6 +224,46 @@ var TSC;
                 this.setHex(staticVal);
                 this.setHex("00");
             }
+            else if (node.name = 'IfStatement') {
+                this.codeGenLog.push("Generating op code for IfStatement:");
+                if (node.children[0].name == 'true') {
+                    this.setHex("AE");
+                    this.setHex((245).toString(16).toUpperCase());
+                    this.setHex("00");
+                    this.setHex("EC");
+                    this.setHex((245).toString(16).toUpperCase());
+                    this.setHex("00");
+                }
+                else if (node.children[0].name[0] == 'false') {
+                    this.setHex("AE");
+                    this.setHex((250).toString(16).toUpperCase());
+                    this.setHex("00");
+                    this.setHex("EC");
+                    this.setHex((245).toString(16).toUpperCase());
+                    this.setHex("00");
+                }
+                var temp = "J" + this.jumpLocation;
+                var startOfBranchPtr = this.hexLocation;
+                // store in accumulator location temp 0, fill in later
+                this.setHex("D0");
+                this.setHex(temp);
+                // increase the jump id
+                this.jumpLocation++;
+                // now we need to put op codes in to evaluate the block
+                this.traverse(node.children[1]);
+                // figure out how much to jump based on current opPtr and where the op code for the branch is
+                // + 2 for offset because we use 2 op codes to store branch
+                // store as hex value
+                var jumpValue = (this.hexLocation - (startOfBranchPtr + 2)).toString(16).toUpperCase();
+                if (jumpValue.length < 2) {
+                    // pad with 0
+                    jumpValue = "0" + jumpValue;
+                }
+                this.jumpTable.push([{
+                        jump: jumpValue,
+                        value: temp
+                    }]);
+            }
         };
         CodeGen.prototype.handleBoolEquality = function (node) {
             if (node[0].value == 'digit') {
@@ -364,6 +407,16 @@ var TSC;
                         }
                     }
                 }
+                else if (this.createdCode[i].charAt(0) == "J") {
+                    var patchValJump = this.createdCode[i];
+                    for (var k = 0; k < this.jumpTable.length; k++) {
+                        if (this.jumpTable[k][0].value == patchValJump) {
+                            var memAddrJump = this.jumpTable[k][0].jump;
+                            this.createdCode[i] = memAddrJump;
+                            this.codeGenLog.push("BackPatching " + patchValJump + " with " + memAddrJump);
+                        }
+                    }
+                }
             }
         };
         CodeGen.prototype.findVariable = function (variable, scope, node) {
@@ -371,7 +424,6 @@ var TSC;
             for (var i = 0; i < this.staticTable.length; i++) {
                 if (this.staticTable[i][0].key == variable && this.staticTable[i][0].scope <= scope) {
                     return this.staticTable[i][0].value;
-                    break;
                 }
             }
         };
