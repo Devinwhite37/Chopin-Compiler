@@ -94,6 +94,8 @@ module TSC {
                     var variable = node.children[0].name[0];
                     var scope = node.children[0].scope;
                     var staticVal = this.findVariable(variable, scope);
+                    console.log(staticVal);
+                    console.log(scope);
                     this.setHex(staticVal);
                     this.setHex("00");
                     for(var j = 0; j < this.staticTable.length; j++){
@@ -261,6 +263,14 @@ module TSC {
                     this.setHex((250).toString(16).toUpperCase());
                 }
             }
+            else if(node[0].value == 'variable'){
+                this.setHex("AE");
+                var variable = node[0].name;
+                var scope = node[0].scope;
+                var address = this.findVariable(variable, scope);
+                this.setHex(address);
+                this.setHex("00");
+            }
             if(node[2].value == 'digit'){
                 this.setHex("A9");
                 this.setHex("0" + node[2].name);
@@ -301,25 +311,31 @@ module TSC {
                     return temp;
                 }
             }
+            else if(node[2].value == 'variable'){
+                var variable = node[2].name;
+                var scope = node[2].scope;
+                var temp: string = this.findVariable(variable, scope);
+                console.log(temp);
+                return temp;
+            }
+            
 
         }
 
         public additionOp(node){
             console.log("node:")
-            console.log(node);
-            
+            console.log(node[0]);
+            var temp = "00";
+            if(node[1] === undefined){}
             if(node[0].value == 'digit'){
                 this.setHex("A9");
                 this.setHex("0" + node[0].name[0]);
                 this.setHex("8D");
+                this.setHex(temp);
                 this.setHex("00");
-                this.setHex("00");
-            }
-            if(node[1] === undefined){
-                return;
             }
             else if(node[1].name == 'ADDITION_OP'){
-                this.additionOp(node[1].children);
+                temp = this.additionOp(node[1].children);
             }
             if(node[0].value == 'digit') {
                 this.setHex("A9");
@@ -329,8 +345,9 @@ module TSC {
             this.setHex("00");
             this.setHex("00");
             this.setHex("8D");
+            this.setHex(temp);
             this.setHex("00");
-            this.setHex("00");
+            return(temp);
         }
 
         public staticArea(){
@@ -369,10 +386,10 @@ module TSC {
         }
 
         public findVariable(variable, scope){
-            console.log(this.staticTable);
+            console.log(variable);
             for (var i = 0; i < this.staticTable.length; i++) {
                 //var staticObject = itr.next();
-                if (this.staticTable[i][0].key == variable && this.staticTable[i][0].scope <= scope) {
+                if (this.staticTable[i][0].key == variable && this.staticTable[i][0].scope == scope) {
                     return this.staticTable[i][0].value;
                 }
             }
