@@ -67,7 +67,7 @@ module TSC {
         }
 
         public traverse(node: any){
-            const DIGIT = new RegExp('[0-9]');
+            //const DIGIT = new RegExp('[0-9]');
             //const STRING = new RegExp('[a-z]');
 
             console.log(node);

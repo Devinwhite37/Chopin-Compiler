@@ -191,8 +191,6 @@ var TSC;
         };
         Semantic.prototype.expressionSemantic = function () {
             if (tokens[this.currentToken][0] == "DIGIT") {
-                this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "digit");
-                this.currentToken++;
                 this.intExprSemantic();
             }
             else if (tokens[this.currentToken][0] == "DOUBLE_QUOTE") {
@@ -242,10 +240,15 @@ var TSC;
         };
         Semantic.prototype.intExprSemantic = function () {
             this.currentType = "int";
+            this.currentToken++;
             if (tokens[this.currentToken][0] == 'ADDITION_OP') {
                 this.additions++;
                 this.ast.addNode("ADDITION_OP", "branch", this.scope, "addition");
+                this.ast.addNode(tokens[this.currentToken - 1][1], "leaf", this.scope, "digit");
                 this.currentToken++;
+                if (tokens[this.currentToken][0] == 'DIGIT' && tokens[this.currentToken + 1][0] != 'ADDITION_OP') {
+                    this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "digit");
+                }
                 this.varVal = tokens[this.currentToken][1][0];
                 this.isUsed();
                 this.expressionSemantic();
