@@ -246,6 +246,13 @@ var TSC;
                 this.ast.addNode("ADDITION_OP", "branch", this.scope, "addition");
                 this.ast.addNode(tokens[this.currentToken - 1][1], "leaf", this.scope, "digit");
                 this.currentToken++;
+                if (tokens[this.currentToken][0] != 'DIGIT') {
+                    this.varVal = tokens[this.currentToken][1][0];
+                    this.getVarsType();
+                    if (this.currentType != 'digit') {
+                        this.semanticOutput.push("ERROR - Cannot add a [" + this.currentType + "] to a digit.");
+                    }
+                }
                 if (tokens[this.currentToken][0] == 'DIGIT' && tokens[this.currentToken + 1][0] != 'ADDITION_OP') {
                     this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "digit");
                 }
@@ -298,7 +305,6 @@ var TSC;
                 this.expressionSemantic();
                 console.log(tokens[this.currentToken][0]);
                 if (tokens[this.currentToken - 1][0] == 'DIGIT') {
-                    //this.currentToken--;
                     this.ast.addNode(tokens[this.currentToken - 1][1], "leaf", this.scope, "digit");
                 }
                 this.ast.endChildren();
