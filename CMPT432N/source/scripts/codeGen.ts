@@ -242,10 +242,9 @@ module TSC {
                 this.setHex("00");
             }
 
-            else if(node.name = 'IfStatement'){
+            else if(node.name == 'IfStatement'){
                 this.codeGenLog.push("Generating op code for IfStatement:");
                 if(node.children[0].name == 'true'){
-                    
                     this.setHex("AE");
                     this.setHex((245).toString(16).toUpperCase());
                     this.setHex("00");
@@ -260,6 +259,29 @@ module TSC {
                     this.setHex("EC");
                     this.setHex((245).toString(16).toUpperCase());
                     this.setHex("00");
+                }
+                else if(node.children[1].name[0] == 'BOOL_EQUAL' || node.children[1].name[0] == 'BOOL_NOTEQUAL'){
+                    var address = this.handleBoolEquality(node.children);
+                    this.setHex("EC");
+                    this.setHex(address);
+                    this.setHex("00");
+                    if(node.children[1].name[0] == 'BOOL_NOTEQUAL'){
+                        this.setHex("A9");
+                        this.setHex("00");
+                        this.setHex("D0");
+                        this.setHex("02");
+                        this.setHex("A9");
+                        this.setHex("01");
+                        this.setHex("A2");
+                        this.setHex("00");
+                        var temp = "00";
+                        this.setHex("8D");
+                        this.setHex(temp);
+                        this.setHex("00");
+                        this.setHex("EC");
+                        this.setHex(temp);
+                        this.setHex("00");
+                    }
                 }
                 var temp = "J" + this.jumpLocation;
                 var startOfBranchPtr = this.hexLocation;

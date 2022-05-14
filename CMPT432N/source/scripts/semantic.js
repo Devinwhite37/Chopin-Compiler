@@ -173,6 +173,9 @@ var TSC;
             if (tokens[this.currentToken][1] == '(') {
                 this.currentToken++;
                 this.expressionSemantic();
+                if (tokens[this.currentToken - 1][0] == "DIGIT") {
+                    this.ast.addNode(tokens[this.currentToken - 1][1], "leaf", this.scope, "digit");
+                }
                 this.isUsed();
                 if (tokens[this.currentToken][1] == ')') {
                     this.currentToken++;
@@ -190,7 +193,6 @@ var TSC;
             }
         };
         Semantic.prototype.expressionSemantic = function () {
-            console.log(tokens[this.currentToken][0]);
             if (tokens[this.currentToken][0] == "DIGIT") {
                 this.intExprSemantic();
             }
@@ -307,7 +309,6 @@ var TSC;
             if (tokens[this.currentToken][1] == "=") {
                 this.currentToken++;
                 this.expressionSemantic();
-                console.log(tokens[this.currentToken][0]);
                 if (tokens[this.currentToken - 1][0] == 'DIGIT') {
                     this.ast.addNode(tokens[this.currentToken - 1][1], "leaf", this.scope, "digit");
                 }
@@ -437,16 +438,36 @@ var TSC;
             if (tokens[this.currentToken - 2][0] == "PRINT") {
                 print = true;
             }
-            console.log(ifWhile);
             if (tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.ast.addNode(tokens[this.currentToken][1], "leaf", this.scope, "boolean");
                 this.currentToken++;
                 this.currentType = "boolean";
             }
-            else if (tokens[this.currentToken][0] == 'L_PAREN') {
+            /*else if(tokens[this.currentToken][0] == 'L_PAREN'){
+                this.currentToken++;
+                    this.expressionSemantic();
+                    console.log(tokens[this.currentToken]);
+                    if(tokens[this.currentToken-1][0] == "DIGIT"){
+                        this.ast.addNode(tokens[this.currentToken-1][1], "leaf", this.scope, "digit");
+                    }
+                    this.currentType = "boolean";
+                    if(tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!='){
+                        this.ast.addNode(tokens[this.currentToken][0], "leaf", this.scope, "");
+                        this.currentToken++;
+                        this.expressionSemantic();
+                        console.log(tokens[this.currentToken-1][0]);
+                        if(tokens[this.currentToken-1][0] =="DIGIT"){
+                            this.ast.addNode(tokens[this.currentToken-1][1], "leaf", this.scope, "digit");
+                        }
+                        this.currentType = "boolean";
+                        if(tokens[this.currentToken][0] == 'R_PAREN'){
+                            this.currentType = "boolean";
+                            this.currentToken++;
+                        }
+                    }*/
+            if (print == true) {
                 this.currentToken++;
                 this.expressionSemantic();
-                console.log(tokens[this.currentToken]);
                 if (tokens[this.currentToken - 1][0] == "DIGIT") {
                     this.ast.addNode(tokens[this.currentToken - 1][1], "leaf", this.scope, "digit");
                 }
@@ -455,7 +476,6 @@ var TSC;
                     this.ast.addNode(tokens[this.currentToken][0], "leaf", this.scope, "");
                     this.currentToken++;
                     this.expressionSemantic();
-                    console.log(tokens[this.currentToken - 1][0]);
                     if (tokens[this.currentToken - 1][0] == "DIGIT") {
                         this.ast.addNode(tokens[this.currentToken - 1][1], "leaf", this.scope, "digit");
                     }
@@ -465,83 +485,58 @@ var TSC;
                         this.currentToken++;
                     }
                 }
-                /* if(print == true){
-                     this.currentToken++;
-                     this.expressionSemantic();
-                     console.log(tokens[this.currentToken]);
-                     if(tokens[this.currentToken-1][0] == "DIGIT"){
-                         this.ast.addNode(tokens[this.currentToken-1][1], "leaf", this.scope, "digit");
-                     }
-                     this.currentType = "boolean";
-                     if(tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!='){
-                         this.ast.addNode(tokens[this.currentToken][0], "leaf", this.scope, "");
-                         this.currentToken++;
-                         this.expressionSemantic();
-                         console.log(tokens[this.currentToken-1][0]);
-                         if(tokens[this.currentToken-1][0] =="DIGIT"){
-                             this.ast.addNode(tokens[this.currentToken-1][1], "leaf", this.scope, "digit");
-                         }
-                         this.currentType = "boolean";
-                         if(tokens[this.currentToken][0] == 'R_PAREN'){
-                             this.currentType = "boolean";
-                             this.currentToken++;
-                         }
-                     }
-                 }
-                 if(ifWhile == true){
-                     this.currentToken++;
-                     this.expressionSemantic();
-                     console.log(tokens[this.currentToken]);
-                     if(tokens[this.currentToken-1][0] == "DIGIT"){
-                         this.ast.addNode(tokens[this.currentToken-1][1], "leaf", this.scope, "digit");
-                     }
-                     this.currentType = "boolean";
-                     if(tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!='){
-                         this.ast.addNode(tokens[this.currentToken][0], "leaf", this.scope, "");
-                         this.currentToken++;
-                         this.expressionSemantic();
-                         console.log(tokens[this.currentToken-1][0]);
-                         if(tokens[this.currentToken-1][0] =="DIGIT"){
-                             this.ast.addNode(tokens[this.currentToken-1][1], "leaf", this.scope, "digit");
-                         }
-                         this.currentType = "boolean";
-                         if(tokens[this.currentToken][0] == 'R_PAREN'){
-                             this.currentType = "boolean";
-                             this.currentToken++;
-                         }
-                     }
-                 }*/
-                /*this.currentToken++;
+            }
+            if (ifWhile == true) {
+                this.currentToken++;
                 this.expressionSemantic();
-                console.log(tokens[this.currentToken-1]);
-                console.log(tokens[this.currentToken+1]);
-                if(tokens[this.currentToken+1][0] == "DIGIT" && ifWhile == false){
-                    this.ast.addNode(tokens[this.currentToken+1][1], "leaf", this.scope, "digit");
-                }
-                else if(tokens[this.currentToken-1][0] == "DIGIT" && ifWhile == true){
-                    this.ast.addNode(tokens[this.currentToken-1][1], "leaf", this.scope, "digit");
+                if (tokens[this.currentToken - 1][0] == "DIGIT") {
+                    this.ast.addNode(tokens[this.currentToken - 1][1], "leaf", this.scope, "digit");
                 }
                 this.currentType = "boolean";
-                if(tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!='){
+                if (tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!=') {
                     this.ast.addNode(tokens[this.currentToken][0], "leaf", this.scope, "");
                     this.currentToken++;
                     this.expressionSemantic();
-                    console.log(tokens[this.currentToken-1][0]);
-                    if(tokens[this.currentToken-1][0] =="DIGIT"){
-                        this.ast.addNode(tokens[this.currentToken-1][1], "leaf", this.scope, "digit");
+                    if (tokens[this.currentToken - 1][0] == "DIGIT") {
+                        this.ast.addNode(tokens[this.currentToken - 1][1], "leaf", this.scope, "digit");
                     }
                     this.currentType = "boolean";
-                    if(tokens[this.currentToken][0] == 'R_PAREN'){
+                    if (tokens[this.currentToken][0] == 'R_PAREN') {
                         this.currentType = "boolean";
                         this.currentToken++;
                     }
-                }*/
+                }
             }
-            return;
+            /*this.currentToken++;
+            this.expressionSemantic();
+            console.log(tokens[this.currentToken-1]);
+            console.log(tokens[this.currentToken+1]);
+            if(tokens[this.currentToken+1][0] == "DIGIT" && ifWhile == false){
+                this.ast.addNode(tokens[this.currentToken+1][1], "leaf", this.scope, "digit");
+            }
+            else if(tokens[this.currentToken-1][0] == "DIGIT" && ifWhile == true){
+                this.ast.addNode(tokens[this.currentToken-1][1], "leaf", this.scope, "digit");
+            }
+            this.currentType = "boolean";
+            if(tokens[this.currentToken][1] == '==' || tokens[this.currentToken][1] == '!='){
+                this.ast.addNode(tokens[this.currentToken][0], "leaf", this.scope, "");
+                this.currentToken++;
+                this.expressionSemantic();
+                console.log(tokens[this.currentToken-1][0]);
+                if(tokens[this.currentToken-1][0] =="DIGIT"){
+                    this.ast.addNode(tokens[this.currentToken-1][1], "leaf", this.scope, "digit");
+                }
+                this.currentType = "boolean";
+                if(tokens[this.currentToken][0] == 'R_PAREN'){
+                    this.currentType = "boolean";
+                    this.currentToken++;
+                }
+            }*/
         };
         Semantic.prototype.ifStatementSemantic = function () {
             this.additions = 0;
             this.ast.addNode("IfStatement", "branch", this.scope, "");
+            console.log(tokens[this.currentToken][0]);
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
                 this.isUsed();
