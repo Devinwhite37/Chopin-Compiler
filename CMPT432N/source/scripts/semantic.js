@@ -219,7 +219,7 @@ var TSC;
                 this.currentToken++;
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
-                this.currentToken++;
+                //this.currentToken++;
                 this.booleanExprSemantic();
                 //this.ast.endChildren();
             }
