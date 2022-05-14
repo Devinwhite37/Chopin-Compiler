@@ -64,6 +64,7 @@ var TSC;
             this.scopeLevel++;
             this.scopeArray.push(this.scope);
             this.scope = this.scopeNum;
+            console.log(tokens[this.currentToken][1]);
             //this.scopeTree.addNode("Scope: " + this.scopeNum, "branch", this.scopeNum);
             if (tokens[this.currentToken] === undefined) {
                 return;
@@ -465,7 +466,7 @@ var TSC;
                             this.currentToken++;
                         }
                     }*/
-            if (print == true) {
+            else if (print == true) {
                 this.currentToken++;
                 this.expressionSemantic();
                 if (tokens[this.currentToken - 1][0] == "DIGIT") {
@@ -486,7 +487,7 @@ var TSC;
                     }
                 }
             }
-            if (ifWhile == true) {
+            else if (ifWhile == true) {
                 this.currentToken++;
                 this.expressionSemantic();
                 if (tokens[this.currentToken - 1][0] == "DIGIT") {
@@ -532,6 +533,7 @@ var TSC;
                     this.currentToken++;
                 }
             }*/
+            return;
         };
         Semantic.prototype.ifStatementSemantic = function () {
             this.additions = 0;
@@ -539,6 +541,7 @@ var TSC;
             console.log(tokens[this.currentToken][0]);
             if (tokens[this.currentToken][0] == "L_PAREN" || tokens[this.currentToken][0] == "BOOL_TRUE" || tokens[this.currentToken][0] == "BOOL_FALSE") {
                 this.booleanExprSemantic();
+                console.log("DO YOU RUN??????????");
                 this.isUsed();
                 this.parseBlockSemantic();
             }

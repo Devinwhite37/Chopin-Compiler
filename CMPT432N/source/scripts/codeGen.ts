@@ -286,25 +286,28 @@ module TSC {
                     }
                 }
                 var temp = "J" + this.jumpLocation;
-                var startOfBranchPtr = this.hexLocation;
+                var startLocation = this.hexLocation;
                 // store in accumulator location temp 0, fill in later
                 this.setHex("D0");
                 this.setHex(temp);
                 // increase the jump id
                 this.jumpLocation++;
                 // now we need to put op codes in to evaluate the block
-                //console.log(node.children[3].name);
-                if(node.children[3] === undefined){}
-                if(node.children[3].name == "Block"){
+                console.log(node.children[3]);
+                var traverseOn = false;
+                if(node.children[3] === undefined){
+                    traverseOn = true
+                }
+                if(traverseOn == false){
                     this.traverse(node.children[3]);
                 }
-                else if(node.children[0].name[0] == 'true' || node.children[0].name[0] == 'false'){
+                else if(traverseOn == true){
                     this.traverse(node.children[1]);
                 }
                 // figure out how much to jump based on current opPtr and where the op code for the branch is
                 // + 2 for offset because we use 2 op codes to store branch
                 // store as hex value
-                var jumpValue = (this.hexLocation - (startOfBranchPtr + 2)).toString(16).toUpperCase();
+                var jumpValue = (this.hexLocation - (startLocation + 2)).toString(16).toUpperCase();
                 if (jumpValue.length < 2) {
                     // pad with 0
                     jumpValue = "0" + jumpValue;
@@ -379,14 +382,17 @@ module TSC {
 
                 var whileJumpEnd = "J" + this.jumpLocation;
                 this.jumpLocation++;
-                var startOfBranchPtr = this.hexLocation;
+                var startLocation = this.hexLocation;
                 this.setHex("D0");
                 this.setHex(whileJumpEnd);
-
-                if(node.children[3].name == "Block"){
+                var traverseOn = false;
+                if(node.children[3] === undefined){
+                    traverseOn = true
+                }
+                if(traverseOn == false){
                     this.traverse(node.children[3]);
                 }
-                else if(node.children[0].name[0] == 'true' || node.children[0].name[0] == 'false'){
+                else if(traverseOn == true){
                     this.traverse(node.children[1]);
                 }
                 this.setHex("A9");
@@ -414,7 +420,7 @@ module TSC {
                     jump: jumpValue,
                     value: whileJump
                 }]);
-                jumpValue = (this.hexLocation - (startOfBranchPtr + 2)).toString(16).toUpperCase();
+                jumpValue = (this.hexLocation - (startLocation + 2)).toString(16).toUpperCase();
                     if (jumpValue.length < 2) {
                         jumpValue = "0" + jumpValue;
                     }
