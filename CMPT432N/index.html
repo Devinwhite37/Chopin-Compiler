@@ -51,8 +51,9 @@
     <h3 style = "text-align:center; font-family: cursive; font-weight: bold; font-style: italic; color:black">A classical compiler featuring some of Chopin's finest works.</h3>
 
     <div style="text-align:center;">
-        <input style="border:solid 1px black; font-family:cursive; font-weight: bold; font-size: 150%" type="button" id="btnCompile" value="~Compile~" onclick="btnCompile_click();"/>
-    </div>
+		<input style="border:solid 1px black; font-family:cursive; font-weight: bold; font-size: 150%" type="button" id="btnCompile" value="~Compile~" onclick="btnCompile_click();"/>
+	</div>
+	
 
 	
 	
@@ -152,6 +153,7 @@
 			parseWarnings = 0;  
 			analysisErrors = 0;
 			analysisWarnings = 0;
+			genErrors = 0;
 			i = 0;
 			j = 0;
 			l = 0;
@@ -170,6 +172,7 @@
 			var parseWarnings = 0;
 			var analysisErrors = 0;
 			var analysisWarnings = 0;
+			var genErrors = 0;
 			var i = 0;
 			var j = 0;
 			var l = 0;
@@ -379,6 +382,7 @@
 				analysisErrors = 0;
 				analysisWarnings = 0;
 				warnings = 0;
+				genErrors = 0;
 
 				if(tokens[i+1] === undefined){
 					return;
@@ -490,10 +494,21 @@
 						}
 					}
 				}
-				if(parseErrors==0){
 					putMessageOP(" Analyzing Program "+ programNum);
 					putMessageOP("---------------------------");
 					for(m; m < analysis.length; m++){
+						console.log("RUN");
+						if(parseErrors !=0 || lexErrors !=0){
+							putMessageOP("Semantic Analysis skipped due to previous error.");
+							for(m; m < analysis.length; m++){
+							if(analysis[l] == 'EOP'){
+								break;
+							}
+						}
+						break;
+						}
+						else{
+
 						if(analysis[m] == 'EOP'){
 							m++;
 							astOutput();
@@ -516,22 +531,29 @@
 					}
 					putMessageOP("\nSemantic Analysis completed with " + analysisErrors + " error(s) and "+analysisWarnings+" warning(s).\n")			
 				}
-				else{
-					break;
-				}
+
 				putMessageOP("Code Generating Program " + programNum);
 				putMessageOP("---------------------------");
 				for(var o = 0; o < codeGenOP.length; o++){
-					if(codeGenOP[o].slice(0, 5) == 'ERROR'){
-						putMessageOP("CodeGen -> | " + codeGenOP[o]);
+					if(semanticErrors != 0 || parseErrors != 0 || lexErrors != 0){
+						putMessageOP("Code Generation skipped due to previous error.");
 						break;
 					}
 					else{
-						putMessageOP("CodeGen -> | " + codeGenOP[o]);
+						if(codeGenOP[o].slice(0, 5) == 'ERROR'){
+							putMessageOP("CodeGen -> | " + codeGenOP[o]);
+							genErrors++;
+							break;
+						}
+						else{
+							putMessageOP("CodeGen -> | " + codeGenOP[o]);
+						}
 					}
+					codeGenOutput();
+					programNum++;
 				}
-				codeGenOutput();
-				programNum++;
+				putMessageOP("\nCode Generation completed with " + analysisErrors + " error(s) and "+analysisWarnings+" warning(s).\n")			
+
 			}
 		}
 
