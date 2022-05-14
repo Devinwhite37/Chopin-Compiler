@@ -16,6 +16,7 @@ var TSC;
             this.jumpTable = [];
             this.staticId = 0;
             this.jumpLocation = 0;
+            this.jumpValue = 0;
             //this.tree = {};
             //this.astG = new Semantic();
             //this.createdCode.push("Program 1");
@@ -273,7 +274,13 @@ var TSC;
                 // increase the jump id
                 this.jumpLocation++;
                 // now we need to put op codes in to evaluate the block
-                this.traverse(node.children[1]);
+                //console.log(node.children[3].name);
+                if (node.children[3].name == "Block") {
+                    this.traverse(node.children[3]);
+                }
+                else if (node.children[0].name[0] == 'true' || node.children[0].name[0] == 'false') {
+                    this.traverse(node.children[1]);
+                }
                 // figure out how much to jump based on current opPtr and where the op code for the branch is
                 // + 2 for offset because we use 2 op codes to store branch
                 // store as hex value
@@ -286,6 +293,110 @@ var TSC;
                         jump: jumpValue,
                         value: temp
                     }]);
+            }
+            else if (node.name == 'WhileStatement') {
+                this.codeGenLog.push("Generating op code for IfStatement:");
+                var startLocation = this.hexLocation;
+                if (node.children[0].name == 'true') {
+                    this.setHex("AE");
+                    this.setHex((245).toString(16).toUpperCase());
+                    this.setHex("00");
+                    this.setHex("EC");
+                    this.setHex((245).toString(16).toUpperCase());
+                    this.setHex("00");
+                }
+                else if (node.children[0].name[0] == 'false') {
+                    this.setHex("AE");
+                    this.setHex((250).toString(16).toUpperCase());
+                    this.setHex("00");
+                    this.setHex("EC");
+                    this.setHex((245).toString(16).toUpperCase());
+                    this.setHex("00");
+                }
+                else if (node.children[1].name[0] == 'BOOL_EQUAL' || node.children[1].name[0] == 'BOOL_NOTEQUAL') {
+                    var address = this.handleBoolEquality(node.children);
+                    this.setHex("EC");
+                    this.setHex(address);
+                    this.setHex("00");
+                    if (node.children[1].name[0] == 'BOOL_NOTEQUAL') {
+                        this.setHex("EC");
+                        this.setHex(address);
+                        this.setHex("00");
+                        this.setHex("A9");
+                        this.setHex("00");
+                        this.setHex("D0");
+                        this.setHex("02");
+                        this.setHex("A9");
+                        this.setHex("01");
+                        this.setHex("A2");
+                        this.setHex("00");
+                        var temp = "00";
+                        this.setHex("8D");
+                        this.setHex(temp);
+                        this.setHex("00");
+                        this.setHex("EC");
+                        this.setHex(temp);
+                        this.setHex("00");
+                    }
+                }
+                this.setHex("A9");
+                this.setHex("01");
+                this.setHex("D0");
+                this.setHex("02");
+                this.setHex("A9");
+                this.setHex("00");
+                this.setHex("A2");
+                this.setHex("00");
+                var temp = "00";
+                this.setHex("8D");
+                this.setHex(temp);
+                this.setHex("00");
+                this.setHex("EC");
+                this.setHex(temp);
+                this.setHex("00");
+                var whileJumpEnd = "J" + this.jumpLocation;
+                this.jumpLocation++;
+                var startOfBranchPtr = this.hexLocation;
+                this.setHex("D0");
+                this.setHex(whileJumpEnd);
+                if (node.children[3].name == "Block") {
+                    this.traverse(node.children[3]);
+                }
+                else if (node.children[0].name[0] == 'true' || node.children[0].name[0] == 'false') {
+                    this.traverse(node.children[1]);
+                }
+                this.setHex("A9");
+                this.setHex("00");
+                var uncond = "00";
+                this.setHex("8D");
+                this.setHex(uncond);
+                this.setHex("00");
+                this.setHex("A2");
+                this.setHex("01");
+                this.setHex("EC");
+                this.setHex(uncond);
+                this.setHex("00");
+                var whileJump = "J" + this.jumpLocation;
+                this.jumpLocation++;
+                this.setHex("D0");
+                this.setHex(whileJump);
+                var jumpValue = ((this.createdCode.length - (this.hexLocation)) + startLocation).toString(16).toUpperCase();
+                if (jumpValue.length < 2) {
+                    jumpValue = "0" + jumpValue;
+                }
+                this.jumpTable.push([{
+                        jump: jumpValue,
+                        value: whileJump
+                    }]);
+                jumpValue = (this.hexLocation - (startOfBranchPtr + 2)).toString(16).toUpperCase();
+                if (jumpValue.length < 2) {
+                    jumpValue = "0" + jumpValue;
+                }
+                this.jumpTable.push([{
+                        jump: jumpValue,
+                        value: whileJumpEnd
+                    }]);
+                console.log(this.jumpTable);
             }
         };
         CodeGen.prototype.handleBoolEquality = function (node) {
