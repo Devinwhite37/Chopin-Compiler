@@ -8,6 +8,17 @@
     <link rel="stylesheet" href="source/styles/bootstrap.min.css">
 </head>
 
+   <!-- Client-side code down here, per the YSlow advice. -->
+   <script type="text/javascript" src="source/scripts/utils.js"></script>	
+   <script type="text/javascript" src="source/scripts/lexer.js"></script>	
+   <script type="text/javascript" src="source/scripts/globals.js"></script>	
+   <script type="text/javascript" src="source/scripts/parser.js"></script>	
+   <script type="text/javascript" src="source/scripts/tree.js"></script>	
+   <script type="text/javascript" src="source/scripts/semantic.js"></script>
+   <script type="text/javascript" src="source/scripts/scopeTree.js"></script>	
+   <script type="text/javascript" src="source/scripts/codeGen.js"></script>	
+   <script type="text/javascript" src="source/scripts/testcases.js"></script>
+
 <body style="background-image: url(source/images/IMG_2468.jpg); background-repeat: repeat; background-size: cover;" onload="init();">
 	<nav class="topbar navbar navbar-expand-lg navbar-light bg-primary sticky-top">
 		<h1 style="font-family:cursive; text-align: center; color:black; font-size: 400%; font-style: italic;">Chopin Compiler   </h1>
@@ -48,13 +59,22 @@
 	</div>
 	<hr style = "color:black;">
 	
-    <h3 style = "text-align:center; font-family: cursive; font-weight: bold; font-style: italic; color:black">A classical compiler featuring some of Chopin's finest works.</h3>
+    <h3 style = "text-align:center; width: 100; font-family: cursive; font-weight: bold; font-style: italic; color:black">A classical compiler featuring some of Chopin's finest works.</h3>
 
     <div style="text-align:center;">
-		<input style="border:solid 1px black; font-family:cursive; font-weight: bold; font-size: 150%" type="button" id="btnCompile" value="~Compile~" onclick="btnCompile_click();"/>
+		<input style="border:solid 1px black; font-family:cursive; font-weight: bold; font-size: 150%" type="button" id="btnCompile" value="Compile" onclick="btnCompile_click();"/>
+		<div class="dropdown">
+			<button style="border:solid 1px black; font-family:cursive; font-weight: bold; font-size: 150%; width: 175" onclick="myFunction()" class="dropbtn">Test Cases</button>
+			<div id="myDropdown" class="dropdown-content">
+				<a class="dropdown-item" onclick="testCases('lexError');">Simple</a>
+				<a class="dropdown-item" onclick="testCases('good_case_1');">Simple</a>
+				<a class="dropdown-item">Link 2</a>
+			  <a class="dropdown-item">Link 3</a>
+			</div>
+		  </div>
 	</div>
 	
-
+	
 	
 	
 	<div>
@@ -114,15 +134,8 @@
 				 alt="Compiler Phases" />
     </div>  --> 
 
-    <!-- Client-side code down here, per the YSlow advice. -->
-    <script type="text/javascript" src="source/scripts/utils.js"></script>	
-    <script type="text/javascript" src="source/scripts/lexer.js"></script>	
-	<script type="text/javascript" src="source/scripts/globals.js"></script>	
-	<script type="text/javascript" src="source/scripts/parser.js"></script>	
-	<script type="text/javascript" src="source/scripts/tree.js"></script>	
-	<script type="text/javascript" src="source/scripts/semantic.js"></script>
-	<script type="text/javascript" src="source/scripts/scopeTree.js"></script>	
-	<script type="text/javascript" src="source/scripts/codeGen.js"></script>	
+ 	
+
 
 
 
@@ -158,7 +171,25 @@
 			j = 0;
 			l = 0;
 			m = 0;
-	    }
+		}
+		
+		function myFunction() {
+			document.getElementById("myDropdown").classList.toggle("show");
+			}
+
+			// Close the dropdown menu if the user clicks outside of it
+			window.onclick = function(event) {
+			if (!event.target.matches('.dropbtn')) {
+				var dropdowns = document.getElementsByClassName("dropdown-content");
+				var i;
+				for (i = 0; i < dropdowns.length; i++) {
+					var openDropdown = dropdowns[i];
+					if (openDropdown.classList.contains('show')) {
+						openDropdown.classList.remove('show');
+					}
+				}
+			}
+		}
     
 	    function btnCompile_click() {        
 	        // This is executed as a result of the user pressing the 
@@ -191,7 +222,7 @@
 			//onsole.log(productions); 
 
 			//Grab CST from parser
-			cstTree = parser.cstTree();
+			//cstTree = parser.cstTree();
 			//console.log("CST:");
 			//console.log(cstTree);
 
@@ -203,9 +234,10 @@
 			
 			let semantic = new TSC.Semantic();
 			astTree = semantic.astTree();
-			console.log(astTree);
 			st = semantic.symbolTableOP();
 			astRes = semantic.astRes();
+			console.log(astTree);
+
 			//console.log("TEST");
 			//console.log("SYMBOLOP");
 			//console.log(st)
@@ -214,8 +246,8 @@
 			let codeGen = new TSC.CodeGen();
 			var res = codeGen.codeGenOutput(astRes);
 
-			codeOP = codeGen.codeOutput();
-			codeGenOP = codeGen.codeGenOutput();
+			//codeOP = codeGen.codeOutput();
+			//codeGenOP = codeGen.codeGenOutput();
 	        compile();
 	    }
     
@@ -439,7 +471,8 @@
 
 				putMessageOP(" Parsing Program "+ programNum);
 				putMessageOP("---------------------------")
-
+				productions = parser.parse();
+						cstTree = parser.cstTree();
 				for(l; l < productions.length; l++){
 					if(lexErrors != 0){
 						putMessageOP("Parsing skipped due to Lexer error.");
@@ -451,6 +484,7 @@
 						break;
 					}
 					else{
+						
 						if(productions[l] == 'VALID - Found [EOP]'){
 							putMessageOP("PARSER -> | " + productions[l]);
 							putMessageOP("\n")
@@ -496,6 +530,10 @@
 				}
 					putMessageOP(" Analyzing Program "+ programNum);
 					putMessageOP("---------------------------");
+					astTree = semantic.astTree();
+							st = semantic.symbolTableOP();
+							astRes = semantic.astRes();
+							analysis = semantic.semantic();
 					for(m; m < analysis.length; m++){
 						console.log("RUN");
 						if(parseErrors !=0 || lexErrors !=0){
@@ -508,7 +546,7 @@
 						break;
 						}
 						else{
-
+							
 						if(analysis[m] == 'EOP'){
 							m++;
 							astOutput();
@@ -534,12 +572,16 @@
 
 				putMessageOP("Code Generating Program " + programNum);
 				putMessageOP("---------------------------");
+				codeOP = codeGen.codeOutput();
+						codeGenOP = codeGen.codeGenOutput();
+						var res = codeGen.codeGenOutput(astRes);
 				for(var o = 0; o < codeGenOP.length; o++){
 					if(semanticErrors != 0 || parseErrors != 0 || lexErrors != 0){
 						putMessageOP("Code Generation skipped due to previous error.");
 						break;
 					}
 					else{
+						
 						if(codeGenOP[o].slice(0, 5) == 'ERROR'){
 							putMessageOP("CodeGen -> | " + codeGenOP[o]);
 							genErrors++;
