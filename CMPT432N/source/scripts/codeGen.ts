@@ -70,6 +70,10 @@ module TSC {
             this.codeGenLog.push("Adding " + curHex + " at byte [" + this.hexLocation + "]");
             this.hexLocation++;
 
+            if (this.hexLocation >= 256 || this.hexLocation >= this.heapStart || this.hexLocation <= 0) {
+                this.codeGenLog.push("ERROR - No more code memory");
+            }
+
         }
 
         public traverse(node: any){
@@ -304,7 +308,7 @@ module TSC {
                 else if(traverseOn == true){
                     this.traverse(node.children[1]);
                 }
-                // figure out how much to jump based on current opPtr and where the op code for the branch is
+                // figure out how much to jump based on current hexLocation and where the op code for the branch is
                 // + 2 for offset because we use 2 op codes to store branch
                 // store as hex value
                 var jumpValue = (this.hexLocation - (startLocation + 2)).toString(16).toUpperCase();
@@ -385,6 +389,7 @@ module TSC {
                 var startLocation = this.hexLocation;
                 this.setHex("D0");
                 this.setHex(whileJumpEnd);
+
                 var traverseOn = false;
                 if(node.children[3] === undefined){
                     traverseOn = true

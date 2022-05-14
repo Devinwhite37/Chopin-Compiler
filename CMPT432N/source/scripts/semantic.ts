@@ -230,6 +230,7 @@ module TSC {
         }
 
         public expressionSemantic(){
+            console.log(tokens[this.currentToken][0]);
             if (tokens[this.currentToken][0] == "DIGIT") {
                 this.intExprSemantic();
             } 
@@ -254,6 +255,7 @@ module TSC {
                 this.currentToken++;
             }
             else if (tokens[this.currentToken][1] == '(' || tokens[this.currentToken][1] == 'true' || tokens[this.currentToken][1] == 'false') {
+                this.currentToken++;
                 this.booleanExprSemantic();
                 //this.ast.endChildren();
             }  

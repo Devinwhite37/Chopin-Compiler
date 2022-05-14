@@ -54,6 +54,9 @@ var TSC;
             this.createdCode[this.hexLocation] = curHex;
             this.codeGenLog.push("Adding " + curHex + " at byte [" + this.hexLocation + "]");
             this.hexLocation++;
+            if (this.hexLocation >= 256 || this.hexLocation >= this.heapStart || this.hexLocation <= 0) {
+                this.codeGenLog.push("ERROR - No more code memory");
+            }
         };
         CodeGen.prototype.traverse = function (node) {
             //const DIGIT = new RegExp('[0-9]');
@@ -285,7 +288,7 @@ var TSC;
                 else if (traverseOn == true) {
                     this.traverse(node.children[1]);
                 }
-                // figure out how much to jump based on current opPtr and where the op code for the branch is
+                // figure out how much to jump based on current hexLocation and where the op code for the branch is
                 // + 2 for offset because we use 2 op codes to store branch
                 // store as hex value
                 var jumpValue = (this.hexLocation - (startLocation + 2)).toString(16).toUpperCase();

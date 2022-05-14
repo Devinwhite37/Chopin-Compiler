@@ -522,7 +522,13 @@
 				putMessageOP("Code Generating Program " + programNum);
 				putMessageOP("---------------------------");
 				for(var o = 0; o < codeGenOP.length; o++){
-					putMessageOP("CodeGen -> | " + codeGenOP[o]);
+					if(codeGenOP[o].slice(0, 5) == 'ERROR'){
+						putMessageOP("CodeGen -> | " + codeGenOP[o]);
+						break;
+					}
+					else{
+						putMessageOP("CodeGen -> | " + codeGenOP[o]);
+					}
 				}
 				codeGenOutput();
 				programNum++;
